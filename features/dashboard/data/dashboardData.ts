@@ -7,6 +7,7 @@ import {
   Hexagon,
   Code2,
 } from "lucide-react";
+import { LearningCategory } from "../types/dashboard.types";
 
 export const statsData = [
   {
@@ -35,7 +36,8 @@ export const statsData = [
   },
 ];
 
-export const learningCategories = [
+
+export const learningCategories: LearningCategory[] = [
   {
     label: "Development",
     time: "9h 20m",

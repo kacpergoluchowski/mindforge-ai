@@ -1,20 +1,11 @@
-type LearningCategory = {
-  label: string;
-  time: string;
-  percentage: number;
-  color: "violet" | "emerald" | "orange" | "blue";
-};
-
-type LearningCategoryItemProps = {
-  category: LearningCategory;
-};
+import { LearningCategoryItemProps } from "../types/dashboard.types";
 
 const colorClasses = {
   violet: "bg-violet-500",
   emerald: "bg-emerald-400",
   orange: "bg-orange-400",
   blue: "bg-blue-500",
-};
+};  
 
 export default function LearningCategoryItem({
   category,

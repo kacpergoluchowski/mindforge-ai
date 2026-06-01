@@ -1,8 +1,4 @@
-import type { StatCard } from "../types/dashboard.types";
-
-type StatsCardProps = {
-  stat: StatCard;
-};
+import { StatsCardProps } from '../types/dashboard.types';
 
 export default function StatsCard({ stat }: StatsCardProps) {
   const Icon = stat.icon;
