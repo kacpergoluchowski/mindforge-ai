@@ -16,7 +16,7 @@ export default function AppShell({ children }: AppShellProps) {
         <MobileHeader />
         <Header />
 
-        <main className="px-5 pb-28 pt-4 lg:px-8 lg:pb-0 lg:pt-8">
+        <main className="p-5 lg:px-8 lg:pb-0">
           {children}
         </main>
       </div>

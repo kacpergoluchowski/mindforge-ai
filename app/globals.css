@@ -127,4 +127,10 @@
   html {
     @apply font-sans;
   }
+
 }
+
+  @theme {
+    --breakpoint-xl: 1400px;
+    --breakpoint-semiXl: 1320px;
+  }
