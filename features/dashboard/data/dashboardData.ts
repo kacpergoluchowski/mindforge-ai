@@ -6,8 +6,12 @@ import {
   Atom,
   Hexagon,
   Code2,
+  CheckCircle,
+  Star,
+  Play,
 } from "lucide-react";
-import { LearningCategory } from "../types/dashboard.types";
+import { ActivityItem, LearningCategory } from "../types/dashboard.types";
+import { RecommendedCourse } from "../types/dashboard.types";
 
 export const statsData = [
   {
@@ -79,5 +83,54 @@ export const continueLearningCourses = [
     title: "TypeScript Deep Dive",
     progress: 30,
     icon: Code2,
+  },
+];
+
+export const recommendedCourses: RecommendedCourse[] = [
+  {
+    title: "Prompt Engineering for Developers",
+    category: "AI",
+    duration: "8h 30m",
+    level: "Beginner",
+    rating: 4.8,
+    image: "/images/courses/prompt-engineering.jpg",
+  },
+  {
+    title: "Next.js 14 Mastery",
+    category: "Next.js",
+    duration: "12h 45m",
+    level: "Intermediate",
+    rating: 4.9,
+    image: "/images/courses/nextjs-mastery.jpg",
+  },
+  {
+    title: "System Design Basics",
+    category: "System Design",
+    duration: "6h 15m",
+    level: "Beginner",
+    rating: 4.7,
+    image: "/images/courses/system-design.jpg",
+  },
+];
+
+export const activityItems: ActivityItem[] = [
+  {
+    title: 'Completed "React Hooks Deep Dive"',
+    time: "2h ago",
+    icon: CheckCircle,
+    color: "emerald",
+  },
+  {
+    title: "Earned 250 XP",
+    description: "for daily challenge",
+    time: "Yesterday",
+    icon: Star,
+    color: "yellow",
+  },
+  {
+    title: 'Started "Next.js 14 Mastery"',
+    time: "2 days ago",
+    icon: Play,
+    color: "blue",
   },
 ];

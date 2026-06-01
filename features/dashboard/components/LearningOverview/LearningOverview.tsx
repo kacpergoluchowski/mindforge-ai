@@ -1,4 +1,4 @@
-import { learningCategories } from "../data/dashboardData";
+import { learningCategories } from "../../data/dashboardData";
 import LearningCategoryItem from "./LearningCategoryItem";
 import WeeklyGoalProgress from "./WeeklyGoalProgress";
 

@@ -1,5 +1,4 @@
-import { continueLearningCourses } from "../data/dashboardData";
-
+import { continueLearningCourses } from "../../data/dashboardData";
 import ContinueLearningItem from "./ContinueLearningItem";
 
 export default function ContinueLearning() {

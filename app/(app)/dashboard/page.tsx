@@ -1,7 +1,9 @@
-import ContinueLearning from "@/features/dashboard/components/ContinueLearning";
-import LearningOverview from "@/features/dashboard/components/LearningOverview";
-import StatsGrid from "@/features/dashboard/components/StatsGrid";
+import ActivityFeed from "@/features/dashboard/components/ActivityFeed/ActivityFeed";
+import ContinueLearning from "@/features/dashboard/components/ContinueLearning/ContinueLearning";
+import LearningOverview from "@/features/dashboard/components/LearningOverview/LearningOverview";
+import RecommendedCourses from "@/features/dashboard/components/RecommendedCourses/RecommendedCourses";
 import WelcomeSection from "@/features/dashboard/components/WelcomeSection";
+import StatsGrid from "@/features/dashboard/components/stats/StatsGrid";
 
 export default function DashboardPage() {
   return (
@@ -11,6 +13,10 @@ export default function DashboardPage() {
       <div className="block semiXl:flex gap-4">
         <LearningOverview />
         <ContinueLearning />
+      </div>
+      <div className="block semiXl:flex gap-4">
+        <RecommendedCourses />
+        <ActivityFeed />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { statsData } from "../data/dashboardData";
+import { statsData } from "../../data/dashboardData";
 import StatsCard from "./StatsCard";
 
 export default function StatsGrid() {

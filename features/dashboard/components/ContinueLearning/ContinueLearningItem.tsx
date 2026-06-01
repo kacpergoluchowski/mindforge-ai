@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { ContinueLearningItemProps } from "../types/dashboard.types";
+import { ContinueLearningItemProps } from "../../types/dashboard.types";
 
 export default function ContinueLearningItem({
   course,

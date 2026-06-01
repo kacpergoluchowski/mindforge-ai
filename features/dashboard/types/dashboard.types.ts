@@ -7,6 +7,10 @@ export type StatCard = {
   icon: LucideIcon;
 };
 
+export type StatsCardProps = {
+  stat: StatCard;
+};
+
 export type LearningCategory = {
   label: string;
   time: string;
@@ -26,6 +30,27 @@ export type ContinueLearningItemProps = {
   };
 };
 
-export type StatsCardProps = {
-  stat: StatCard;
+export type RecommendedCourse = {
+  title: string;
+  category: string;
+  duration: string;
+  level: string;
+  rating: number;
+  image: string;
+};
+
+export type RecommendedCourseCardProps = {
+  course: RecommendedCourse;
+};
+
+export type ActivityItem = {
+  title: string;
+  description?: string;
+  time: string;
+  icon: LucideIcon;
+  color: "emerald" | "yellow" | "blue";
+};
+
+export type ActivityFeedItemProps = {
+  item: ActivityItem;
 };
