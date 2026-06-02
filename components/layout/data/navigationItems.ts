@@ -39,12 +39,12 @@ export const navigationSections: NavigationSection[] = [
     items: [
       {
         label: "Learning Paths",
-        href: "/learning",
+        href: "/learn/learning-paths",
         icon: GraduationCap,
       },
       {
         label: "Courses",
-        href: "/courses",
+        href: "/learn/courses",
         icon: BookOpen,
       },
       {
