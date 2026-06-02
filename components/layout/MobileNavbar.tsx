@@ -14,7 +14,7 @@ const mobileNavItems = [
   },
   {
     label: "Learn",
-    href: "/learning",
+    href: "/learn/learning-paths",
     icon: BookOpen,
   },
   {
