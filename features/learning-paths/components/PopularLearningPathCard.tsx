@@ -1,15 +1,5 @@
-import type { LucideIcon } from "lucide-react";
 import { Check, Star } from "lucide-react";
-
-type PopularLearningPathCardProps = {
-  title: string;
-  icon: LucideIcon;
-  technologies: readonly string[];
-  rating: string;
-  students: string;
-  courses: number;
-  color: "blue" | "green" | "violet" | "yellow";
-};
+import { PopularLearningPathCardProps } from "../types/learningPaths.types";
 
 const colorStyles = {
   blue: {

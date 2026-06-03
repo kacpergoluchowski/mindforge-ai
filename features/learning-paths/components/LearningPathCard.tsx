@@ -1,13 +1,5 @@
-import { MoreVertical, ArrowRight, LucideIcon } from "lucide-react";
-
-type LearningPathCardProps = {
-  title: string;
-  progress: number;
-  coursesCompleted: number;
-  totalCourses: number;
-  color: "violet" | "emerald" | "orange";
-  icon: LucideIcon;
-};
+import { MoreVertical, ArrowRight } from "lucide-react";
+import { LearningPathCardProps } from "../types/learningPaths.types";
 
 const colors = {
   violet: {

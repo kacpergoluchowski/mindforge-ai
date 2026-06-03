@@ -1,10 +1,5 @@
 import { Check } from "lucide-react";
-
-type RoadmapStepProps = {
-  title: string;
-  description: string;
-  status: "completed" | "current" | "locked";
-};
+import { RoadmapStepProps } from "../types/learningPaths.types";
 
 const statusStyles = {
   completed: {
