@@ -49,7 +49,7 @@ export const navigationSections: NavigationSection[] = [
       },
       {
         label: "Challenges",
-        href: "/challenges",
+        href: "/learn/challenges",
         icon: ShieldCheck,
       },
       {

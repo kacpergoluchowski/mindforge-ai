@@ -33,7 +33,7 @@ export default function MobileNavbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-4 bottom-4 z-50 rounded-3xl border border-white/10 bg-[#0b1220]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+    <nav className="fixed inset-x-4 bottom-4 z-25 rounded-3xl border border-white/10 bg-[#0b1220]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
       <ul className="flex items-center justify-between">
         {mobileNavItems.map((item) => {
           const Icon = item.icon;

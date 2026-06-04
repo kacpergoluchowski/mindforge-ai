@@ -1,0 +1,46 @@
+import { ChevronDown } from "lucide-react";
+
+import { featuredChallenges } from "../data/challengesData";
+import FeaturedChallengeCard from "./FeaturedChallengeCard";
+
+export default function FeaturedChallenges() {
+  return (
+    <section className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-white">
+          Featured Challenges
+        </h2>
+
+        <button className="text-sm text-slate-300 transition hover:text-white">
+          View all
+        </button>
+      </div>
+
+      <div className="space-y-5">
+        {featuredChallenges.map((challenge) => (
+          <FeaturedChallengeCard
+            key={challenge.id}
+            {...challenge}
+          />
+        ))}
+      </div>
+
+      <button
+        className="
+          flex w-full items-center justify-center gap-2
+          rounded-2xl
+          border border-white/10
+          bg-white/[0.02]
+          py-3
+          text-slate-300
+          transition
+          hover:bg-white/[0.05]
+          hover:text-white
+        "
+      >
+        Load More Challenges
+        <ChevronDown className="size-4" />
+      </button>
+    </section>
+  );
+}
