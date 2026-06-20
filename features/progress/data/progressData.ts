@@ -34,7 +34,7 @@ export const progressStats = [
     icon: Trophy,
     color: "blue",
   },
-];
+] as const;
 
 export const xpOverviewData = [
   { day: "Mon", xp: 800 },
