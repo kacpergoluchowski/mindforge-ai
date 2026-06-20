@@ -54,7 +54,7 @@ export const navigationSections: NavigationSection[] = [
       },
       {
         label: "Progress",
-        href: "/progress",
+        href: "/learn/progress",
         icon: SlidersHorizontal,
       },
     ],
