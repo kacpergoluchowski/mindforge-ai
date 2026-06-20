@@ -24,31 +24,37 @@ function ActivityItem({
   color,
 }: ActivityItemProps) {
   return (
-    <div className="flex items-start gap-3 border-b border-white/10 pb-4 last:border-b-0 last:pb-0">
-      <div
-        className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${colorStyles[color]}`}
-      >
-        <Icon className="size-5" />
+    <div className="border-b border-white/10 pb-4 last:border-b-0 last:pb-0">
+      <div className="flex items-start gap-3">
+        <div
+          className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${colorStyles[color]}`}
+        >
+          <Icon className="size-5" />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <h3 className="text-sm font-semibold leading-5 text-white">
+            {title}
+          </h3>
+
+          <p className="mt-1 text-xs text-slate-400">{description}</p>
+
+          <span className="mt-2 inline-block text-xs font-semibold text-emerald-400 sm:hidden">
+            {xp}
+          </span>
+        </div>
+
+        <span className="hidden shrink-0 text-xs font-semibold text-emerald-400 sm:block">
+          {xp}
+        </span>
       </div>
-
-      <div className="min-w-0 flex-1">
-        <h3 className="line-clamp-1 text-sm font-semibold text-white">
-          {title}
-        </h3>
-
-        <p className="mt-1 text-xs text-slate-400">{description}</p>
-      </div>
-
-      <span className="shrink-0 text-xs font-semibold text-emerald-400">
-        {xp}
-      </span>
     </div>
   );
 }
 
 export default function RecentActivity() {
   return (
-    <section className="mx-auto max-w-[420px] rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 xl:max-w-none xl:p-6">
+    <section className="w-full rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 xl:p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-semibold text-white">Recent Activity</h2>
 
