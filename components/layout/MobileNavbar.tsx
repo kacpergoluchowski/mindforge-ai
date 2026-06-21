@@ -19,7 +19,7 @@ const mobileNavItems = [
   },
   {
     label: "AI Mentor",
-    href: "/ai-mentor",
+    href: "/ai-mentor/chat",
     icon: Bot,
   },
   {

@@ -64,17 +64,17 @@ export const navigationSections: NavigationSection[] = [
     items: [
       {
         label: "Chat with AI",
-        href: "/ai-mentor",
+        href: "/ai-mentor/chat",
         icon: Bot,
       },
       {
         label: "Study Assistant",
-        href: "/study-assistant",
+        href: "/ai-mentor/study-assistant",
         icon: BadgeCheck,
       },
       {
         label: "Code Review",
-        href: "/code-review",
+        href: "/ai-mentor/code-review",
         icon: Code2,
       },
     ],
