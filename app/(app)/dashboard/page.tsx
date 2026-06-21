@@ -4,8 +4,14 @@ import LearningOverview from "@/features/dashboard/components/LearningOverview/L
 import RecommendedCourses from "@/features/dashboard/components/RecommendedCourses/RecommendedCourses";
 import WelcomeSection from "@/features/dashboard/components/WelcomeSection";
 import StatsGrid from "@/features/dashboard/components/stats/StatsGrid";
+import { supabase } from "@/lib/supabase";
 
-export default function DashboardPage() {
+
+export default async function DashboardPage() {
+  const { data, error } = await supabase.from("profiles").select("*");
+  
+  console.log(data);
+
   return (
     <div className="space-y-4">
       <WelcomeSection />
