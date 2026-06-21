@@ -39,7 +39,7 @@ const navSections = [
   {
     title: "AI Mentor",
     items: [
-      { label: "Chat with AI", href: "/ai-mentor", icon: Bot },
+      { label: "Chat with AI", href: "/ai-mentor/chat", icon: Bot },
       { label: "Study Assistant", href: "/ai-mentor/study-assistant", icon: Sparkles },
       { label: "Code Review", href: "/ai-mentor/code-review", icon: Code2 },
     ],
