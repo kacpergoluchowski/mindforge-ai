@@ -2,7 +2,7 @@ import { ArrowRight, Bot, Code2, GraduationCap, Trophy } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative mx-auto flex max-w-5xl flex-col items-center px-6 pt-24 text-center">
+    <section className="relative mx-auto flex max-w-5xl flex-col items-center px-6 py-12 text-center">
       <div
         className="
           mb-8 flex items-center gap-2
