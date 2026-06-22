@@ -3,12 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-import type { NavigationItem } from "../data/navigationItems";
-
-type SidebarNavigationItemProps = {
-  item: NavigationItem;
-};
+import { SidebarNavigationItemProps } from "../types/layoutTypes.types";
 
 export default function SidebarNavigationItem({
   item,

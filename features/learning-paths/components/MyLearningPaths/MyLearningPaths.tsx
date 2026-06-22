@@ -1,4 +1,4 @@
-import { learningPaths } from "../data/learningData";
+import { learningPaths } from "../../data/learningData";
 import LearningPathCard from "./LearningPathCard";
 
 export default function MyLearningPaths() {

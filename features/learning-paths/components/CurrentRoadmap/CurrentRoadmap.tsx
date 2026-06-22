@@ -1,4 +1,4 @@
-import { roadmapSteps } from "../data/learningData";
+import { roadmapSteps } from "../../data/learningData";
 import RoadmapStep from "./RoadmapStep";
 
 export default function CurrentRoadmap() {

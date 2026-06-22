@@ -1,4 +1,4 @@
-import AiMentorHeader from "@/features/ai-mentor/components/AiMentorHeader";
+import PageHeader from "@/components/shared/PageHeader";
 import ChatSection from "@/features/ai-mentor/components/ChatSection";
 import MentorProfileCard from "@/features/ai-mentor/components/MentorProfileCard";
 import RecentConversationsCard from "@/features/ai-mentor/components/RecentConversationsCard";
@@ -8,7 +8,7 @@ export default function AiMentorPage() {
     <main>
       <div className="grid gap-6 xl:grid-cols-[1fr_340px]">
         <div>
-          <AiMentorHeader />
+          <PageHeader title="AI Mentor" subtitle="Your personal AI mentor for guidance and support."  />
           <ChatSection />
         </div>
 

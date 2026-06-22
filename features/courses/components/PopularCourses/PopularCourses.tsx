@@ -1,4 +1,4 @@
-import { popularCourses } from "../data/coursesData";
+import { popularCourses } from "../../data/coursesData";
 import PopularCourseCard from "./PopularCourseCard";
 
 export default function PopularCourses() {

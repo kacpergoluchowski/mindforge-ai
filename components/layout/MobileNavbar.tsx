@@ -2,32 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, BookOpen, LayoutDashboard, User } from "lucide-react";
-
 import { cn } from "@/lib/utils";
-
-const mobileNavItems = [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Learn",
-    href: "/learn/learning-paths",
-    icon: BookOpen,
-  },
-  {
-    label: "AI Mentor",
-    href: "/ai-mentor/chat",
-    icon: Bot,
-  },
-  {
-    label: "Account",
-    href: "/account/profile",
-    icon: User,
-  },
-];
+import { mobileNavItems } from "./data/layoutData";
 
 export default function MobileNavbar() {
   const pathname = usePathname();

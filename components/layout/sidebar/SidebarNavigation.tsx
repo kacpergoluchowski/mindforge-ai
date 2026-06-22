@@ -1,4 +1,4 @@
-import { navigationSections } from "../data/navigationItems";
+import { navigationSections } from "../data/layoutData";
 import SidebarNavigationSection from "./SidebarNavigationSection";
 
 export default function SidebarNavigation() {

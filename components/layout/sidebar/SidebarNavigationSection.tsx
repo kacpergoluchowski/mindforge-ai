@@ -1,14 +1,11 @@
-import type { NavigationSection } from "../data/navigationItems";
-
+import { NavigationSection } from "../types/layoutTypes.types";
 import SidebarNavigationItem from "./SidebarNavigationItem";
-
-type SidebarNavigationSectionProps = {
-  section: NavigationSection;
-};
 
 export default function SidebarNavigationSection({
   section,
-}: SidebarNavigationSectionProps) {
+}: {
+  section: NavigationSection;
+}) {
   return (
     <div className="space-y-2">
       {section.title && (

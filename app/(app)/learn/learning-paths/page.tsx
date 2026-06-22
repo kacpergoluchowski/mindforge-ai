@@ -1,14 +1,21 @@
-import CurrentRoadmap from "@/features/learning-paths/components/CurrentRoadmap";
-import LearningPathsHero from "@/features/learning-paths/components/LearningPathsHero";
-import MyLearningPaths from "@/features/learning-paths/components/MyLearningPaths";
-import PopularLearningPaths from "@/features/learning-paths/components/PopularLearningPaths";
+import PageHeader from "@/components/shared/PageHeader";
+import CurrentRoadmap from "@/features/learning-paths/components/CurrentRoadmap/CurrentRoadmap";
+import MyLearningPaths from "@/features/learning-paths/components/MyLearningPaths/MyLearningPaths";
+import PopularLearningPaths from "@/features/learning-paths/components/PopularLearningPaths/PopularLearningPaths";
+import { Plus } from "lucide-react";
 
 export default function LearningPathsPage() {
   return (
     <div className="space-y-8">
-      <LearningPathsHero />
+      <PageHeader
+        title="Learning Paths"
+        subtitle="AI-powered roadmaps designed to help you master any skill."
+        buttonVisible
+        buttonText="Create AI Path"
+        buttonIcon={Plus}
+      />
       <MyLearningPaths />
-      <PopularLearningPaths /> 
+      <PopularLearningPaths />
       <CurrentRoadmap />
     </div>
   );

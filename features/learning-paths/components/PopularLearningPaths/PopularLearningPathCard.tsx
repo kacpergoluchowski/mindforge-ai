@@ -1,5 +1,5 @@
 import { Check, Star } from "lucide-react";
-import { PopularLearningPathCardProps } from "../types/learningPaths.types";
+import { PopularLearningPathCardProps } from "../../types/learningPaths.types";
 
 const colorStyles = {
   blue: {

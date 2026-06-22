@@ -9,9 +9,6 @@ import {
   CheckCircle,
   Star,
   Play,
-  Layers3,
-  Gauge,
-  Bot,
 } from "lucide-react";
 import { ActivityItem, LearningCategory } from "../types/dashboard.types";
 import { RecommendedCourse } from "../types/dashboard.types";

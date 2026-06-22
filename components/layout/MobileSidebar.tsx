@@ -3,56 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BookOpen,
-  Bot,
-  Code2,
-  CreditCard,
-  Gauge,
-  GraduationCap,
-  LayoutDashboard,
   LogOut,
-  Settings,
-  ShieldCheck,
   Sparkles,
-  User,
   X,
 } from "lucide-react";
 import clsx from "clsx";
 import Logo from "./Logo";
+import { MobileSidebarProps } from "./types/layoutTypes.types";
+import { navSections } from "./data/layoutData";
 
-type MobileSidebarProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-const navSections = [
-  {
-    title: "Learn",
-    items: [
-      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { label: "Learning Paths", href: "/learn/learning-paths", icon: GraduationCap },
-      { label: "Courses", href: "/learn/courses", icon: BookOpen },
-      { label: "Challenges", href: "/learn/challenges", icon: ShieldCheck },
-      { label: "Progress", href: "/learn/progress", icon: Gauge },
-    ],
-  },
-  {
-    title: "AI Mentor",
-    items: [
-      { label: "Chat with AI", href: "/ai-mentor/chat", icon: Bot },
-      { label: "Study Assistant", href: "/ai-mentor/study-assistant", icon: Sparkles },
-      { label: "Code Review", href: "/ai-mentor/code-review", icon: Code2 },
-    ],
-  },
-  {
-    title: "Account",
-    items: [
-      { label: "Profile", href: "/account/profile", icon: User },
-      { label: "Settings", href: "/account/settings", icon: Settings },
-      { label: "Billing", href: "/account/billing", icon: CreditCard },
-    ],
-  },
-];
 
 export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();

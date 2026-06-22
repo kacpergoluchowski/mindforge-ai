@@ -1,4 +1,4 @@
-import { popularLearningPaths } from "../data/learningData";
+import { popularLearningPaths } from "../../data/learningData";
 import PopularLearningPathCard from "./PopularLearningPathCard";
 
 export default function PopularLearningPaths() {

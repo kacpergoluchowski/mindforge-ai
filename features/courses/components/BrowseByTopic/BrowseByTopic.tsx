@@ -1,4 +1,4 @@
-import { courseTopics } from "../data/coursesData";
+import { courseTopics } from "../../data/coursesData";
 import TopicCard from "./TopicCard";
 
 export default function BrowseByTopic() {
