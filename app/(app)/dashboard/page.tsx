@@ -3,7 +3,7 @@ import ActivityFeed from "@/features/dashboard/components/ActivityFeed/ActivityF
 import ContinueLearning from "@/features/dashboard/components/ContinueLearning/ContinueLearning";
 import LearningOverview from "@/features/dashboard/components/LearningOverview/LearningOverview";
 import RecommendedCourses from "@/features/dashboard/components/RecommendedCourses/RecommendedCourses";
-import StatsGrid from "@/features/dashboard/components/Stats/StatsGrid";
+import StatsGrid from "@/features/dashboard/components/stats/StatsGrid";
 import { Bot, ChevronDown } from "lucide-react";
 
 export default async function DashboardPage() {
