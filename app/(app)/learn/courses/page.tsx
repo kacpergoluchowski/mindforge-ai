@@ -12,9 +12,10 @@ export default function CoursesPage() {
       <PageHeader
         title="Courses"
         subtitle="Explore courses designed to improve your skills"
-        buttonVisible
-        buttonText="Create Course"
-        buttonIcon={Plus}
+        action={{
+          label: "Create Course",
+          icon: Plus,
+        }}
       />
       <CourseCategories />
       <AILearningBanner />

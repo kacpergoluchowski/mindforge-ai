@@ -1,5 +1,5 @@
 import { ArrowRight, Star, Users } from "lucide-react";
-import { PopularCourseCardProps } from "../types/courses.types";
+import { PopularCourseCardProps } from "../../types/courses.types";
 
 const colorStyles = {
   blue: {

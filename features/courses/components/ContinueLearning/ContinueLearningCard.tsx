@@ -1,5 +1,5 @@
 import { BarChart3, Clock3 } from "lucide-react";
-import type { ContinueLearningCardProps } from "../types/courses.types";
+import { ContinueLearningCardProps } from "../../types/courses.types";
 
 const colorStyles = {
   blue: {

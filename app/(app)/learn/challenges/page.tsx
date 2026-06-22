@@ -11,9 +11,10 @@ export default function ChallengesPage() {
       <PageHeader
         title="Challenges"
         subtitle="Test your skills, solve real problems and level up."
-        buttonVisible
-        buttonText="Create Challenge"
-        buttonIcon={Plus}
+        action={{
+          label: "Create Challenge",
+          icon: Plus,
+        }}
       />
       <ChallengeBanner />
       <ChallengeStats />

@@ -1,4 +1,4 @@
-import type { TopicCardProps } from "../types/courses.types";
+import { TopicCardProps } from "../../types/courses.types";
 
 const colorStyles = {
   blue: "bg-sky-500/10 text-sky-400",

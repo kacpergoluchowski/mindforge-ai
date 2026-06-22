@@ -1,5 +1,5 @@
 import { MoreVertical, ArrowRight } from "lucide-react";
-import { LearningPathCardProps } from "../types/learningPaths.types";
+import { LearningPathCardProps } from "../../types/learningPaths.types";
 
 const colors = {
   violet: {

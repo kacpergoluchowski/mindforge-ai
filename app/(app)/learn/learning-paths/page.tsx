@@ -10,9 +10,10 @@ export default function LearningPathsPage() {
       <PageHeader
         title="Learning Paths"
         subtitle="AI-powered roadmaps designed to help you master any skill."
-        buttonVisible
-        buttonText="Create AI Path"
-        buttonIcon={Plus}
+        action={{
+          label: "Create AI Path",
+          icon: Plus,
+        }}
       />
       <MyLearningPaths />
       <PopularLearningPaths />

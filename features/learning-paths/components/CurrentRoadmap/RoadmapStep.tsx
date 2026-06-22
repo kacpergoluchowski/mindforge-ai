@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { RoadmapStepProps } from "../types/learningPaths.types";
+import { RoadmapStepProps } from "../../types/learningPaths.types";
 
 const statusStyles = {
   completed: {
