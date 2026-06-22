@@ -1,5 +1,12 @@
-import { ChevronRight } from "lucide-react";
-import { ContinueLearningItemProps } from "../../types/dashboard.types";
+import { ChevronRight, type LucideIcon } from "lucide-react";
+
+type ContinueLearningItemProps = {
+  course: {
+    title: string;
+    progress: number;
+    icon: LucideIcon;
+  };
+};
 
 export default function ContinueLearningItem({
   course,

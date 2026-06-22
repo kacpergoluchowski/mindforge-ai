@@ -1,4 +1,8 @@
-import { ActivityFeedItemProps } from "../../types/dashboard.types";
+import { ActivityItem } from "../../types/dashboard.types";
+
+type ActivityFeedItemProps = {
+  item: ActivityItem;
+};
 
 const colorClasses = {
   emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",

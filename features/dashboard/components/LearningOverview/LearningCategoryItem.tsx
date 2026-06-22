@@ -1,4 +1,8 @@
-import { LearningCategoryItemProps } from "../../types/dashboard.types";
+import { LearningCategory } from "../../types/dashboard.types";
+
+type LearningCategoryItemProps = {
+  category: LearningCategory;
+};
 
 const colorClasses = {
   violet: "bg-violet-500",

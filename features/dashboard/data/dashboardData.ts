@@ -10,10 +10,14 @@ import {
   Star,
   Play,
 } from "lucide-react";
-import { ActivityItem, LearningCategory } from "../types/dashboard.types";
-import { RecommendedCourse } from "../types/dashboard.types";
+import {
+  ActivityItem,
+  LearningCategory,
+  RecommendedCourse,
+  StatsCardItem,
+} from "../types/dashboard.types";
 
-export const statsData = [
+export const statsData: StatsCardItem[] = [
   {
     title: "Total Learning Time",
     value: "128h 34m",
@@ -39,7 +43,6 @@ export const statsData = [
     icon: Trophy,
   },
 ];
-
 
 export const learningCategories: LearningCategory[] = [
   {

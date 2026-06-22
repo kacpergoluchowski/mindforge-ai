@@ -1,6 +1,5 @@
 import { Star } from "lucide-react";
-
-import type { RecommendedCourse } from "../../types/dashboard.types";
+import { RecommendedCourse } from "../../types/dashboard.types";
 
 type RecommendedCourseCardProps = {
   course: RecommendedCourse;
