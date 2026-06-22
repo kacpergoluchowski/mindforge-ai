@@ -4,7 +4,6 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -24,69 +23,67 @@ export default function XpOverview() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_170px]">
-        <div className="h-[280px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={xpOverviewData}>
-              <defs>
-                <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.55} />
-                  <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
-                </linearGradient>
-              </defs>
+        <div className="h-[280px] w-full overflow-x-auto overflow-y-hidden">
+          <AreaChart width={620} height={280} data={xpOverviewData}>
+            <defs>
+              <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.55} />
+                <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
+              </linearGradient>
+            </defs>
 
-              <CartesianGrid
-                stroke="#1e293b"
-                strokeDasharray="4 4"
-                vertical={false}
-              />
+            <CartesianGrid
+              stroke="#1e293b"
+              strokeDasharray="4 4"
+              vertical={false}
+            />
 
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                stroke="#64748b"
-                fontSize={12}
-              />
+            <XAxis
+              dataKey="day"
+              axisLine={false}
+              tickLine={false}
+              stroke="#64748b"
+              fontSize={12}
+            />
 
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                stroke="#64748b"
-                fontSize={12}
-                tickFormatter={(value) => `${value / 1000}K`}
-              />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              stroke="#64748b"
+              fontSize={12}
+              tickFormatter={(value) => `${value / 1000}K`}
+            />
 
-              <Tooltip
-                cursor={{ stroke: "#8b5cf6", strokeWidth: 1 }}
-                contentStyle={{
-                  background: "#0f172a",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: "14px",
-                  color: "#fff",
-                }}
-              />
+            <Tooltip
+              cursor={{ stroke: "#8b5cf6", strokeWidth: 1 }}
+              contentStyle={{
+                background: "#0f172a",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "14px",
+                color: "#fff",
+              }}
+            />
 
-              <Area
-                type="monotone"
-                dataKey="xp"
-                stroke="#8b5cf6"
-                strokeWidth={3}
-                fill="url(#xpGradient)"
-                dot={{
-                  r: 4,
-                  fill: "#111a2d",
-                  stroke: "#a78bfa",
-                  strokeWidth: 2,
-                }}
-                activeDot={{
-                  r: 6,
-                  fill: "#8b5cf6",
-                  stroke: "#c4b5fd",
-                  strokeWidth: 2,
-                }}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+            <Area
+              type="monotone"
+              dataKey="xp"
+              stroke="#8b5cf6"
+              strokeWidth={3}
+              fill="url(#xpGradient)"
+              dot={{
+                r: 4,
+                fill: "#111a2d",
+                stroke: "#a78bfa",
+                strokeWidth: 2,
+              }}
+              activeDot={{
+                r: 6,
+                fill: "#8b5cf6",
+                stroke: "#c4b5fd",
+                strokeWidth: 2,
+              }}
+            />
+          </AreaChart>
         </div>
 
         <div className="flex flex-col justify-center border-t border-white/10 pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">

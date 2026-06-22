@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Logo from "@/components/layout/Logo";
 import Link from "next/link";
 
 export default function RegisterHeader() {
@@ -6,14 +6,7 @@ export default function RegisterHeader() {
     <header className="relative z-50">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 pt-8">
         <Link href="/" className="flex items-center">
-          <Image
-            src="/images/logo.png"
-            alt="MindForge AI"
-            width={180}
-            height={40}
-            priority
-            className="h-auto"
-          />
+          <Logo />
         </Link>
 
         <div className="flex items-center gap-4">

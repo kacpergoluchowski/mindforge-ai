@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Logo from "@/components/layout/Logo";
 import Link from "next/link";
 
 export default function LandingHeader() {
@@ -6,13 +6,7 @@ export default function LandingHeader() {
     <header className="relative z-50">
       <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 py-8">
         <Link href="/">
-          <Image
-            src="/images/logo.png"
-            alt="MindForge AI"
-            width={180}
-            height={40}
-            priority
-          />
+          <Logo />
         </Link>
 
         <nav className="hidden items-center gap-10 lg:flex">
