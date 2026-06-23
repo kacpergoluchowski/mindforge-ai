@@ -9,7 +9,7 @@ const colorClasses = {
   emerald: "bg-emerald-400",
   orange: "bg-orange-400",
   blue: "bg-blue-500",
-};  
+};
 
 export default function LearningCategoryItem({
   category,
@@ -21,9 +21,7 @@ export default function LearningCategoryItem({
           className={`size-3 rounded-full ${colorClasses[category.color]}`}
         />
 
-        <span className="text-sm font-medium text-white">
-          {category.label}
-        </span>
+        <span className="text-sm font-medium text-white">{category.label}</span>
       </div>
 
       <div className="flex items-center gap-6 text-sm">

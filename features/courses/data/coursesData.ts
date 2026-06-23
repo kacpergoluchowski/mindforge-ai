@@ -1,6 +1,25 @@
-import { Atom, Brain, Cloud, Database, FileCode2, Hexagon, Palette, Server, Smartphone, Triangle, Workflow } from "lucide-react";
+import {
+  Atom,
+  Brain,
+  Cloud,
+  Database,
+  FileCode2,
+  Hexagon,
+  Palette,
+  Server,
+  Smartphone,
+  Triangle,
+  Workflow,
+} from "lucide-react";
 
-export const courseCategories = [
+import type {
+  ContinueLearningCardProps,
+  CourseCategory,
+  PopularCourseCardProps,
+  TopicCardProps,
+} from "../types/courses.types";
+
+export const courseCategories: CourseCategory[] = [
   "All Courses",
   "Frontend",
   "Backend",
@@ -10,13 +29,13 @@ export const courseCategories = [
   "Mobile",
   "Design",
   "Database",
-] as const;
+];
 
-export const continueLearningCourses = [
+export const continueLearningCourses: ContinueLearningCardProps[] = [
   {
     id: 1,
     title: "React Fundamentals",
-    instructor: "Maximilian Schwarzmüller",
+    instructor: "Maximilian Schwarzmuller",
     progress: 68,
     duration: "12h 45m",
     level: "Intermediate",
@@ -57,9 +76,9 @@ export const continueLearningCourses = [
     icon: Triangle,
     color: "violet",
   },
-] as const;
+];
 
-export const popularCourses = [
+export const popularCourses: PopularCourseCardProps[] = [
   {
     id: 1,
     title: "Advanced React Patterns",
@@ -108,10 +127,9 @@ export const popularCourses = [
     icon: Server,
     color: "orange",
   },
-] as const;
+];
 
-
-export const courseTopics = [
+export const courseTopics: TopicCardProps[] = [
   {
     id: 1,
     title: "Frontend",
@@ -168,4 +186,4 @@ export const courseTopics = [
     icon: Database,
     color: "emerald",
   },
-] as const;
+];

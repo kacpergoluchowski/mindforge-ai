@@ -1,5 +1,5 @@
 import { Check, Star } from "lucide-react";
-import { PopularLearningPathCardProps } from "../../types/learningPaths.types";
+import { PopularLearningPath } from "../../types/learningPaths.types";
 
 const colorStyles = {
   blue: {
@@ -32,7 +32,7 @@ export default function PopularLearningPathCard({
   students,
   courses,
   color,
-}: PopularLearningPathCardProps) {
+}: PopularLearningPath) {
   const styles = colorStyles[color];
 
   return (
@@ -43,7 +43,7 @@ export default function PopularLearningPathCard({
         <Icon className="size-8" />
       </div>
 
-      <h3 className="max-w-36 text-md font-semibold leading-tight text-white">
+      <h3 className="line-clamp-2 text-md font-semibold leading-tight text-white">
         {title}
       </h3>
 

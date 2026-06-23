@@ -1,5 +1,5 @@
 import { MoreVertical, ArrowRight } from "lucide-react";
-import { LearningPathCardProps } from "../../types/learningPaths.types";
+import { LearningPath } from "../../types/learningPaths.types";
 
 const colors = {
   violet: {
@@ -31,7 +31,7 @@ export default function LearningPathCard({
   totalCourses,
   color,
   icon: Icon,
-}: LearningPathCardProps) {
+}: LearningPath) {
   const styles = colors[color];
 
   return (

@@ -1,6 +1,14 @@
-import { Atom, Bot, Brain, Code2, Database, Gauge, Hexagon, Layers3 } from "lucide-react";
+import {
+  Atom,
+  Brain,
+  Code2,
+  Database,
+  Hexagon,
+  Layers3,
+} from "lucide-react";
+import { LearningPath, PopularLearningPath, RoadmapStep } from "../types/learningPaths.types";
 
-export const learningPaths = [
+export const learningPaths: LearningPath[] = [
   {
     id: 1,
     title: "Frontend Engineer",
@@ -28,9 +36,9 @@ export const learningPaths = [
     color: "orange",
     icon: Brain,
   },
-] as const;
+];
 
-export const popularLearningPaths = [
+export const popularLearningPaths: PopularLearningPath[] = [
   {
     id: 1,
     title: "Frontend Development",
@@ -71,9 +79,9 @@ export const popularLearningPaths = [
     courses: 16,
     color: "yellow",
   },
-] as const;
+];
 
-export const roadmapSteps = [
+export const roadmapSteps: RoadmapStep[] = [
   {
     id: 1,
     title: "HTML",
@@ -128,4 +136,4 @@ export const roadmapSteps = [
     description: "Design scalable applications",
     status: "locked",
   },
-] as const;
+];

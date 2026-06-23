@@ -1,6 +1,7 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-export type LearningPathCardProps = {
+export type LearningPath = {
+  id: number;
   title: string;
   progress: number;
   coursesCompleted: number;
@@ -9,7 +10,8 @@ export type LearningPathCardProps = {
   icon: LucideIcon;
 };
 
-export type PopularLearningPathCardProps = {
+export type PopularLearningPath = {
+  id: number;
   title: string;
   icon: LucideIcon;
   technologies: readonly string[];
@@ -19,7 +21,8 @@ export type PopularLearningPathCardProps = {
   color: "blue" | "green" | "violet" | "yellow";
 };
 
-export type RoadmapStepProps = {
+export type RoadmapStep = {
+  id: number;
   title: string;
   description: string;
   status: "completed" | "current" | "locked";

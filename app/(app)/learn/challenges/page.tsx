@@ -1,8 +1,8 @@
 import PageHeader from "@/components/shared/PageHeader";
 import ChallengeBanner from "@/features/challenges/components/ChallengeBanner";
 import ChallengeCategories from "@/features/challenges/components/ChallengeCategories";
-import ChallengesMainSection from "@/features/challenges/components/ChallengesMainSection";
-import ChallengeStats from "@/features/challenges/components/ChallengeStats";
+import ChallengesMainSection from "@/features/challenges/components/ChallengesMainSection/ChallengesMainSection";
+import ChallengeStats from "@/features/challenges/components/ChallengeStats/ChallengeStats";
 import { Plus } from "lucide-react";
 
 export default function ChallengesPage() {

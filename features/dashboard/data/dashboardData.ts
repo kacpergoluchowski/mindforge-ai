@@ -10,6 +10,7 @@ import {
   Star,
   Play,
 } from "lucide-react";
+
 import {
   ActivityItem,
   LearningCategory,

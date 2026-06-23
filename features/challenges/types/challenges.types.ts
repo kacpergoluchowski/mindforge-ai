@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export type ChallengeStatCardProps = {
   title: string;
@@ -8,16 +8,6 @@ export type ChallengeStatCardProps = {
 };
 
 export type FeaturedChallengeCardProps = {
-  title: string;
-  category: string;
-  difficulty: string;
-  points: number;
-  time: string;
-  icon: LucideIcon;
-  color: "violet" | "emerald" | "sky";
-};
-
-export type Props = {
   title: string;
   description: string;
   category: string;

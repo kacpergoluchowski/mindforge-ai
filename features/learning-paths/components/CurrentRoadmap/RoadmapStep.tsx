@@ -1,22 +1,24 @@
 import { Check } from "lucide-react";
-import { RoadmapStepProps } from "../../types/learningPaths.types";
+
+type RoadmapStepProps = {
+  title: string;
+  description: string;
+  status: "completed" | "current" | "locked";
+};
 
 const statusStyles = {
   completed: {
     dot: "bg-emerald-400 text-white",
-    line: "bg-emerald-400",
     badge: "bg-emerald-500/10 text-emerald-400",
     label: "Completed",
   },
   current: {
     dot: "bg-violet-500 text-white ring-4 ring-violet-500/20",
-    line: "bg-slate-700",
     badge: "bg-violet-500/10 text-violet-400",
     label: "In Progress",
   },
   locked: {
     dot: "border-2 border-slate-500 bg-[#0b1220]",
-    line: "bg-slate-700",
     badge: "bg-slate-700/40 text-slate-400",
     label: "Locked",
   },
@@ -43,9 +45,12 @@ export default function RoadmapStep({
           ${status === "current" ? "bg-violet-500/10" : ""}
         `}
       >
-        <div>
+        <div className="min-w-0">
           <h3 className="font-semibold text-white">{title}</h3>
-          <p className="text-sm text-slate-400">{description}</p>
+
+          <p className="text-sm text-slate-400">
+            {description}
+          </p>
         </div>
 
         <span

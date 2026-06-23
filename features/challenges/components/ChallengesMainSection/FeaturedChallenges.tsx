@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 
-import { featuredChallenges } from "../data/challengesData";
+import { featuredChallenges } from "../../data/challengesData";
 import FeaturedChallengeCard from "./FeaturedChallengeCard";
 
 export default function FeaturedChallenges() {
@@ -11,7 +11,10 @@ export default function FeaturedChallenges() {
           Featured Challenges
         </h2>
 
-        <button className="text-sm text-slate-300 transition hover:text-white">
+        <button
+          type="button"
+          className="text-sm text-slate-300 transition hover:text-white"
+        >
           View all
         </button>
       </div>
@@ -26,6 +29,7 @@ export default function FeaturedChallenges() {
       </div>
 
       <button
+        type="button"
         className="
           flex w-full items-center justify-center gap-2
           rounded-2xl

@@ -2,20 +2,17 @@
 
 import { useState } from "react";
 import clsx from "clsx";
+
 import { courseCategories } from "../data/coursesData";
 
+type CourseCategory = (typeof courseCategories)[number];
+
 export default function CourseCategories() {
-  const [activeCategory, setActiveCategory] = useState("All Courses");
+  const [activeCategory, setActiveCategory] =
+    useState<CourseCategory>("All Courses");
 
   return (
-    <section
-      className="
-        flex gap-3 overflow-x-auto pb-2
-        [-ms-overflow-style:none]
-        [scrollbar-width:none]
-        [&::-webkit-scrollbar]:hidden
-      "
-    >
+    <section className="flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {courseCategories.map((category) => (
         <button
           key={category}

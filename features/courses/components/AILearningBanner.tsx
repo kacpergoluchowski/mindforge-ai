@@ -21,7 +21,10 @@ export default function AICourseBanner() {
             and progress.
           </p>
 
-          <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-600">
+          <button
+            type="button"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-600"
+          >
             Discover with AI
             <Sparkles className="size-4" />
           </button>

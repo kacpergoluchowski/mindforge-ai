@@ -1,4 +1,4 @@
-import { challengeStats } from "../data/challengesData";
+import { challengeStats } from "../../data/challengesData";
 import ChallengeStatCard from "./ChallengeStatCard";
 
 export default function ChallengeStats() {

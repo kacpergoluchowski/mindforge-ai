@@ -17,7 +17,7 @@ export default function LearningPathsPage() {
       />
       <MyLearningPaths />
       <PopularLearningPaths />
-      <CurrentRoadmap />
+      <CurrentRoadmap title="Frontend Engineer Roadmap" progress={63} />
     </div>
   );
 }

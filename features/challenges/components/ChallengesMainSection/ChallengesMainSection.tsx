@@ -1,6 +1,6 @@
+import ChallengeStreak from "./ChallengeStreak";
 import FeaturedChallenges from "./FeaturedChallenges";
 import WeeklyLeaderboard from "./WeeklyLeaderboard";
-import ChallengeStreak from "./ChallengeStreak";
 
 export default function ChallengesMainSection() {
   return (
