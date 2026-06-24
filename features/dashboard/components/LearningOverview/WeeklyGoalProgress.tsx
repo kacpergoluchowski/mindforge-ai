@@ -7,7 +7,10 @@ export default function WeeklyGoalProgress({
   currentHours,
   goalHours,
 }: WeeklyGoalProgressProps) {
-  const progress = Math.min((currentHours / goalHours) * 100, 100);
+  const progress =
+    goalHours > 0
+      ? Math.min(Math.max((currentHours / goalHours) * 100, 0), 100)
+      : 0;
 
   return (
     <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-5">

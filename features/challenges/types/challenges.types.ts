@@ -3,6 +3,8 @@ import type { LucideIcon } from "lucide-react";
 export type ChallengeStatCardProps = {
   title: string;
   value: string;
+  change: string;
+  trend: "up" | "down";
   icon: LucideIcon;
   color: "violet" | "orange" | "yellow" | "emerald";
 };

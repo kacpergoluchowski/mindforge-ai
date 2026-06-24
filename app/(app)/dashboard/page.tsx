@@ -19,13 +19,21 @@ export default async function DashboardPage() {
         }}
       />
       <StatsGrid />
-      <div className="block semiXl:flex gap-4">
-        <LearningOverview />
-        <ContinueLearning />
+      <div className="grid gap-4 semiXl:grid-cols-5">
+        <div className="semiXl:col-span-3">
+          <LearningOverview />
+        </div>
+        <div className="semiXl:col-span-2">
+          <ContinueLearning />
+        </div>
       </div>
-      <div className="block semiXl:flex gap-4">
-        <RecommendedCourses />
-        <ActivityFeed />
+      <div className="grid gap-4 semiXl:grid-cols-5">
+        <div className="semiXl:col-span-3">
+          <RecommendedCourses />
+        </div>
+        <div className="semiXl:col-span-2">
+          <ActivityFeed />
+        </div>
       </div>
     </div>
   );

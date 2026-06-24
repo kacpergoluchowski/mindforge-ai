@@ -1,5 +1,18 @@
 import { Atom, BookOpen, Bot, Brain, Clock3, FileCode2, Flame, Hexagon, ShieldCheck, Star, Sun, TrendingUp, Trophy } from "lucide-react";
 
+import type {
+  AchievementItem,
+  CalendarSummaryItem,
+  LearningCalendarDay,
+  LearningInsightItem,
+  ProgressStat,
+  RecentActivityItem,
+  TimeSpentItem,
+  TopicProgressItem,
+  WeeklyGoalData,
+  XpOverviewItem,
+} from "../types/progress.types";
+
 export const progressStats = [
   {
     id: 1,
@@ -34,7 +47,7 @@ export const progressStats = [
     icon: Trophy,
     color: "blue",
   },
-] as const;
+] satisfies ProgressStat[];
 
 export const xpOverviewData = [
   { day: "Mon", xp: 800 },
@@ -44,7 +57,7 @@ export const xpOverviewData = [
   { day: "Fri", xp: 2650 },
   { day: "Sat", xp: 2450 },
   { day: "Sun", xp: 3850 },
-];
+] satisfies XpOverviewItem[];
 
 export const timeSpentData = [
   {
@@ -71,7 +84,7 @@ export const timeSpentData = [
     value: 12,
     color: "orange",
   },
-] as const;
+] satisfies TimeSpentItem[];
 
 export const topicProgressData = [
   {
@@ -109,7 +122,7 @@ export const topicProgressData = [
     icon: ShieldCheck,
     color: "blue",
   },
-] as const;
+] satisfies TopicProgressItem[];
 
 export const learningCalendarData = [
   { id: 1, day: "Mon", value: 3 },
@@ -140,7 +153,7 @@ export const learningCalendarData = [
   { id: 26, day: "Fri", value: 3 },
   { id: 27, day: "Sat", value: 1 },
   { id: 28, day: "Sun", value: 5 },
-];
+] satisfies LearningCalendarDay[];
 
 export const calendarSummary = [
   {
@@ -158,7 +171,7 @@ export const calendarSummary = [
     label: "Avg XP",
     value: "420",
   },
-] as const;
+] satisfies CalendarSummaryItem[];
 
 export const recentActivityData = [
   {
@@ -193,7 +206,7 @@ export const recentActivityData = [
     icon: BookOpen,
     color: "yellow",
   },
-] as const;
+] satisfies RecentActivityItem[];
 
 export const achievementsData = [
   {
@@ -220,15 +233,14 @@ export const achievementsData = [
     icon: Sun,
     color: "yellow",
   },
-] as const;
+] satisfies AchievementItem[];
 
 export const weeklyGoalData = {
   current: 18,
   target: 25,
-  progress: 72,
   remaining: "7h remaining",
   daysLeft: "3 days left",
-};
+} satisfies WeeklyGoalData;
 
 export const learningInsightsData = [
   {
@@ -252,4 +264,4 @@ export const learningInsightsData = [
     icon: Brain,
     color: "violet",
   },
-] as const;
+] satisfies LearningInsightItem[];

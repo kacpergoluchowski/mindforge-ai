@@ -10,6 +10,11 @@ import {
   Trophy,
 } from "lucide-react";
 
+import type {
+  ChallengeStatCardProps,
+  FeaturedChallengeCardProps,
+} from "../types/challenges.types";
+
 export const challengeStats = [
   {
     id: 1,
@@ -47,7 +52,7 @@ export const challengeStats = [
     icon: Medal,
     color: "emerald",
   },
-] as const;
+] satisfies Array<ChallengeStatCardProps & { id: number }>;
 
 export const challengeCategories = [
   "All Challenges",
@@ -126,7 +131,7 @@ export const featuredChallenges = [
     icon: Database,
     color: "yellow",
   },
-] as const;
+] satisfies Array<FeaturedChallengeCardProps & { id: number }>;
 
 export const weeklyLeaderboard = [
   {

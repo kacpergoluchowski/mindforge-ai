@@ -1,4 +1,4 @@
-import { StatsCardItem } from "../../types/dashboard.types";
+import type { StatsCardItem } from "../../types/dashboard.types";
 
 type StatsCardProps = {
   stat: StatsCardItem;

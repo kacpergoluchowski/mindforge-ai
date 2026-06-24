@@ -6,7 +6,12 @@ import {
   Hexagon,
   Layers3,
 } from "lucide-react";
-import { LearningPath, PopularLearningPath, RoadmapStep } from "../types/learningPaths.types";
+
+import type {
+  LearningPath,
+  PopularLearningPath,
+  RoadmapStep,
+} from "../types/learningPaths.types";
 
 export const learningPaths: LearningPath[] = [
   {

@@ -6,9 +6,11 @@ export type LearningPath = {
   progress: number;
   coursesCompleted: number;
   totalCourses: number;
-  color: "violet" | "emerald" | "orange";
+  color: LearningPathColor;
   icon: LucideIcon;
 };
+
+export type LearningPathColor = "violet" | "emerald" | "orange";
 
 export type PopularLearningPath = {
   id: number;
@@ -18,8 +20,10 @@ export type PopularLearningPath = {
   rating: string;
   students: string;
   courses: number;
-  color: "blue" | "green" | "violet" | "yellow";
+  color: PopularLearningPathColor;
 };
+
+export type PopularLearningPathColor = "blue" | "green" | "violet" | "yellow";
 
 export type RoadmapStep = {
   id: number;

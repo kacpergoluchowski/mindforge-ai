@@ -1,12 +1,17 @@
+import clsx from "clsx";
 import { Check } from "lucide-react";
 
-type RoadmapStepProps = {
-  title: string;
-  description: string;
-  status: "completed" | "current" | "locked";
+import type { RoadmapStep as RoadmapStepProps } from "../../types/learningPaths.types";
+
+type RoadmapStepStatus = RoadmapStepProps["status"];
+
+type RoadmapStepStyle = {
+  badge: string;
+  dot: string;
+  label: string;
 };
 
-const statusStyles = {
+const statusStyles: Record<RoadmapStepStatus, RoadmapStepStyle> = {
   completed: {
     dot: "bg-emerald-400 text-white",
     badge: "bg-emerald-500/10 text-emerald-400",
@@ -33,32 +38,46 @@ export default function RoadmapStep({
 
   return (
     <li className="relative flex items-center gap-5 py-2">
-      <div
-        className={`relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full ${styles.dot}`}
-      >
-        {status === "completed" && <Check className="size-4" />}
-      </div>
+      <RoadmapDot status={status} styles={styles} />
 
       <div
-        className={`
-          flex min-w-0 flex-1 items-center justify-between gap-4 rounded-2xl px-4 py-2
-          ${status === "current" ? "bg-violet-500/10" : ""}
-        `}
+        className={clsx(
+          "flex min-w-0 flex-1 items-center justify-between gap-4 rounded-2xl px-4 py-2",
+          status === "current" && "bg-violet-500/10"
+        )}
       >
         <div className="min-w-0">
           <h3 className="font-semibold text-white">{title}</h3>
-
-          <p className="text-sm text-slate-400">
-            {description}
-          </p>
+          <p className="text-sm text-slate-400">{description}</p>
         </div>
 
         <span
-          className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${styles.badge}`}
+          className={clsx(
+            "shrink-0 rounded-full px-3 py-1 text-xs font-medium",
+            styles.badge
+          )}
         >
           {styles.label}
         </span>
       </div>
     </li>
+  );
+}
+
+type RoadmapDotProps = {
+  status: RoadmapStepStatus;
+  styles: RoadmapStepStyle;
+};
+
+function RoadmapDot({ status, styles }: RoadmapDotProps) {
+  return (
+    <div
+      className={clsx(
+        "relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full",
+        styles.dot
+      )}
+    >
+      {status === "completed" && <Check className="size-4" />}
+    </div>
   );
 }

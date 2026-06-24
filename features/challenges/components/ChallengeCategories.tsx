@@ -2,21 +2,17 @@
 
 import { useState } from "react";
 import clsx from "clsx";
+
 import { challengeCategories } from "../data/challengesData";
+
+type ChallengeCategory = (typeof challengeCategories)[number];
 
 export default function ChallengeCategories() {
   const [activeCategory, setActiveCategory] =
-    useState("All Challenges");
+    useState<ChallengeCategory>("All Challenges");
 
   return (
-    <section
-      className="
-        flex gap-3 overflow-x-auto pb-2
-        [-ms-overflow-style:none]
-        [scrollbar-width:none]
-        [&::-webkit-scrollbar]:hidden
-      "
-    >
+    <section className="flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {challengeCategories.map((category) => (
         <button
           key={category}

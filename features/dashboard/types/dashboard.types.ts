@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export type StatsCardItem = {
   title: string;
@@ -11,7 +11,19 @@ export type LearningCategory = {
   label: string;
   time: string;
   percentage: number;
-  color: "violet" | "emerald" | "orange" | "blue";
+  color: LearningCategoryColor;
+};
+
+export type LearningCategoryColor =
+  | "violet"
+  | "emerald"
+  | "orange"
+  | "blue";
+
+export type ContinueLearningCourse = {
+  title: string;
+  progress: number;
+  icon: LucideIcon;
 };
 
 export type RecommendedCourse = {
@@ -28,5 +40,7 @@ export type ActivityItem = {
   description?: string;
   time: string;
   icon: LucideIcon;
-  color: "emerald" | "yellow" | "blue";
+  color: ActivityColor;
 };
+
+export type ActivityColor = "emerald" | "yellow" | "blue";

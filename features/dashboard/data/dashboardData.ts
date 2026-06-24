@@ -11,14 +11,15 @@ import {
   Play,
 } from "lucide-react";
 
-import {
+import type {
   ActivityItem,
+  ContinueLearningCourse,
   LearningCategory,
   RecommendedCourse,
   StatsCardItem,
 } from "../types/dashboard.types";
 
-export const statsData: StatsCardItem[] = [
+export const statsData = [
   {
     title: "Total Learning Time",
     value: "128h 34m",
@@ -43,9 +44,9 @@ export const statsData: StatsCardItem[] = [
     change: "+15%",
     icon: Trophy,
   },
-];
+] satisfies StatsCardItem[];
 
-export const learningCategories: LearningCategory[] = [
+export const learningCategories = [
   {
     label: "Development",
     time: "9h 20m",
@@ -70,7 +71,7 @@ export const learningCategories: LearningCategory[] = [
     percentage: 10,
     color: "blue",
   },
-];
+] satisfies LearningCategory[];
 
 export const continueLearningCourses = [
   {
@@ -88,9 +89,9 @@ export const continueLearningCourses = [
     progress: 30,
     icon: Code2,
   },
-];
+] satisfies ContinueLearningCourse[];
 
-export const recommendedCourses: RecommendedCourse[] = [
+export const recommendedCourses = [
   {
     title: "Prompt Engineering for Developers",
     category: "AI",
@@ -115,9 +116,9 @@ export const recommendedCourses: RecommendedCourse[] = [
     rating: 4.7,
     image: "/images/courses/system-design.jpg",
   },
-];
+] satisfies RecommendedCourse[];
 
-export const activityItems: ActivityItem[] = [
+export const activityItems = [
   {
     title: 'Completed "React Hooks Deep Dive"',
     time: "2h ago",
@@ -137,4 +138,4 @@ export const activityItems: ActivityItem[] = [
     icon: Play,
     color: "blue",
   },
-];
+] satisfies ActivityItem[];

@@ -1,10 +1,15 @@
-import { ActivityItem } from "../../types/dashboard.types";
+import clsx from "clsx";
+
+import type {
+  ActivityColor,
+  ActivityItem,
+} from "../../types/dashboard.types";
 
 type ActivityFeedItemProps = {
   item: ActivityItem;
 };
 
-const colorClasses = {
+const colorClasses: Record<ActivityColor, string> = {
   emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
   yellow: "bg-yellow-500/10 text-yellow-400 ring-yellow-500/20",
   blue: "bg-blue-500/10 text-blue-400 ring-blue-500/20",
@@ -17,7 +22,10 @@ export default function ActivityFeedItem({ item }: ActivityFeedItemProps) {
     <div className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-4">
         <div
-          className={`flex size-10 items-center justify-center rounded-full ring-1 ${colorClasses[item.color]}`}
+          className={clsx(
+            "flex size-10 items-center justify-center rounded-full ring-1",
+            colorClasses[item.color]
+          )}
         >
           <Icon className="size-5" />
         </div>

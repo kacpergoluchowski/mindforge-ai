@@ -17,40 +17,43 @@ import {
   Bot,
 } from "lucide-react";
 
+import type {
+  ProfileAchievement,
+  ProfileActivity,
+  ProfileSkill,
+  ProfileStat,
+} from "../types/profile.types";
+
 export const profileStats = [
   {
     title: "Level 24",
     subtitle: "Advanced Learner",
-    value: "75%",
     icon: TrendingUp,
-    progress: "w-[75%]",
-    color: "bg-violet-500",
+    progress: 75,
+    color: "violet",
   },
   {
     title: "142h",
     subtitle: "Total Learning Time",
-    value: "82%",
     icon: Clock3,
-    progress: "w-[82%]",
-    color: "bg-emerald-500",
+    progress: 82,
+    color: "emerald",
   },
   {
     title: "18",
     subtitle: "Courses Completed",
-    value: "64%",
     icon: BookOpen,
-    progress: "w-[64%]",
-    color: "bg-blue-500",
+    progress: 64,
+    color: "blue",
   },
   {
     title: "7",
     subtitle: "Day Streak",
-    value: "72%",
     icon: Flame,
-    progress: "w-[72%]",
-    color: "bg-orange-500",
+    progress: 72,
+    color: "orange",
   },
-] as const;
+] satisfies ProfileStat[];
 
 
 export const skills = [
@@ -86,7 +89,7 @@ export const skills = [
     name: "HTML",
     icon: Globe,
   },
-] as const;
+] satisfies ProfileSkill[];
 
 export const recentActivities = [
   {
@@ -117,7 +120,7 @@ export const recentActivities = [
     time: "2 days ago",
     icon: Trophy,
   },
-];
+] satisfies ProfileActivity[];
 
 export const achievements = [
   {
@@ -148,4 +151,4 @@ export const achievements = [
     date: "May 11, 2026",
     icon: Bot,
   },
-];
+] satisfies ProfileAchievement[];

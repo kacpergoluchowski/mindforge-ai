@@ -1,4 +1,23 @@
 import { Play, Trophy } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+type BannerActionProps = {
+  icon?: LucideIcon;
+  label: string;
+  variant: "primary" | "secondary";
+};
+
+const bannerActions: BannerActionProps[] = [
+  {
+    label: "Browse Challenges",
+    variant: "primary",
+  },
+  {
+    icon: Play,
+    label: "How It Works",
+    variant: "secondary",
+  },
+];
 
 export default function ChallengeBanner() {
   return (
@@ -9,9 +28,7 @@ export default function ChallengeBanner() {
         <div>
           <div className="mb-4 flex items-center gap-2 text-violet-400">
             <Trophy className="size-5" />
-            <span className="text-sm font-medium">
-              Push Your Limits
-            </span>
+            <span className="text-sm font-medium">Push Your Limits</span>
           </div>
 
           <h2 className="text-3xl font-bold text-white lg:text-5xl">
@@ -19,28 +36,52 @@ export default function ChallengeBanner() {
           </h2>
 
           <p className="mt-4 max-w-xl text-slate-400">
-            Join thousands of developers improving their skills through
-            real coding challenges.
+            Join thousands of developers improving their skills through real
+            coding challenges.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <button className="rounded-2xl bg-violet-500 px-6 py-3 font-medium text-white transition hover:bg-violet-600">
-              Browse Challenges
-            </button>
-
-            <button className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-3 text-slate-300 transition hover:bg-white/[0.05]">
-              <Play className="size-4" />
-              How It Works
-            </button>
+            {bannerActions.map((action) => (
+              <BannerAction key={action.label} {...action} />
+            ))}
           </div>
         </div>
 
-        <div className="hidden lg:flex items-center justify-center">
-          <div className="flex size-56 items-center justify-center rounded-full bg-violet-500/10 ring-1 ring-violet-500/20">
-            <Trophy className="size-28 text-violet-400" />
-          </div>
-        </div>
+        <BannerVisual />
       </div>
     </section>
+  );
+}
+
+function BannerAction({ icon: Icon, label, variant }: BannerActionProps) {
+  if (variant === "primary") {
+    return (
+      <button
+        type="button"
+        className="rounded-2xl bg-violet-500 px-6 py-3 font-medium text-white transition hover:bg-violet-600"
+      >
+        {label}
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-3 text-slate-300 transition hover:bg-white/[0.05]"
+    >
+      {Icon && <Icon className="size-4" />}
+      {label}
+    </button>
+  );
+}
+
+function BannerVisual() {
+  return (
+    <div className="hidden items-center justify-center lg:flex">
+      <div className="flex size-56 items-center justify-center rounded-full bg-violet-500/10 ring-1 ring-violet-500/20">
+        <Trophy className="size-28 text-violet-400" />
+      </div>
+    </div>
   );
 }
