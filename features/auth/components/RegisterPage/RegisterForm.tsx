@@ -10,7 +10,7 @@ import type { FormEvent } from "react";
 import PasswordStrength from "./PasswordStrength";
 import RegisterField from "./RegisterField";
 import RegisterIntro from "./RegisterIntro";
-import SocialAuthButtons from "./SocialAuthButtons";
+import SocialAuthButtons from "../shared/SocialAuthButtons";
 
 type RegisterFormValues = {
   fullName: string;

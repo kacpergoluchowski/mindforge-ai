@@ -30,10 +30,10 @@ export default function LandingHeader() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/register"
+            href="/login"
             className="hidden rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white md:block"
           >
-            Sign Up
+            Sign In
           </Link>
 
           <Link
