@@ -1,12 +1,24 @@
 import { CheckCircle2, Crown, ExternalLink } from "lucide-react";
 
+import type { CurrentProfile } from "../../types/profile.types";
+import { formatPlan } from "../../utils/profileFormatters";
+
+type AccountSummaryCardProps = {
+  profile: CurrentProfile;
+};
+
 const planFeatures = [
   "Unlimited AI Mentoring",
   "Advanced Code Reviews",
   "Priority Support",
 ];
 
-export default function AccountSummaryCard() {
+export default function AccountSummaryCard({
+  profile,
+}: AccountSummaryCardProps) {
+  const xpProgress =
+    profile.xpGoal > 0 ? Math.min((profile.xp / profile.xpGoal) * 100, 100) : 0;
+
   return (
     <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
       <h2 className="mb-6 text-xl font-semibold text-white">
@@ -19,11 +31,11 @@ export default function AccountSummaryCard() {
             <p className="text-sm text-slate-400">Current Plan</p>
 
             <h3 className="mt-2 text-3xl font-bold text-white">
-              Pro Plan
+              {formatPlan(profile.plan)}
             </h3>
 
             <p className="mt-2 text-sm text-slate-400">
-              Renews on July 20, 2026
+              Manage your plan and account benefits
             </p>
           </div>
 
@@ -35,16 +47,19 @@ export default function AccountSummaryCard() {
         <div className="mt-8">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm text-slate-400">
-              Level 24
+              Level {profile.level}
             </span>
 
             <span className="text-sm text-slate-400">
-              2,450 / 3,000 XP
+              {profile.xp.toLocaleString()} / {profile.xpGoal.toLocaleString()} XP
             </span>
           </div>
 
           <div className="h-2 overflow-hidden rounded-full bg-slate-800">
-            <div className="h-full w-[82%] rounded-full bg-violet-500" />
+            <div
+              className="h-full rounded-full bg-violet-500"
+              style={{ width: `${xpProgress}%` }}
+            />
           </div>
         </div>
 

@@ -1,11 +1,53 @@
+"use client";
+
 import { ArrowRight, Lock, Mail, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import { createClient } from "@/lib/supabase/client";
+
+import type { FormEvent } from "react";
 
 import SocialAuthButtons from "../shared/SocialAuthButtons";
 import LoginField from "./LoginField";
 import LoginIntro from "./LoginIntro";
 
 export default function LoginForm() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+
+    try {
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        setError(signInError.message);
+        return;
+      }
+
+      router.replace("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Unable to log in. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="rounded-lg border border-violet-400/45 bg-[linear-gradient(180deg,rgba(35,25,68,0.72),rgba(5,12,25,0.88)_24%)] p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8 lg:p-12">
       <div className="lg:hidden">
@@ -21,7 +63,7 @@ export default function LoginForm() {
         </p>
       </div>
 
-      <SocialAuthButtons />
+      <SocialAuthButtons onError={setError} />
 
       <div className="my-8 flex items-center gap-4">
         <div className="h-px flex-1 bg-slate-700/70" />
@@ -29,7 +71,7 @@ export default function LoginForm() {
         <div className="h-px flex-1 bg-slate-700/70" />
       </div>
 
-      <div className="space-y-6">
+      <form onSubmit={handleLogin} className="space-y-6">
         <LoginField
           id="email"
           label="Email address"
@@ -50,7 +92,7 @@ export default function LoginForm() {
 
         <div className="flex items-center justify-between gap-4 text-sm">
           <label className="flex items-center gap-3 text-slate-400">
-            <input type="checkbox" className="size-4 accent-violet-500" />
+            <input name="remember" type="checkbox" className="size-4 accent-violet-500" />
             Remember me
           </label>
 
@@ -62,12 +104,19 @@ export default function LoginForm() {
           </Link>
         </div>
 
+        {error && (
+          <p role="alert" className="text-sm text-red-400">
+            {error}
+          </p>
+        )}
+
         <button
-          type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 py-4 font-semibold text-white transition hover:from-violet-500 hover:to-purple-500"
+          type="submit"
+          disabled={isLoading}
+          className="flex w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 py-4 font-semibold text-white transition hover:from-violet-500 hover:to-purple-500 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Log In
-          <ArrowRight className="size-5" />
+          {isLoading ? "Logging in..." : "Log In"}
+          {!isLoading && <ArrowRight className="size-5" />}
         </button>
 
         <p className="text-center text-sm text-slate-400">
@@ -84,7 +133,7 @@ export default function LoginForm() {
             <span className="text-violet-400">secure and encrypted</span>
           </span>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

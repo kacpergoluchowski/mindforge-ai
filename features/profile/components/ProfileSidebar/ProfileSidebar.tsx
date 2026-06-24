@@ -1,11 +1,17 @@
 import AccountSummaryCard from "./AccountSummaryCard";
 import AchievementsCard from "./AchievementsCard";
 
-export default function ProfileSidebar() {
+import type { CurrentProfile } from "../../types/profile.types";
+
+type ProfileSidebarProps = {
+  profile: CurrentProfile;
+};
+
+export default function ProfileSidebar({ profile }: ProfileSidebarProps) {
   return (
     <aside className="flex flex-col gap-6">
-      <AccountSummaryCard />
-      <AchievementsCard />
+      <AccountSummaryCard profile={profile} />
+      <AchievementsCard achievements={profile.achievements} />
     </aside>
   );
 }

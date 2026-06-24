@@ -4,13 +4,18 @@ import ContinueLearning from "@/features/dashboard/components/ContinueLearning/C
 import LearningOverview from "@/features/dashboard/components/LearningOverview/LearningOverview";
 import RecommendedCourses from "@/features/dashboard/components/RecommendedCourses/RecommendedCourses";
 import StatsGrid from "@/features/dashboard/components/stats/StatsGrid";
+import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
+import { getFirstName } from "@/features/profile/utils/profileFormatters";
 import { Bot, ChevronDown } from "lucide-react";
 
 export default async function DashboardPage() {
+  const profile = await getCurrentProfile();
+  const firstName = profile ? getFirstName(profile.fullName) : "there";
+
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Good morning, Kacper! 👋"
+        title={`Good morning, ${firstName}!`}
         subtitle="Ready to continue your learning journey?"
         action={{
           label: "Chat with AI Mentor",
@@ -18,7 +23,7 @@ export default async function DashboardPage() {
           rightIcon: ChevronDown,
         }}
       />
-      <StatsGrid />
+      <StatsGrid profile={profile} />
       <div className="grid gap-4 semiXl:grid-cols-5">
         <div className="semiXl:col-span-3">
           <LearningOverview />

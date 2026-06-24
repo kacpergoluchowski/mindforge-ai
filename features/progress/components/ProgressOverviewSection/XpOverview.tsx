@@ -11,7 +11,11 @@ import {
 
 import { xpOverviewData } from "../../data/progressData";
 
-export default function XpOverview() {
+type XpOverviewProps = {
+  totalXp: number;
+};
+
+export default function XpOverview({ totalXp }: XpOverviewProps) {
   return (
     <article className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -92,7 +96,9 @@ export default function XpOverview() {
         <div className="flex flex-col justify-center border-t border-white/10 pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
           <div>
             <p className="text-sm text-slate-400">Total XP</p>
-            <p className="mt-2 text-3xl font-bold text-violet-400">12,540</p>
+            <p className="mt-2 text-3xl font-bold text-violet-400">
+              {totalXp.toLocaleString()}
+            </p>
           </div>
 
           <div className="my-6 h-px bg-white/10" />

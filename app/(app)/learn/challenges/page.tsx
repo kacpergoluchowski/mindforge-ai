@@ -3,9 +3,12 @@ import ChallengeBanner from "@/features/challenges/components/ChallengeBanner";
 import ChallengeCategories from "@/features/challenges/components/ChallengeCategories";
 import ChallengesMainSection from "@/features/challenges/components/ChallengesMainSection/ChallengesMainSection";
 import ChallengeStats from "@/features/challenges/components/ChallengeStats/ChallengeStats";
+import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
 import { Plus } from "lucide-react";
 
-export default function ChallengesPage() {
+export default async function ChallengesPage() {
+  const profile = await getCurrentProfile();
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -19,7 +22,7 @@ export default function ChallengesPage() {
       <ChallengeBanner />
       <ChallengeStats />
       <ChallengeCategories />
-      <ChallengesMainSection />
+      <ChallengesMainSection profile={profile} />
     </div>
   );
 }

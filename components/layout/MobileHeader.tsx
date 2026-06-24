@@ -5,7 +5,13 @@ import { Bell, Menu } from "lucide-react";
 import Logo from "./Logo";
 import MobileSidebar from "./MobileSidebar";
 
-export default function MobileHeader() {
+import type { CurrentProfile } from "@/features/profile/types/profile.types";
+
+type MobileHeaderProps = {
+  profile: CurrentProfile;
+};
+
+export default function MobileHeader({ profile }: MobileHeaderProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -31,6 +37,7 @@ export default function MobileHeader() {
       </header>
 
       <MobileSidebar
+        profile={profile}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />

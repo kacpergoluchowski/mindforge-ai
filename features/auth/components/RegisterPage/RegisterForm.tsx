@@ -1,9 +1,11 @@
 "use client";
 
-import { supabase } from "@/lib/supabase";
 import { AtSign, Lock, Mail, ShieldCheck, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+import { createClient } from "@/lib/supabase/client";
 
 import type { FormEvent } from "react";
 
@@ -59,6 +61,7 @@ function validateForm(values: RegisterFormValues) {
 }
 
 export default function RegisterForm() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [error, setError] = useState("");
@@ -82,10 +85,12 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
+      const supabase = createClient();
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
           data: {
             full_name: values.fullName,
             username: values.username,
@@ -95,6 +100,12 @@ export default function RegisterForm() {
 
       if (signUpError) {
         setError(signUpError.message);
+        return;
+      }
+
+      if (data.session) {
+        router.replace("/dashboard");
+        router.refresh();
         return;
       }
 
@@ -123,7 +134,7 @@ export default function RegisterForm() {
         </p>
       </div>
 
-      <SocialAuthButtons />
+      <SocialAuthButtons onError={setError} />
 
       <div className="my-6 flex items-center gap-4">
         <div className="h-px flex-1 bg-slate-700/70" />

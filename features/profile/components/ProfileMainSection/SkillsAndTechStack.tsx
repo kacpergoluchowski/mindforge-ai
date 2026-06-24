@@ -1,8 +1,22 @@
-import { Plus } from "lucide-react";
+import { Atom, Code2, Database, FileCode2, Layers3, Plus } from "lucide-react";
 
-import { skills } from "../../data/profileData";
+import type { CurrentProfileSkill } from "../../types/profile.types";
 
-export default function SkillsAndTechStack() {
+type SkillsAndTechStackProps = {
+  skills: CurrentProfileSkill[];
+};
+
+const skillIcons = {
+  javascript: FileCode2,
+  typescript: Code2,
+  react: Atom,
+  "next.js": Layers3,
+  "node.js": Database,
+};
+
+export default function SkillsAndTechStack({
+  skills,
+}: SkillsAndTechStackProps) {
   return (
     <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -20,7 +34,9 @@ export default function SkillsAndTechStack() {
 
       <div className="flex flex-wrap gap-3">
         {skills.map((skill) => {
-          const Icon = skill.icon;
+          const Icon =
+            skillIcons[skill.name.toLowerCase() as keyof typeof skillIcons] ??
+            Code2;
 
           return (
             <div
@@ -43,6 +59,10 @@ export default function SkillsAndTechStack() {
             </div>
           );
         })}
+
+        {skills.length === 0 && (
+          <p className="text-sm text-slate-400">No skills added yet.</p>
+        )}
 
         <button
           type="button"

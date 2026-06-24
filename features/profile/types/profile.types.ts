@@ -10,11 +10,6 @@ export type ProfileStat = {
   color: ProfileStatColor;
 };
 
-export type ProfileSkill = {
-  name: string;
-  icon: LucideIcon;
-};
-
 export type ProfileActivity = {
   id: number;
   title: string;
@@ -23,10 +18,34 @@ export type ProfileActivity = {
   icon: LucideIcon;
 };
 
-export type ProfileAchievement = {
-  id: number;
+export type CurrentProfileSkill = {
+  id: string;
+  name: string;
+};
+
+export type CurrentProfileAchievement = {
+  id: string;
   title: string;
-  description: string;
-  date: string;
-  icon: LucideIcon;
+  description: string | null;
+  icon: string | null;
+  unlockedAt: string;
+};
+
+export type CurrentProfile = {
+  id: string;
+  email: string;
+  fullName: string;
+  username: string;
+  role: string | null;
+  location: string | null;
+  bio: string | null;
+  avatarUrl: string | null;
+  level: number;
+  xp: number;
+  xpGoal: number;
+  streakDays: number;
+  plan: string;
+  createdAt: string;
+  skills: CurrentProfileSkill[];
+  achievements: CurrentProfileAchievement[];
 };

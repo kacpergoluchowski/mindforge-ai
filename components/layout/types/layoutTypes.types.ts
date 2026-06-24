@@ -1,4 +1,5 @@
-import { LucideIcon } from "lucide-react";
+import type { CurrentProfile } from "@/features/profile/types/profile.types";
+import type { LucideIcon } from "lucide-react";
 
 export type NavigationItem = {
   label: string;
@@ -20,6 +21,7 @@ export type SidebarNavigationItemProps = {
 };
 
 export type MobileSidebarProps = {
+  profile: CurrentProfile;
   isOpen: boolean;
   onClose: () => void;
 };

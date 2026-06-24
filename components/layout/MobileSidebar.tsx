@@ -3,17 +3,25 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LogOut,
   Sparkles,
   X,
 } from "lucide-react";
 import clsx from "clsx";
 import Logo from "./Logo";
-import { MobileSidebarProps } from "./types/layoutTypes.types";
+import LogoutButton from "@/features/auth/components/shared/LogoutButton";
+import {
+  formatPlan,
+  getInitials,
+} from "@/features/profile/utils/profileFormatters";
+import type { MobileSidebarProps } from "./types/layoutTypes.types";
 import { navSections } from "./data/layoutData";
 
 
-export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
+export default function MobileSidebar({
+  profile,
+  isOpen,
+  onClose,
+}: MobileSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -51,12 +59,14 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         <div className="border-b border-white/10 px-6 py-6">
           <div className="flex items-center gap-4">
             <div className="flex size-14 items-center justify-center rounded-full bg-violet-500 text-xl font-semibold text-white">
-              K
+              {getInitials(profile.fullName)}
             </div>
 
             <div>
-              <p className="font-semibold text-white">Kacper</p>
-              <p className="text-sm text-slate-400">Premium Plan</p>
+              <p className="font-semibold text-white">{profile.fullName}</p>
+              <p className="text-sm text-slate-400">
+                {formatPlan(profile.plan)}
+              </p>
             </div>
           </div>
         </div>
@@ -110,10 +120,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             </div>
           </div>
 
-          <button className="flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 font-medium text-red-400 transition hover:bg-red-500/10">
-            <LogOut className="size-5" />
-            Log out
-          </button>
+          <LogoutButton />
         </div>
       </aside>
     </>

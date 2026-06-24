@@ -1,9 +1,21 @@
 import clsx from "clsx";
 
 import { weeklyLeaderboard } from "../../data/challengesData";
+import type { CurrentProfile } from "@/features/profile/types/profile.types";
+import {
+  getFirstName,
+  getInitials,
+} from "@/features/profile/utils/profileFormatters";
 
-type LeaderboardUser = (typeof weeklyLeaderboard)[number];
-type LeaderboardAvatarColor = LeaderboardUser["color"];
+type LeaderboardAvatarColor = (typeof weeklyLeaderboard)[number]["color"];
+type LeaderboardUser = {
+  id: number;
+  name: string;
+  points: string;
+  rank: number;
+  avatar: string;
+  color: LeaderboardAvatarColor;
+};
 type LeaderboardAvatarSize = "xs" | "sm" | "lg";
 
 const avatarStyles: Record<LeaderboardAvatarColor, string> = {
@@ -15,10 +27,25 @@ const avatarStyles: Record<LeaderboardAvatarColor, string> = {
   yellow: "bg-yellow-600 text-white",
 };
 
-const topUsers = weeklyLeaderboard.slice(0, 3);
-const otherUsers = weeklyLeaderboard.slice(3);
+type WeeklyLeaderboardProps = {
+  profile: CurrentProfile | null;
+};
 
-export default function WeeklyLeaderboard() {
+export default function WeeklyLeaderboard({ profile }: WeeklyLeaderboardProps) {
+  const users: readonly LeaderboardUser[] = profile
+    ? weeklyLeaderboard.map((user, index) =>
+        index === 0
+          ? {
+              ...user,
+              name: getFirstName(profile.fullName),
+              points: `${profile.xp.toLocaleString()} pts`,
+              avatar: getInitials(profile.fullName).slice(0, 1),
+            }
+          : user
+      )
+    : weeklyLeaderboard;
+  const topUsers = users.slice(0, 3);
+  const otherUsers = users.slice(3);
   const [first, second, third] = topUsers;
 
   return (

@@ -32,6 +32,7 @@ export default function LoginField({
           id={id}
           name={id}
           type={type}
+          required
           autoComplete={autoComplete}
           placeholder={placeholder}
           className="h-16 w-full rounded-lg border border-slate-700/70 bg-slate-950/25 pl-12 pr-12 text-white outline-none transition placeholder:text-slate-500 focus:border-violet-400 focus:ring-2 focus:ring-violet-500/10"
