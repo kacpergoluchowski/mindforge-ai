@@ -29,13 +29,21 @@ export default function CurrentRoadmap({
       </div>
 
       <div className="relative">
-        <div className="absolute left-3 top-2 h-[calc(100%-1rem)] w-px bg-slate-700" />
+        {steps.length ? (
+          <div className="absolute left-3 top-2 h-[calc(100%-1rem)] w-px bg-slate-700" />
+        ) : null}
 
-        <ul>
-          {steps.map((step) => (
-            <RoadmapStep key={step.id} {...step} />
-          ))}
-        </ul>
+        {steps.length ? (
+          <ul>
+            {steps.map((step) => (
+              <RoadmapStep key={step.id} {...step} />
+            ))}
+          </ul>
+        ) : (
+          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-sm text-slate-400">
+            No roadmap selected.
+          </div>
+        )}
       </div>
     </section>
   );

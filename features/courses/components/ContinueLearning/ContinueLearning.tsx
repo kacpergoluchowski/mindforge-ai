@@ -2,7 +2,6 @@ import SectionHeader from "@/components/shared/SectionHeader";
 import { Atom, FileCode2, Triangle } from "lucide-react";
 
 import { getContinueLearningCourses } from "../../api/getCourses";
-import { continueLearningCourses } from "../../data/coursesData";
 import ContinueLearningCard from "./ContinueLearningCard";
 import type {
   ContinueLearningCardProps,
@@ -23,19 +22,23 @@ const colorMap: Record<string, ContinueLearningCardProps["color"]> = {
 
 export default async function ContinueLearning() {
   const courses = await getContinueLearningCourses();
-  const visibleCourses = courses.length
-    ? courses.map(mapContinueLearningCard)
-    : continueLearningCourses;
+  const visibleCourses = courses.map(mapContinueLearningCard);
 
   return (
     <section className="space-y-5">
       <SectionHeader title="Continue Learning" buttonText="View All" />
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-4">
-        {visibleCourses.map((course) => (
-          <ContinueLearningCard key={course.id} {...course} />
-        ))}
-      </div>
+      {visibleCourses.length ? (
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-4">
+          {visibleCourses.map((course) => (
+            <ContinueLearningCard key={course.id} {...course} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-6 text-sm text-slate-400">
+          No courses in progress.
+        </div>
+      )}
     </section>
   );
 }

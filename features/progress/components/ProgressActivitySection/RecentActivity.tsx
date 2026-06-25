@@ -1,6 +1,5 @@
 import clsx from "clsx";
 
-import { recentActivityData } from "../../data/progressData";
 import type {
   RecentActivityColor,
   RecentActivityItem,
@@ -58,8 +57,6 @@ type RecentActivityProps = {
 };
 
 export default function RecentActivity({ activities }: RecentActivityProps) {
-  const visibleActivities = activities.length ? activities : recentActivityData;
-
   return (
     <section className="w-full rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 xl:p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -73,11 +70,17 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
         </button>
       </div>
 
-      <div className="space-y-4">
-        {visibleActivities.map((activity) => (
-          <ActivityItem key={activity.id} {...activity} />
-        ))}
-      </div>
+      {activities.length ? (
+        <div className="space-y-4">
+          {activities.map((activity) => (
+            <ActivityItem key={activity.id} {...activity} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+          No activity yet.
+        </div>
+      )}
     </section>
   );
 }

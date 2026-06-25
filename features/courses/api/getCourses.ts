@@ -45,9 +45,12 @@ type CourseListRow = CourseRow & {
 type CourseLessonRow = {
   id: string;
   slug: string;
+  type: string;
   title: string;
   summary: string;
   content: string;
+  objective: string | null;
+  checklist: string[] | null;
   position: number;
   duration_minutes: number;
   xp_reward: number;
@@ -207,9 +210,12 @@ export const getCourseBySlug = cache(
           course_lessons (
             id,
             slug,
+            type,
             title,
             summary,
             content,
+            objective,
+            checklist,
             position,
             duration_minutes,
             xp_reward,
@@ -402,10 +408,14 @@ function mapCourseDetail(
   course: CourseDetailRow,
   userProgress: CourseProgressSummary | null
 ): CourseDetail {
+  const modules = sortByPosition(course.course_modules);
+  const completedLessonIds = userProgress?.completedLessonIds ?? [];
+  const lockedLessonIds = getLockedLessonIds(modules, completedLessonIds);
+
   return {
     ...mapCourseListItem(course),
-    modules: sortByPosition(course.course_modules).map((module) =>
-      mapCourseModule(module, userProgress?.completedLessonIds ?? [])
+    modules: modules.map((module) =>
+      mapCourseModule(module, completedLessonIds, lockedLessonIds)
     ),
     userProgress,
   };
@@ -413,7 +423,8 @@ function mapCourseDetail(
 
 function mapCourseModule(
   module: CourseModuleRow,
-  completedLessonIds: string[]
+  completedLessonIds: string[],
+  lockedLessonIds: Set<string>
 ): CourseModule {
   return {
     id: module.id,
@@ -421,27 +432,51 @@ function mapCourseModule(
     description: module.description,
     position: module.position,
     lessons: sortByPosition(module.course_lessons).map((lesson) =>
-      mapCourseLesson(lesson, completedLessonIds)
+      mapCourseLesson(lesson, completedLessonIds, lockedLessonIds)
     ),
   };
 }
 
 function mapCourseLesson(
   lesson: CourseLessonRow,
-  completedLessonIds: string[]
+  completedLessonIds: string[],
+  lockedLessonIds: Set<string>
 ): CourseLesson {
   return {
     id: lesson.id,
     slug: lesson.slug,
+    type: lesson.type,
     title: lesson.title,
     summary: lesson.summary,
     content: lesson.content,
+    objective: lesson.objective,
+    checklist: lesson.checklist ?? [],
     position: lesson.position,
     duration: formatDuration(lesson.duration_minutes),
     xpReward: lesson.xp_reward,
     isPreview: lesson.is_preview,
     completed: completedLessonIds.includes(lesson.id),
+    locked: lockedLessonIds.has(lesson.id),
   };
+}
+
+function getLockedLessonIds(
+  modules: CourseModuleRow[],
+  completedLessonIds: string[]
+): Set<string> {
+  const completed = new Set(completedLessonIds);
+  const orderedLessonIds = modules.flatMap((module) =>
+    sortByPosition(module.course_lessons).map((lesson) => lesson.id)
+  );
+  const firstIncompleteIndex = orderedLessonIds.findIndex(
+    (lessonId) => !completed.has(lessonId)
+  );
+
+  if (firstIncompleteIndex === -1) {
+    return new Set();
+  }
+
+  return new Set(orderedLessonIds.slice(firstIncompleteIndex + 1));
 }
 
 function mapCourseProgress(

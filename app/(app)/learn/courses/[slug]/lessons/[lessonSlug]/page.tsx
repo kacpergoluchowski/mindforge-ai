@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { getCourseBySlug } from "@/features/courses/api/getCourses";
 import CourseLessonDetails from "@/features/courses/components/CourseLessonDetails/CourseLessonDetails";
@@ -21,6 +21,10 @@ export default async function CourseLessonPage({
 
   if (!lesson) {
     notFound();
+  }
+
+  if (lesson.locked) {
+    redirect(`/learn/courses/${slug}`);
   }
 
   return <CourseLessonDetails course={course} lesson={lesson} />;

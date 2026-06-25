@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Clock3, Star, Trophy } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock3, Lock, Star, Trophy } from "lucide-react";
 import clsx from "clsx";
 
 import { startCourse } from "../../actions/courseActions";
@@ -14,7 +14,7 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
   const nextLessonSlug =
     course.modules
       .flatMap((module) => module.lessons)
-      .find((lesson) => !lesson.completed)?.slug ?? firstLessonSlug;
+      .find((lesson) => !lesson.completed && !lesson.locked)?.slug ?? firstLessonSlug;
   const progress = course.userProgress?.progressPercent ?? 0;
   const courseStarted = Boolean(course.userProgress);
   const courseCompleted = course.userProgress?.status === "completed";
@@ -125,56 +125,84 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
               </div>
 
               <div className="mt-5 space-y-3">
-                {module.lessons.map((lesson) => (
-                  <Link
-                    key={lesson.id}
-                    href={`/learn/courses/${course.slug}/lessons/${lesson.slug}`}
-                    className={clsx(
-                      "flex flex-col gap-3 rounded-xl border p-4 transition sm:flex-row sm:items-center sm:justify-between",
-                      lesson.completed
-                        ? "border-emerald-400/20 bg-emerald-500/10"
-                        : "border-white/10 bg-white/[0.02] hover:border-white/20"
-                    )}
-                  >
-                    <div className="flex gap-3">
-                      <CheckCircle2
-                        className={clsx(
-                          "mt-0.5 size-5 shrink-0",
-                          lesson.completed ? "text-emerald-400" : "text-slate-600"
-                        )}
-                      />
-                      <div>
-                        <h4 className="font-medium text-white">
-                          {lesson.title}
-                        </h4>
-                        <p className="mt-1 text-sm leading-6 text-slate-400">
-                          {lesson.summary}
-                        </p>
-                      </div>
+                {module.lessons.map((lesson) =>
+                  lesson.locked ? (
+                    <div
+                      key={lesson.id}
+                      className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 opacity-60 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <LessonRowContent lesson={lesson} />
                     </div>
-
-                    <div className="flex shrink-0 items-center gap-3 text-sm text-slate-400">
-                      <span>{lesson.duration}</span>
-                      <span>{lesson.xpReward} XP</span>
-                      {lesson.isPreview ? (
-                        <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
-                          Preview
-                        </span>
-                      ) : null}
-                      {lesson.completed ? (
-                        <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
-                          Done
-                        </span>
-                      ) : null}
-                    </div>
-                  </Link>
-                ))}
+                  ) : (
+                    <Link
+                      key={lesson.id}
+                      href={`/learn/courses/${course.slug}/lessons/${lesson.slug}`}
+                      className={clsx(
+                        "flex flex-col gap-3 rounded-xl border p-4 transition sm:flex-row sm:items-center sm:justify-between",
+                        lesson.completed
+                          ? "border-emerald-400/20 bg-emerald-500/10"
+                          : "border-white/10 bg-white/[0.02] hover:border-white/20"
+                      )}
+                    >
+                      <LessonRowContent lesson={lesson} />
+                    </Link>
+                  )
+                )}
               </div>
             </article>
           ))}
         </div>
       </section>
     </div>
+  );
+}
+
+type LessonRowContentProps = {
+  lesson: CourseDetail["modules"][number]["lessons"][number];
+};
+
+function LessonRowContent({ lesson }: LessonRowContentProps) {
+  return (
+    <>
+      <div className="flex gap-3">
+        {lesson.locked ? (
+          <Lock className="mt-0.5 size-5 shrink-0 text-slate-500" />
+        ) : (
+          <CheckCircle2
+            className={clsx(
+              "mt-0.5 size-5 shrink-0",
+              lesson.completed ? "text-emerald-400" : "text-slate-600"
+            )}
+          />
+        )}
+        <div>
+          <h4 className="font-medium text-white">{lesson.title}</h4>
+          <p className="mt-1 text-sm leading-6 text-slate-400">
+            {lesson.summary}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-3 text-sm text-slate-400">
+        <span>{lesson.duration}</span>
+        <span>{lesson.xpReward} XP</span>
+        {lesson.isPreview ? (
+          <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
+            Preview
+          </span>
+        ) : null}
+        {lesson.completed ? (
+          <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
+            Done
+          </span>
+        ) : null}
+        {lesson.locked ? (
+          <span className="rounded-full bg-slate-700/60 px-2.5 py-1 text-xs font-medium text-slate-300">
+            Locked
+          </span>
+        ) : null}
+      </div>
+    </>
   );
 }
 

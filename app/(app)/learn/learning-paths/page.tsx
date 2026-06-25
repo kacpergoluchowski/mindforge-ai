@@ -1,6 +1,5 @@
 import PageHeader from "@/components/shared/PageHeader";
 import CurrentRoadmap from "@/features/learning-paths/components/CurrentRoadmap/CurrentRoadmap";
-import { roadmapSteps } from "@/features/learning-paths/data/learningData";
 import { getLearningPaths } from "@/features/learning-paths/api/getLearningPaths";
 import MyLearningPaths from "@/features/learning-paths/components/MyLearningPaths/MyLearningPaths";
 import PopularLearningPaths from "@/features/learning-paths/components/PopularLearningPaths/PopularLearningPaths";
@@ -22,9 +21,9 @@ export default async function LearningPathsPage() {
       <MyLearningPaths paths={myPaths} />
       <PopularLearningPaths paths={popularPaths} />
       <CurrentRoadmap
-        title={currentPath?.title ?? "Frontend Engineer Roadmap"}
-        progress={currentPath?.progress ?? 63}
-        steps={currentPath?.steps ?? roadmapSteps}
+        title={currentPath?.title ?? "No active roadmap"}
+        progress={currentPath?.progress ?? 0}
+        steps={currentPath?.steps ?? []}
       />
     </div>
   );

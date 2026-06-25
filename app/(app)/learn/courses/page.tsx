@@ -2,7 +2,6 @@ import CourseCategories from "@/features/courses/components/CourseCategories";
 import AILearningBanner from "@/features/courses/components/AILearningBanner";
 import ContinueLearning from "@/features/courses/components/ContinueLearning/ContinueLearning";
 import PopularCourses from "@/features/courses/components/PopularCourses/PopularCourses";
-import BrowseByTopic from "@/features/courses/components/BrowseByTopic/BrowseByTopic";
 import PageHeader from "@/components/shared/PageHeader";
 import { Plus } from "lucide-react";
 
@@ -30,7 +29,6 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
       <AILearningBanner />
       <ContinueLearning />
       <PopularCourses category={activeCategory} />
-      <BrowseByTopic />
     </div>
   );
 }

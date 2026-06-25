@@ -1,7 +1,6 @@
 import SectionHeader from "@/components/shared/SectionHeader";
 import { Atom, Brain, Database, FileCode2, Server } from "lucide-react";
 
-import { popularCourses } from "../../data/coursesData";
 import { getPublishedCourses } from "../../api/getCourses";
 import PopularCourseCard from "./PopularCourseCard";
 import type {
@@ -30,10 +29,7 @@ type PopularCoursesProps = {
 
 export default async function PopularCourses({ category }: PopularCoursesProps) {
   const courses = await getPublishedCourses(category, { excludeStarted: true });
-  const visibleCourses =
-    courses.length || category !== "All Courses"
-      ? courses.map(mapCourseCard)
-      : popularCourses;
+  const visibleCourses = courses.map(mapCourseCard);
 
   return (
     <section className="space-y-5">

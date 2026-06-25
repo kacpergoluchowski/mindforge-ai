@@ -3,15 +3,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getRecommendedCourses } from "@/features/courses/api/getCourses";
 import type { CourseListItem } from "@/features/courses/types/courses.types";
 
-import { recommendedCourses } from "../../data/dashboardData";
 import type { RecommendedCourse } from "../../types/dashboard.types";
 import RecommendedCourseCard from "./RecommendedCourseCard";
 
 export default async function RecommendedCourses() {
   const courses = await getRecommendedCourses();
-  const visibleCourses: RecommendedCourse[] = courses.length
-    ? courses.map(mapRecommendedCourse)
-    : recommendedCourses;
+  const visibleCourses: RecommendedCourse[] = courses.map(mapRecommendedCourse);
 
   return (
     <section className="h-min rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:h-70">
@@ -41,11 +38,17 @@ export default async function RecommendedCourses() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        {visibleCourses.map((course) => (
-          <RecommendedCourseCard key={course.id ?? course.title} course={course} />
-        ))}
-      </div>
+      {visibleCourses.length ? (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {visibleCourses.map((course) => (
+            <RecommendedCourseCard key={course.id ?? course.title} course={course} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-slate-400">
+          No recommended courses yet.
+        </div>
+      )}
     </section>
   );
 }

@@ -115,6 +115,59 @@ export async function completeLesson(formData: FormData) {
     throw new Error("Lesson not found.");
   }
 
+  const { data: modules } = await supabase
+    .from("course_modules")
+    .select(
+      `
+      id,
+      position,
+      course_lessons (
+        id,
+        position
+      )
+    `
+    )
+    .eq("course_id", courseId);
+
+  const orderedLessonIds = [...(modules ?? [])]
+    .sort((firstModule, secondModule) => {
+      return firstModule.position - secondModule.position;
+    })
+    .flatMap((module) =>
+      [...(module.course_lessons ?? [])]
+        .sort((firstLesson, secondLesson) => {
+          return firstLesson.position - secondLesson.position;
+        })
+        .map((courseLesson) => courseLesson.id as string)
+    );
+  const lessonIndex = orderedLessonIds.indexOf(lessonId);
+
+  if (lessonIndex === -1) {
+    throw new Error("Lesson order not found.");
+  }
+
+  const previousLessonIds = orderedLessonIds.slice(0, lessonIndex);
+
+  if (previousLessonIds.length) {
+    const { data: completedPreviousLessons } = await supabase
+      .from("user_lesson_progress")
+      .select("lesson_id")
+      .eq("profile_id", user.id)
+      .eq("course_id", courseId)
+      .in("lesson_id", previousLessonIds);
+
+    const completedPreviousIds = new Set(
+      (completedPreviousLessons ?? []).map((item) => item.lesson_id as string)
+    );
+    const allPreviousLessonsCompleted = previousLessonIds.every(
+      (previousLessonId) => completedPreviousIds.has(previousLessonId)
+    );
+
+    if (!allPreviousLessonsCompleted) {
+      throw new Error("Complete previous lessons first.");
+    }
+  }
+
   const { data: existingProgress } = await supabase
     .from("user_lesson_progress")
     .select("id")
@@ -210,6 +263,10 @@ export async function completeLesson(formData: FormData) {
     }
   );
 
+  if (!existingProgress && progressPercent >= 100 && courseSlug === "html-css-foundations") {
+    await awardHtmlCssCompletionRewards(user.id);
+  }
+
   revalidatePath("/dashboard");
   revalidatePath("/learn/progress");
   revalidatePath("/account/profile");
@@ -220,4 +277,59 @@ export async function completeLesson(formData: FormData) {
       ? `/learn/courses/${courseSlug}/lessons/${nextLessonSlug}`
       : `/learn/courses/${courseSlug}`
   );
+}
+
+async function awardHtmlCssCompletionRewards(profileId: string) {
+  const supabase = await createClient();
+  const achievementId = "90000000-0000-4000-8000-000000000001";
+  const skillIds = [
+    "91000000-0000-4000-8000-000000000001",
+    "91000000-0000-4000-8000-000000000002",
+  ];
+
+  const { data: existingAchievement } = await supabase
+    .from("user_achievements")
+    .select("id")
+    .eq("profile_id", profileId)
+    .eq("achievement_id", achievementId)
+    .maybeSingle();
+
+  if (!existingAchievement) {
+    await supabase.from("user_achievements").insert({
+      profile_id: profileId,
+      achievement_id: achievementId,
+      unlocked_at: new Date().toISOString(),
+    });
+
+    await supabase.from("activity_logs").insert({
+      profile_id: profileId,
+      type: "achievement_unlocked",
+      title: 'Unlocked "HTML & CSS Foundation Builder"',
+      description: "Course achievement earned",
+      metadata: {
+        achievement_id: achievementId,
+        course_slug: "html-css-foundations",
+      },
+    });
+  }
+
+  const { data: existingSkills } = await supabase
+    .from("profile_skills")
+    .select("skill_id")
+    .eq("profile_id", profileId)
+    .in("skill_id", skillIds);
+
+  const existingSkillIds = new Set(
+    (existingSkills ?? []).map((skill) => skill.skill_id as string)
+  );
+  const skillsToInsert = skillIds
+    .filter((skillId) => !existingSkillIds.has(skillId))
+    .map((skillId) => ({
+      profile_id: profileId,
+      skill_id: skillId,
+    }));
+
+  if (skillsToInsert.length) {
+    await supabase.from("profile_skills").insert(skillsToInsert);
+  }
 }

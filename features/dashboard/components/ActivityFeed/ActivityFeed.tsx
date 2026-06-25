@@ -1,11 +1,10 @@
 import { getActivityLogs } from "../../api/getActivityLogs";
-import { activityItems } from "../../data/dashboardData";
 import type { ActivityItem } from "../../types/dashboard.types";
 import ActivityFeedItem from "./ActivityFeedItem";
 
 export default async function ActivityFeed() {
   const logs = await getActivityLogs();
-  const visibleItems: ActivityItem[] = logs.length ? logs : activityItems;
+  const visibleItems: ActivityItem[] = logs;
 
   return (
     <section className="w-full rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:h-70">
@@ -20,11 +19,17 @@ export default async function ActivityFeed() {
         </button>
       </div>
 
-      <div className="space-y-7">
-        {visibleItems.map((item) => (
-          <ActivityFeedItem key={item.id ?? item.title} item={item} />
-        ))}
-      </div>
+      {visibleItems.length ? (
+        <div className="space-y-7">
+          {visibleItems.map((item) => (
+            <ActivityFeedItem key={item.id ?? item.title} item={item} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+          No activity yet.
+        </div>
+      )}
     </section>
   );
 }

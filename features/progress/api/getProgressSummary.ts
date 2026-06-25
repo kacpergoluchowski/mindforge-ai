@@ -23,12 +23,14 @@ const activityIcons = {
   course_started: BookOpen,
   lesson_completed: CheckCircle,
   xp_earned: Star,
+  achievement_unlocked: Star,
 };
 
 const activityColors: Record<string, RecentActivityItem["color"]> = {
   course_started: "violet",
   lesson_completed: "emerald",
   xp_earned: "yellow",
+  achievement_unlocked: "yellow",
 };
 
 export const getProgressSummary = cache(

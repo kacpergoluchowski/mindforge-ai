@@ -2,7 +2,6 @@ import { Atom, FileCode2, Hexagon } from "lucide-react";
 
 import { getContinueLearningCourses } from "@/features/courses/api/getCourses";
 
-import { continueLearningCourses } from "../../data/dashboardData";
 import ContinueLearningItem from "./ContinueLearningItem";
 import type { ContinueLearningCourse as DashboardCourse } from "../../types/dashboard.types";
 import type { ContinueLearningCourse as SupabaseCourse } from "@/features/courses/types/courses.types";
@@ -15,9 +14,7 @@ const iconMap = {
 
 export default async function ContinueLearning() {
   const courses = await getContinueLearningCourses();
-  const visibleCourses: DashboardCourse[] = courses.length
-    ? courses.map(mapDashboardCourse)
-    : continueLearningCourses;
+  const visibleCourses: DashboardCourse[] = courses.map(mapDashboardCourse);
 
   return (
     <section className="flex h-full w-full flex-col rounded-3xl border border-white/10 bg-white/[0.03] p-6">
@@ -32,11 +29,17 @@ export default async function ContinueLearning() {
         </button>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto pr-1">
-        {visibleCourses.map((course) => (
-          <ContinueLearningItem key={course.id ?? course.title} course={course} />
-        ))}
-      </div>
+      {visibleCourses.length ? (
+        <div className="flex-1 space-y-4 overflow-y-auto pr-1">
+          {visibleCourses.map((course) => (
+            <ContinueLearningItem key={course.id ?? course.title} course={course} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+          No courses in progress.
+        </div>
+      )}
     </section>
   );
 }

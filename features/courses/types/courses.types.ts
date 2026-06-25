@@ -84,14 +84,18 @@ export type CourseListItem = {
 export type CourseLesson = {
   id: string;
   slug: string;
+  type: string;
   title: string;
   summary: string;
   content: string;
+  objective: string | null;
+  checklist: string[];
   position: number;
   duration: string;
   xpReward: number;
   isPreview: boolean;
   completed: boolean;
+  locked: boolean;
 };
 
 export type CourseModule = {
