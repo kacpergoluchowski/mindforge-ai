@@ -21,12 +21,16 @@ export type LearningCategoryColor =
   | "blue";
 
 export type ContinueLearningCourse = {
+  id?: string;
+  slug?: string;
   title: string;
   progress: number;
   icon: LucideIcon;
 };
 
 export type RecommendedCourse = {
+  id?: string;
+  slug?: string;
   title: string;
   category: string;
   duration: string;
@@ -36,6 +40,7 @@ export type RecommendedCourse = {
 };
 
 export type ActivityItem = {
+  id?: string;
   title: string;
   description?: string;
   time: string;

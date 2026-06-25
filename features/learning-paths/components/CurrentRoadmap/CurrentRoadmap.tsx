@@ -1,14 +1,16 @@
-import { roadmapSteps } from "../../data/learningData";
 import RoadmapStep from "./RoadmapStep";
+import type { RoadmapStep as RoadmapStepItem } from "../../types/learningPaths.types";
 
 type CurrentRoadmapProps = {
   title: string;
   progress: number;
+  steps: RoadmapStepItem[];
 };
 
 export default function CurrentRoadmap({
   title,
   progress,
+  steps,
 }: CurrentRoadmapProps) {
   return (
     <section className="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
@@ -30,7 +32,7 @@ export default function CurrentRoadmap({
         <div className="absolute left-3 top-2 h-[calc(100%-1rem)] w-px bg-slate-700" />
 
         <ul>
-          {roadmapSteps.map((step) => (
+          {steps.map((step) => (
             <RoadmapStep key={step.id} {...step} />
           ))}
         </ul>

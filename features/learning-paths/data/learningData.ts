@@ -1,12 +1,3 @@
-import {
-  Atom,
-  Brain,
-  Code2,
-  Database,
-  Hexagon,
-  Layers3,
-} from "lucide-react";
-
 import type {
   LearningPath,
   PopularLearningPath,
@@ -21,7 +12,7 @@ export const learningPaths: LearningPath[] = [
     coursesCompleted: 12,
     totalCourses: 15,
     color: "violet",
-    icon: Code2,
+    iconName: "code",
   },
   {
     id: 2,
@@ -30,7 +21,7 @@ export const learningPaths: LearningPath[] = [
     coursesCompleted: 11,
     totalCourses: 24,
     color: "emerald",
-    icon: Layers3,
+    iconName: "layers",
   },
   {
     id: 3,
@@ -39,7 +30,7 @@ export const learningPaths: LearningPath[] = [
     coursesCompleted: 6,
     totalCourses: 31,
     color: "orange",
-    icon: Brain,
+    iconName: "brain",
   },
 ];
 
@@ -47,7 +38,7 @@ export const popularLearningPaths: PopularLearningPath[] = [
   {
     id: 1,
     title: "Frontend Development",
-    icon: Atom,
+    iconName: "atom",
     technologies: ["React", "TypeScript", "Next.js"],
     rating: "4.9",
     students: "1.2k",
@@ -57,7 +48,7 @@ export const popularLearningPaths: PopularLearningPath[] = [
   {
     id: 2,
     title: "Fullstack Engineering",
-    icon: Hexagon,
+    iconName: "hexagon",
     technologies: ["Next.js", "NestJS", "PostgreSQL"],
     rating: "4.8",
     students: "980",
@@ -67,7 +58,7 @@ export const popularLearningPaths: PopularLearningPath[] = [
   {
     id: 3,
     title: "AI Engineering",
-    icon: Brain,
+    iconName: "brain",
     technologies: ["Python", "FastAPI", "LLMs"],
     rating: "5.0",
     students: "760",
@@ -77,7 +68,7 @@ export const popularLearningPaths: PopularLearningPath[] = [
   {
     id: 4,
     title: "System Design",
-    icon: Database,
+    iconName: "database",
     technologies: ["Architecture", "Scaling", "Databases"],
     rating: "4.7",
     students: "540",

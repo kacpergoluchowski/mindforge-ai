@@ -1,4 +1,5 @@
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 import type { ContinueLearningCourse } from "../../types/dashboard.types";
 
@@ -11,9 +12,8 @@ export default function ContinueLearningItem({
 }: ContinueLearningItemProps) {
   const Icon = course.icon;
   const progress = Math.min(Math.max(course.progress, 0), 100);
-
-  return (
-    <article className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+  const content = (
+    <>
       <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-violet-500/15">
         <Icon className="size-8 text-violet-400" />
       </div>
@@ -36,6 +36,19 @@ export default function ContinueLearningItem({
       </div>
 
       <ChevronRight className="size-5 shrink-0 text-slate-400" />
+    </>
+  );
+
+  return course.slug ? (
+    <Link
+      href={`/learn/courses/${course.slug}`}
+      className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-white/20"
+    >
+      {content}
+    </Link>
+  ) : (
+    <article className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+      {content}
     </article>
   );
 }

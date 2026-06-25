@@ -6,7 +6,16 @@ import BrowseByTopic from "@/features/courses/components/BrowseByTopic/BrowseByT
 import PageHeader from "@/components/shared/PageHeader";
 import { Plus } from "lucide-react";
 
-export default function CoursesPage() {
+type CoursesPageProps = {
+  searchParams: Promise<{
+    category?: string;
+  }>;
+};
+
+export default async function CoursesPage({ searchParams }: CoursesPageProps) {
+  const { category } = await searchParams;
+  const activeCategory = category ?? "All Courses";
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -17,10 +26,10 @@ export default function CoursesPage() {
           icon: Plus,
         }}
       />
-      <CourseCategories />
+      <CourseCategories activeCategory={activeCategory} />
       <AILearningBanner />
       <ContinueLearning />
-      <PopularCourses />
+      <PopularCourses category={activeCategory} />
       <BrowseByTopic />
     </div>
   );

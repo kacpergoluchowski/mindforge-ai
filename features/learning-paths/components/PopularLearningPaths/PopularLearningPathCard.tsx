@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { Check, Star } from "lucide-react";
+import { Atom, Brain, Check, Code2, Database, Hexagon, Star } from "lucide-react";
 
+import { startLearningPath } from "../../actions/learningPathActions";
 import type { PopularLearningPath } from "../../types/learningPaths.types";
 
 type PopularLearningPathColor = PopularLearningPath["color"];
@@ -37,9 +38,19 @@ const colorStyles: Record<
   },
 };
 
+const iconMap = {
+  atom: Atom,
+  brain: Brain,
+  code: Code2,
+  database: Database,
+  hexagon: Hexagon,
+};
+
 export default function PopularLearningPathCard({
+  id,
+  slug,
   title,
-  icon,
+  iconName,
   technologies,
   rating,
   students,
@@ -47,6 +58,7 @@ export default function PopularLearningPathCard({
   color,
 }: PopularLearningPath) {
   const styles = colorStyles[color];
+  const icon = iconMap[iconName as keyof typeof iconMap] ?? Code2;
 
   return (
     <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-white/20 hover:bg-[#131f35]">
@@ -78,12 +90,25 @@ export default function PopularLearningPathCard({
           {courses} Courses
         </span>
       </div>
+
+      {slug ? (
+        <form action={startLearningPath} className="mt-5">
+          <input type="hidden" name="pathId" value={String(id)} />
+          <input type="hidden" name="pathSlug" value={slug} />
+          <button
+            type="submit"
+            className="flex w-full items-center justify-center rounded-xl bg-violet-500 py-3 text-sm font-semibold text-white transition hover:bg-violet-600"
+          >
+            Start Path
+          </button>
+        </form>
+      ) : null}
     </article>
   );
 }
 
 type PopularPathIconProps = {
-  icon: PopularLearningPath["icon"];
+  icon: typeof Code2;
   styles: PopularLearningPathColorStyle;
 };
 

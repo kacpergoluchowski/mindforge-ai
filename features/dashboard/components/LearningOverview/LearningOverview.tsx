@@ -5,7 +5,7 @@ import WeeklyGoalProgress from "./WeeklyGoalProgress";
 
 export default function LearningOverview() {
   return (
-    <section className="w-full rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-4">
+    <section className="h-full w-full rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-4">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-white">Learning Overview</h2>
 

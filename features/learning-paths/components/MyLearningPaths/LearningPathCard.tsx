@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ArrowRight, MoreVertical } from "lucide-react";
+import { ArrowRight, Brain, Code2, Layers3, MoreVertical } from "lucide-react";
 
 import type { LearningPath } from "../../types/learningPaths.types";
 
@@ -33,16 +33,23 @@ const colorStyles: Record<LearningPathColor, LearningPathColorStyle> = {
   },
 };
 
+const iconMap = {
+  brain: Brain,
+  code: Code2,
+  layers: Layers3,
+};
+
 export default function LearningPathCard({
   title,
   progress,
   coursesCompleted,
   totalCourses,
   color,
-  icon,
+  iconName,
 }: LearningPath) {
   const styles = colorStyles[color];
   const normalizedProgress = Math.min(progress, 100);
+  const icon = iconMap[iconName as keyof typeof iconMap] ?? Code2;
 
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-sm">
@@ -81,7 +88,7 @@ export default function LearningPathCard({
 }
 
 type PathIconProps = {
-  icon: LearningPath["icon"];
+  icon: typeof Code2;
   styles: LearningPathColorStyle;
 };
 

@@ -1,8 +1,18 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import { getRecommendedCourses } from "@/features/courses/api/getCourses";
+import type { CourseListItem } from "@/features/courses/types/courses.types";
+
 import { recommendedCourses } from "../../data/dashboardData";
+import type { RecommendedCourse } from "../../types/dashboard.types";
 import RecommendedCourseCard from "./RecommendedCourseCard";
 
-export default function RecommendedCourses() {
+export default async function RecommendedCourses() {
+  const courses = await getRecommendedCourses();
+  const visibleCourses: RecommendedCourse[] = courses.length
+    ? courses.map(mapRecommendedCourse)
+    : recommendedCourses;
+
   return (
     <section className="h-min rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:h-70">
       <div className="mb-3 flex items-center justify-between">
@@ -31,11 +41,24 @@ export default function RecommendedCourses() {
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-4">
-        {recommendedCourses.map((course) => (
-          <RecommendedCourseCard key={course.title} course={course} />
+      <div className="grid gap-4 sm:grid-cols-3">
+        {visibleCourses.map((course) => (
+          <RecommendedCourseCard key={course.id ?? course.title} course={course} />
         ))}
       </div>
     </section>
   );
+}
+
+function mapRecommendedCourse(course: CourseListItem): RecommendedCourse {
+  return {
+    id: course.id,
+    slug: course.slug,
+    title: course.title,
+    category: course.category,
+    duration: course.duration,
+    level: course.level,
+    rating: course.rating,
+    image: "",
+  };
 }

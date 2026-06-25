@@ -1,9 +1,26 @@
+import { Atom, FileCode2, Hexagon } from "lucide-react";
+
+import { getContinueLearningCourses } from "@/features/courses/api/getCourses";
+
 import { continueLearningCourses } from "../../data/dashboardData";
 import ContinueLearningItem from "./ContinueLearningItem";
+import type { ContinueLearningCourse as DashboardCourse } from "../../types/dashboard.types";
+import type { ContinueLearningCourse as SupabaseCourse } from "@/features/courses/types/courses.types";
 
-export default function ContinueLearning() {
+const iconMap = {
+  atom: Atom,
+  "file-code": FileCode2,
+  hexagon: Hexagon,
+};
+
+export default async function ContinueLearning() {
+  const courses = await getContinueLearningCourses();
+  const visibleCourses: DashboardCourse[] = courses.length
+    ? courses.map(mapDashboardCourse)
+    : continueLearningCourses;
+
   return (
-    <section className="w-full rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+    <section className="flex h-full w-full flex-col rounded-3xl border border-white/10 bg-white/[0.03] p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-white">Continue Learning</h2>
 
@@ -15,11 +32,21 @@ export default function ContinueLearning() {
         </button>
       </div>
 
-      <div className="space-y-4">
-        {continueLearningCourses.map((course) => (
-          <ContinueLearningItem key={course.title} course={course} />
+      <div className="flex-1 space-y-4 overflow-y-auto pr-1">
+        {visibleCourses.map((course) => (
+          <ContinueLearningItem key={course.id ?? course.title} course={course} />
         ))}
       </div>
     </section>
   );
+}
+
+function mapDashboardCourse(course: SupabaseCourse): DashboardCourse {
+  return {
+    id: course.id,
+    slug: course.slug,
+    title: course.title,
+    progress: course.progress,
+    icon: iconMap[course.icon as keyof typeof iconMap] ?? FileCode2,
+  };
 }

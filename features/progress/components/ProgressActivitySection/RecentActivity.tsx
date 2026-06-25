@@ -53,7 +53,13 @@ function ActivityItem({
   );
 }
 
-export default function RecentActivity() {
+type RecentActivityProps = {
+  activities: RecentActivityItem[];
+};
+
+export default function RecentActivity({ activities }: RecentActivityProps) {
+  const visibleActivities = activities.length ? activities : recentActivityData;
+
   return (
     <section className="w-full rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 xl:p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -68,7 +74,7 @@ export default function RecentActivity() {
       </div>
 
       <div className="space-y-4">
-        {recentActivityData.map((activity) => (
+        {visibleActivities.map((activity) => (
           <ActivityItem key={activity.id} {...activity} />
         ))}
       </div>

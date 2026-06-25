@@ -51,7 +51,7 @@ export type CalendarSummaryItem = {
 export type RecentActivityColor = "violet" | "emerald" | "yellow";
 
 export type RecentActivityItem = {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   xp: string;
@@ -85,4 +85,11 @@ export type LearningInsightItem = {
   description: string;
   icon: LucideIcon;
   color: LearningInsightColor;
+};
+
+export type ProgressSummary = {
+  startedCourses: number;
+  completedCourses: number;
+  completedLessons: number;
+  recentActivities: RecentActivityItem[];
 };

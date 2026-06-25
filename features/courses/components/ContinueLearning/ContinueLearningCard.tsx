@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { BarChart3, Clock3 } from "lucide-react";
+import Link from "next/link";
 
 import type { ContinueLearningCardProps } from "../../types/courses.types";
 
@@ -38,12 +39,12 @@ export default function ContinueLearningCard({
   status,
   icon,
   color,
+  slug,
 }: ContinueLearningCardProps) {
   const styles = colorStyles[color];
   const normalizedProgress = Math.min(progress, 100);
-
-  return (
-    <article className="overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 transition hover:border-white/20 hover:bg-[#131f35]">
+  const content = (
+    <>
       <CourseVisual icon={icon} status={status} styles={styles} />
 
       <div className="p-4">
@@ -60,6 +61,19 @@ export default function ContinueLearningCard({
           <CourseMeta icon={BarChart3} value={level} />
         </div>
       </div>
+    </>
+  );
+
+  return slug ? (
+    <Link
+      href={`/learn/courses/${slug}`}
+      className="block overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 transition hover:border-white/20 hover:bg-[#131f35]"
+    >
+      {content}
+    </Link>
+  ) : (
+    <article className="overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 transition hover:border-white/20 hover:bg-[#131f35]">
+      {content}
     </article>
   );
 }

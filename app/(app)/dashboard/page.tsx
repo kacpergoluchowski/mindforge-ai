@@ -25,10 +25,10 @@ export default async function DashboardPage() {
       />
       <StatsGrid profile={profile} />
       <div className="grid gap-4 semiXl:grid-cols-5">
-        <div className="semiXl:col-span-3">
+        <div className="h-full semiXl:col-span-3">
           <LearningOverview />
         </div>
-        <div className="semiXl:col-span-2">
+        <div className="h-full semiXl:col-span-2">
           <ContinueLearning />
         </div>
       </div>

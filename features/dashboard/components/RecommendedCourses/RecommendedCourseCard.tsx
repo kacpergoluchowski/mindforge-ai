@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { Star } from "lucide-react";
+
 import type { RecommendedCourse } from "../../types/dashboard.types";
 
 type RecommendedCourseCardProps = {
@@ -8,8 +10,8 @@ type RecommendedCourseCardProps = {
 export default function RecommendedCourseCard({
   course,
 }: RecommendedCourseCardProps) {
-  return (
-    <article className="relative min-h-36 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+  const content = (
+    <>
       <span className="rounded-lg bg-white/10 px-2 py-1 text-xs text-white">
         {course.category}
       </span>
@@ -20,7 +22,7 @@ export default function RecommendedCourseCard({
         </h3>
 
         <p className="mt-2 text-xs text-slate-400">
-          {course.duration} · {course.level}
+          {course.duration} / {course.level}
         </p>
       </div>
 
@@ -28,6 +30,19 @@ export default function RecommendedCourseCard({
         <Star className="size-3 fill-current" />
         <span>{course.rating}</span>
       </div>
+    </>
+  );
+
+  return course.slug ? (
+    <Link
+      href={`/learn/courses/${course.slug}`}
+      className="relative block min-h-36 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:border-white/20"
+    >
+      {content}
+    </Link>
+  ) : (
+    <article className="relative min-h-36 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+      {content}
     </article>
   );
 }

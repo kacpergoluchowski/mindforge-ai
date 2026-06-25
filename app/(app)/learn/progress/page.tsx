@@ -4,11 +4,15 @@ import ProgressGoalSection from "@/features/progress/components/ProgressGoalSect
 import ProgressOverviewSection from "@/features/progress/components/ProgressOverviewSection/ProgressOverviewSection";
 import ProgressStats from "@/features/progress/components/ProgressStats/ProgressStats";
 import ProgressTopicsSection from "@/features/progress/components/ProgressTopicsSection/ProgressTopicsSection";
+import { getProgressSummary } from "@/features/progress/api/getProgressSummary";
 import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
 import { redirect } from "next/navigation";
 
 export default async function ProgressPage() {
-  const profile = await getCurrentProfile();
+  const [profile, progressSummary] = await Promise.all([
+    getCurrentProfile(),
+    getProgressSummary(),
+  ]);
 
   if (!profile) redirect("/login");
 
@@ -18,10 +22,10 @@ export default async function ProgressPage() {
         title="Progress"
         subtitle="Track your learning journey and achievements."
       />
-      <ProgressStats profile={profile} />
+      <ProgressStats profile={profile} summary={progressSummary} />
       <ProgressOverviewSection totalXp={profile.xp} />
       <ProgressTopicsSection />
-      <ProgressActivitySection />
+      <ProgressActivitySection activities={progressSummary?.recentActivities ?? []} />
       <ProgressGoalSection />
     </div>
   );

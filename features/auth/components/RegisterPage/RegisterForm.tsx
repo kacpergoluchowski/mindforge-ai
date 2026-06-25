@@ -124,7 +124,7 @@ export default function RegisterForm() {
   return (
     <div className="rounded-lg border border-violet-400/45 bg-[linear-gradient(180deg,rgba(35,25,68,0.72),rgba(5,12,25,0.88)_24%)] p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8 lg:p-10">
       <div className="lg:hidden">
-        <RegisterIntro compact />
+        <RegisterIntro />
       </div>
 
       <div className="hidden lg:block">
