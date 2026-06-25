@@ -96,6 +96,20 @@ export type CourseLesson = {
   isPreview: boolean;
   completed: boolean;
   locked: boolean;
+  quizQuestions: CourseQuizQuestion[];
+};
+
+export type CourseQuizOption = {
+  id: string;
+  text: string;
+};
+
+export type CourseQuizQuestion = {
+  id: string;
+  question: string;
+  options: CourseQuizOption[];
+  correctOptionId: string;
+  explanation?: string;
 };
 
 export type CourseModule = {

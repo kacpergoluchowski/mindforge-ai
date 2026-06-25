@@ -5,6 +5,12 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
+import {
+  getLessonQuiz,
+  getQuizScore,
+  passingQuizScore,
+} from "../utils/lessonQuiz";
+
 export async function startCourse(formData: FormData) {
   const courseId = String(formData.get("courseId") ?? "");
   const courseSlug = String(formData.get("courseSlug") ?? "");
@@ -85,13 +91,14 @@ export async function startCourse(formData: FormData) {
   redirect(`/learn/courses/${courseSlug}/lessons/${lessonSlug}`);
 }
 
-export async function completeLesson(formData: FormData) {
+export async function submitLessonQuiz(formData: FormData) {
   const courseId = String(formData.get("courseId") ?? "");
   const courseSlug = String(formData.get("courseSlug") ?? "");
   const lessonId = String(formData.get("lessonId") ?? "");
+  const lessonSlug = String(formData.get("lessonSlug") ?? "");
   const nextLessonSlug = String(formData.get("nextLessonSlug") ?? "");
 
-  if (!courseId || !courseSlug || !lessonId) {
+  if (!courseId || !courseSlug || !lessonId || !lessonSlug) {
     throw new Error("Missing lesson data.");
   }
 
@@ -106,7 +113,7 @@ export async function completeLesson(formData: FormData) {
 
   const { data: lesson } = await supabase
     .from("course_lessons")
-    .select("id, title, xp_reward")
+    .select("id, title, type, summary, objective, checklist, quiz_questions, xp_reward")
     .eq("id", lessonId)
     .eq("course_id", courseId)
     .maybeSingle();
@@ -115,57 +122,28 @@ export async function completeLesson(formData: FormData) {
     throw new Error("Lesson not found.");
   }
 
-  const { data: modules } = await supabase
-    .from("course_modules")
-    .select(
-      `
-      id,
-      position,
-      course_lessons (
-        id,
-        position
-      )
-    `
-    )
-    .eq("course_id", courseId);
+  await assertPreviousLessonsCompleted(supabase, {
+    courseId,
+    lessonId,
+    profileId: user.id,
+  });
 
-  const orderedLessonIds = [...(modules ?? [])]
-    .sort((firstModule, secondModule) => {
-      return firstModule.position - secondModule.position;
-    })
-    .flatMap((module) =>
-      [...(module.course_lessons ?? [])]
-        .sort((firstLesson, secondLesson) => {
-          return firstLesson.position - secondLesson.position;
-        })
-        .map((courseLesson) => courseLesson.id as string)
+  const quizQuestions = getLessonQuiz({
+    id: lesson.id,
+    title: lesson.title,
+    type: lesson.type,
+    summary: lesson.summary,
+    objective: lesson.objective,
+    checklist: lesson.checklist ?? [],
+    xpReward: lesson.xp_reward,
+    quizQuestions: lesson.quiz_questions,
+  });
+  const score = getQuizScore(quizQuestions, formData);
+
+  if (score < passingQuizScore) {
+    redirect(
+      `/learn/courses/${courseSlug}/lessons/${lessonSlug}?quiz=retry&score=${score}`
     );
-  const lessonIndex = orderedLessonIds.indexOf(lessonId);
-
-  if (lessonIndex === -1) {
-    throw new Error("Lesson order not found.");
-  }
-
-  const previousLessonIds = orderedLessonIds.slice(0, lessonIndex);
-
-  if (previousLessonIds.length) {
-    const { data: completedPreviousLessons } = await supabase
-      .from("user_lesson_progress")
-      .select("lesson_id")
-      .eq("profile_id", user.id)
-      .eq("course_id", courseId)
-      .in("lesson_id", previousLessonIds);
-
-    const completedPreviousIds = new Set(
-      (completedPreviousLessons ?? []).map((item) => item.lesson_id as string)
-    );
-    const allPreviousLessonsCompleted = previousLessonIds.every(
-      (previousLessonId) => completedPreviousIds.has(previousLessonId)
-    );
-
-    if (!allPreviousLessonsCompleted) {
-      throw new Error("Complete previous lessons first.");
-    }
   }
 
   const { data: existingProgress } = await supabase
@@ -277,6 +255,74 @@ export async function completeLesson(formData: FormData) {
       ? `/learn/courses/${courseSlug}/lessons/${nextLessonSlug}`
       : `/learn/courses/${courseSlug}`
   );
+}
+
+async function assertPreviousLessonsCompleted(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  {
+    courseId,
+    lessonId,
+    profileId,
+  }: {
+    courseId: string;
+    lessonId: string;
+    profileId: string;
+  }
+) {
+  const { data: modules } = await supabase
+    .from("course_modules")
+    .select(
+      `
+      id,
+      position,
+      course_lessons (
+        id,
+        position
+      )
+    `
+    )
+    .eq("course_id", courseId);
+
+  const orderedLessonIds = [...(modules ?? [])]
+    .sort((firstModule, secondModule) => {
+      return firstModule.position - secondModule.position;
+    })
+    .flatMap((module) =>
+      [...(module.course_lessons ?? [])]
+        .sort((firstLesson, secondLesson) => {
+          return firstLesson.position - secondLesson.position;
+        })
+        .map((courseLesson) => courseLesson.id as string)
+    );
+  const lessonIndex = orderedLessonIds.indexOf(lessonId);
+
+  if (lessonIndex === -1) {
+    throw new Error("Lesson order not found.");
+  }
+
+  const previousLessonIds = orderedLessonIds.slice(0, lessonIndex);
+
+  if (!previousLessonIds.length) {
+    return;
+  }
+
+  const { data: completedPreviousLessons } = await supabase
+    .from("user_lesson_progress")
+    .select("lesson_id")
+    .eq("profile_id", profileId)
+    .eq("course_id", courseId)
+    .in("lesson_id", previousLessonIds);
+
+  const completedPreviousIds = new Set(
+    (completedPreviousLessons ?? []).map((item) => item.lesson_id as string)
+  );
+  const allPreviousLessonsCompleted = previousLessonIds.every(
+    (previousLessonId) => completedPreviousIds.has(previousLessonId)
+  );
+
+  if (!allPreviousLessonsCompleted) {
+    throw new Error("Complete previous lessons first.");
+  }
 }
 
 async function awardHtmlCssCompletionRewards(profileId: string) {

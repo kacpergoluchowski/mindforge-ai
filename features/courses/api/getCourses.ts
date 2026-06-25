@@ -10,6 +10,7 @@ import type {
   CourseProgressSummary,
   ContinueLearningCourse,
 } from "../types/courses.types";
+import { getLessonQuiz } from "../utils/lessonQuiz";
 
 type CourseRow = {
   id: string;
@@ -51,6 +52,7 @@ type CourseLessonRow = {
   content: string;
   objective: string | null;
   checklist: string[] | null;
+  quiz_questions: unknown;
   position: number;
   duration_minutes: number;
   xp_reward: number;
@@ -216,6 +218,7 @@ export const getCourseBySlug = cache(
             content,
             objective,
             checklist,
+            quiz_questions,
             position,
             duration_minutes,
             xp_reward,
@@ -457,6 +460,16 @@ function mapCourseLesson(
     isPreview: lesson.is_preview,
     completed: completedLessonIds.includes(lesson.id),
     locked: lockedLessonIds.has(lesson.id),
+    quizQuestions: getLessonQuiz({
+      id: lesson.id,
+      title: lesson.title,
+      type: lesson.type,
+      summary: lesson.summary,
+      objective: lesson.objective,
+      checklist: lesson.checklist ?? [],
+      xpReward: lesson.xp_reward,
+      quizQuestions: lesson.quiz_questions,
+    }),
   };
 }
 

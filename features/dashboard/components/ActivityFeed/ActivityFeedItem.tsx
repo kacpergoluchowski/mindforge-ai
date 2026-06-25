@@ -19,19 +19,21 @@ export default function ActivityFeedItem({ item }: ActivityFeedItemProps) {
   const Icon = item.icon;
 
   return (
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex items-center gap-4">
+    <div className="flex items-start justify-between gap-4">
+      <div className="flex min-w-0 items-start gap-4">
         <div
           className={clsx(
-            "flex size-10 items-center justify-center rounded-full ring-1",
+            "flex size-10 shrink-0 items-center justify-center rounded-full ring-1",
             colorClasses[item.color]
           )}
         >
           <Icon className="size-5" />
         </div>
 
-        <div>
-          <p className="text-sm font-medium text-white">{item.title}</p>
+        <div className="min-w-0">
+          <p className="text-sm font-medium leading-5 text-white">
+            {item.title}
+          </p>
 
           {item.description && (
             <p className="mt-1 text-sm text-slate-400">{item.description}</p>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import clsx from "clsx";
 import {
   ArrowLeft,
   ArrowRight,
@@ -10,8 +11,8 @@ import {
   Trophy,
 } from "lucide-react";
 
-import { completeLesson } from "../../actions/courseActions";
 import type { CourseDetail, CourseLesson } from "../../types/courses.types";
+import CourseLessonQuizModal from "./CourseLessonQuizModal";
 
 type CourseLessonDetailsProps = {
   course: CourseDetail;
@@ -67,41 +68,14 @@ export default function CourseLessonDetails({
         </div>
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="space-y-6">
-          <LessonCard icon={Target} title="Objective">
-            <p className="text-base leading-8 text-slate-300">
-              {lesson.objective ?? "Understand the main concept and apply it in practice."}
-            </p>
-          </LessonCard>
+      <div className="grid items-stretch gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <LessonCard className="h-full" icon={Target} title="Objective">
+          <p className="text-base leading-8 text-slate-300">
+            {lesson.objective ?? "Understand the main concept and apply it in practice."}
+          </p>
+        </LessonCard>
 
-          <LessonCard icon={FileText} title="Lesson Content">
-            <div className="space-y-4 text-base leading-8 text-slate-300">
-              {formatContent(lesson.content).map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-          </LessonCard>
-
-          <LessonCard icon={ClipboardCheck} title="Checklist">
-            {lesson.checklist.length ? (
-              <ul className="space-y-3">
-                {lesson.checklist.map((item) => (
-                  <li key={item} className="flex gap-3 text-sm text-slate-300">
-                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-400" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-slate-400">
-                Complete the lesson and make sure you understand the key idea.
-              </p>
-            )}
-          </LessonCard>
-        </div>
-
-        <aside className="h-fit rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5">
+        <aside className="flex h-full flex-col rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5">
           <h2 className="text-lg font-semibold text-white">Lesson Progress</h2>
 
           <div className="mt-5 space-y-3 text-sm">
@@ -128,22 +102,12 @@ export default function CourseLessonDetails({
                 Completed
               </span>
             ) : (
-              <form action={completeLesson}>
-                <input type="hidden" name="courseId" value={course.id} />
-                <input type="hidden" name="courseSlug" value={course.slug} />
-                <input type="hidden" name="lessonId" value={lesson.id} />
-                <input
-                  type="hidden"
-                  name="nextLessonSlug"
-                  value={nextLesson?.slug ?? ""}
-                />
-                <button
-                  type="submit"
-                  className="w-full rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
-                >
-                  Mark as completed
-                </button>
-              </form>
+              <CourseLessonQuizModal
+                courseId={course.id}
+                courseSlug={course.slug}
+                lesson={lesson}
+                nextLessonSlug={nextLesson?.slug ?? ""}
+              />
             )}
 
             {availableNextLesson ? (
@@ -158,19 +122,58 @@ export default function CourseLessonDetails({
           </div>
         </aside>
       </div>
+
+      <LessonCard icon={FileText} title="Lesson Content">
+        <div className="space-y-4 text-base leading-8 text-slate-300">
+          {formatContent(lesson.content).map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </LessonCard>
+
+      <LessonCard icon={ClipboardCheck} title="Checklist">
+        {lesson.checklist.length ? (
+          <ul className="space-y-3">
+            {lesson.checklist.map((item) => (
+              <li key={item} className="flex gap-3 text-sm text-slate-300">
+                <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-400" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-slate-400">
+            Complete the lesson and make sure you understand the key idea.
+          </p>
+        )}
+      </LessonCard>
     </div>
   );
 }
 
 type LessonCardProps = {
   children: React.ReactNode;
+  className?: string;
+  id?: string;
   icon: typeof FileText;
   title: string;
 };
 
-function LessonCard({ children, icon: Icon, title }: LessonCardProps) {
+function LessonCard({
+  children,
+  className,
+  id,
+  icon: Icon,
+  title,
+}: LessonCardProps) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-6 md:p-8">
+    <section
+      id={id}
+      className={clsx(
+        "rounded-2xl border border-white/10 bg-[#111a2d]/80 p-6 md:p-8",
+        className
+      )}
+    >
       <div className="mb-5 flex items-center gap-3">
         <div className="flex size-10 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400">
           <Icon className="size-5" />
