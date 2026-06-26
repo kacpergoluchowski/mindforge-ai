@@ -9,13 +9,23 @@ import {
   YAxis,
 } from "recharts";
 
-import { xpOverviewData } from "../../data/progressData";
+import type { XpOverviewItem } from "../../types/progress.types";
 
 type XpOverviewProps = {
+  dailyAverageXp: number;
   totalXp: number;
+  weekXp: number;
+  xpOverview: XpOverviewItem[];
 };
 
-export default function XpOverview({ totalXp }: XpOverviewProps) {
+export default function XpOverview({
+  dailyAverageXp,
+  totalXp,
+  weekXp,
+  xpOverview,
+}: XpOverviewProps) {
+  const chartData = xpOverview.length ? xpOverview : getEmptyWeekData();
+
   return (
     <article className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -31,7 +41,7 @@ export default function XpOverview({ totalXp }: XpOverviewProps) {
 
       <div className="grid gap-6 xl:grid-cols-[1fr_170px]">
         <div className="h-[280px] w-full overflow-x-auto overflow-y-hidden">
-          <AreaChart width={620} height={280} data={xpOverviewData}>
+          <AreaChart width={620} height={280} data={chartData}>
             <defs>
               <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.55} />
@@ -58,7 +68,7 @@ export default function XpOverview({ totalXp }: XpOverviewProps) {
               tickLine={false}
               stroke="#64748b"
               fontSize={12}
-              tickFormatter={(value) => `${value / 1000}K`}
+              tickFormatter={(value) => String(value)}
             />
 
             <Tooltip
@@ -105,17 +115,28 @@ export default function XpOverview({ totalXp }: XpOverviewProps) {
 
           <div>
             <p className="text-sm text-slate-400">This Week</p>
-            <p className="mt-2 text-2xl font-bold text-emerald-400">+850</p>
+            <p className="mt-2 text-2xl font-bold text-emerald-400">
+              +{weekXp.toLocaleString()}
+            </p>
           </div>
 
           <div className="my-6 h-px bg-white/10" />
 
           <div>
             <p className="text-sm text-slate-400">Daily Average</p>
-            <p className="mt-2 text-2xl font-bold text-slate-200">1,791</p>
+            <p className="mt-2 text-2xl font-bold text-slate-200">
+              {dailyAverageXp.toLocaleString()}
+            </p>
           </div>
         </div>
       </div>
     </article>
   );
+}
+
+function getEmptyWeekData(): XpOverviewItem[] {
+  return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => ({
+    day,
+    xp: 0,
+  }));
 }

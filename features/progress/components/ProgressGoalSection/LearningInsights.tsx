@@ -1,6 +1,5 @@
 import clsx from "clsx";
 
-import { learningInsightsData } from "../../data/progressData";
 import type {
   LearningInsightColor,
   LearningInsightItem,
@@ -39,7 +38,11 @@ function InsightItem({
   );
 }
 
-export default function LearningInsights() {
+type LearningInsightsProps = {
+  insights: LearningInsightItem[];
+};
+
+export default function LearningInsights({ insights }: LearningInsightsProps) {
   return (
     <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6">
@@ -50,11 +53,17 @@ export default function LearningInsights() {
         </p>
       </div>
 
-      <div className="space-y-4">
-        {learningInsightsData.map((insight) => (
-          <InsightItem key={insight.id} {...insight} />
-        ))}
-      </div>
+      {insights.length ? (
+        <div className="space-y-4">
+          {insights.map((insight) => (
+            <InsightItem key={insight.id} {...insight} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+          Complete lessons to generate learning insights.
+        </div>
+      )}
     </section>
   );
 }

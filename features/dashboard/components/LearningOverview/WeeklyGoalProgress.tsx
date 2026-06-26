@@ -1,15 +1,15 @@
 type WeeklyGoalProgressProps = {
-  currentHours: number;
-  goalHours: number;
+  currentLessons: number;
+  goalLessons: number;
 };
 
 export default function WeeklyGoalProgress({
-  currentHours,
-  goalHours,
+  currentLessons,
+  goalLessons,
 }: WeeklyGoalProgressProps) {
   const progress =
-    goalHours > 0
-      ? Math.min(Math.max((currentHours / goalHours) * 100, 0), 100)
+    goalLessons > 0
+      ? Math.min(Math.max((currentLessons / goalLessons) * 100, 0), 100)
       : 0;
 
   return (
@@ -19,7 +19,7 @@ export default function WeeklyGoalProgress({
           <h3 className="text-sm font-semibold text-white">Weekly Goal</h3>
 
           <p className="text-sm text-slate-400">
-            {currentHours} / {goalHours} hours completed
+            {currentLessons} / {goalLessons} lessons completed
           </p>
         </div>
 

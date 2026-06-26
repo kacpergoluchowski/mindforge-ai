@@ -1,20 +1,30 @@
 import TimeSpent from "./TimeSpent";
 import XpOverview from "./XpOverview";
 
+import type { CurrentProfile } from "@/features/profile/types/profile.types";
+import type { ProgressSummary } from "../../types/progress.types";
+
 type ProgressOverviewSectionProps = {
-  totalXp: number;
+  profile: CurrentProfile;
+  summary: ProgressSummary | null;
 };
 
 export default function ProgressOverviewSection({
-  totalXp,
+  profile,
+  summary,
 }: ProgressOverviewSectionProps) {
   return (
     <section className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
       <div className="min-w-0">
-        <XpOverview totalXp={totalXp} />
+        <XpOverview
+          dailyAverageXp={summary?.dailyAverageXp ?? 0}
+          totalXp={profile.xp}
+          weekXp={summary?.thisWeekXp ?? 0}
+          xpOverview={summary?.xpOverview ?? []}
+        />
       </div>
       <div className="min-w-0">
-        <TimeSpent />
+        <TimeSpent items={summary?.categoryBreakdown ?? []} />
       </div>
     </section>
   );

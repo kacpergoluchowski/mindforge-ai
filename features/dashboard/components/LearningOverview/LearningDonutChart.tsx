@@ -1,14 +1,31 @@
-const chartSegments = [
-  { color: "#8b5cf6", value: 49 },
-  { color: "#34d399", value: 23 },
-  { color: "#f59e0b", value: 18 },
-  { color: "#3b82f6", value: 10 },
-];
+import type { LearningCategory } from "../../types/dashboard.types";
+
+type LearningDonutChartProps = {
+  categories: LearningCategory[];
+  totalLabel: string;
+};
+
+const colorMap: Record<LearningCategory["color"], string> = {
+  blue: "#3b82f6",
+  emerald: "#34d399",
+  orange: "#f59e0b",
+  violet: "#8b5cf6",
+};
 
 const radius = 56;
 const circumference = 2 * Math.PI * radius;
 
-export default function LearningDonutChart() {
+export default function LearningDonutChart({
+  categories,
+  totalLabel,
+}: LearningDonutChartProps) {
+  const chartSegments = categories.length
+    ? categories.map((category) => ({
+        color: colorMap[category.color],
+        value: category.percentage,
+      }))
+    : [{ color: "#334155", value: 100 }];
+
   return (
     <div className="flex items-center justify-center">
       <div className="relative size-52">
@@ -49,7 +66,7 @@ export default function LearningDonutChart() {
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-lg font-bold text-white">18h 45m</span>
+          <span className="text-lg font-bold text-white">{totalLabel}</span>
           <span className="text-xs text-slate-400">This week</span>
         </div>
       </div>

@@ -29,7 +29,7 @@ export type TimeSpentItem = {
 export type TopicProgressColor = "yellow" | "blue" | "sky" | "green";
 
 export type TopicProgressItem = {
-  id: number;
+  id: number | string;
   title: string;
   progress: number;
   icon: LucideIcon;
@@ -37,7 +37,7 @@ export type TopicProgressItem = {
 };
 
 export type LearningCalendarDay = {
-  id: number;
+  id: number | string;
   day: string;
   value: number;
 };
@@ -62,7 +62,7 @@ export type RecentActivityItem = {
 export type AchievementColor = "violet" | "emerald" | "yellow";
 
 export type AchievementItem = {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   date: string;
@@ -80,16 +80,37 @@ export type WeeklyGoalData = {
 export type LearningInsightColor = "blue" | "emerald" | "violet";
 
 export type LearningInsightItem = {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   icon: LucideIcon;
   color: LearningInsightColor;
 };
 
+export type CourseProgressItem = {
+  id: string;
+  title: string;
+  category: string;
+  status: string;
+  progress: number;
+  lessons: number;
+  duration: string;
+};
+
 export type ProgressSummary = {
   startedCourses: number;
   completedCourses: number;
   completedLessons: number;
+  thisWeekLessons: number;
+  thisWeekXp: number;
+  dailyAverageXp: number;
+  weeklyLessonGoal: number;
+  xpOverview: XpOverviewItem[];
+  categoryBreakdown: TimeSpentItem[];
+  topicProgress: TopicProgressItem[];
+  learningCalendar: LearningCalendarDay[];
+  achievements: AchievementItem[];
+  insights: LearningInsightItem[];
+  courseProgress: CourseProgressItem[];
   recentActivities: RecentActivityItem[];
 };

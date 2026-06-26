@@ -1,6 +1,5 @@
 import clsx from "clsx";
 
-import { topicProgressData } from "../../data/progressData";
 import type {
   TopicProgressColor,
   TopicProgressItem as TopicProgressItemData,
@@ -51,7 +50,11 @@ function TopicProgressItem({
   );
 }
 
-export default function TopicProgress() {
+type TopicProgressProps = {
+  topics: TopicProgressItemData[];
+};
+
+export default function TopicProgress({ topics }: TopicProgressProps) {
   return (
     <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -66,9 +69,15 @@ export default function TopicProgress() {
       </div>
 
       <div className="space-y-5">
-        {topicProgressData.map((topic) => (
-          <TopicProgressItem key={topic.id} {...topic} />
-        ))}
+        {topics.length ? (
+          topics.map((topic) => (
+            <TopicProgressItem key={topic.id} {...topic} />
+          ))
+        ) : (
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+            Start a course to see topic progress.
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,6 +1,5 @@
 import clsx from "clsx";
 
-import { achievementsData } from "../../data/progressData";
 import type {
   AchievementColor,
   AchievementItem,
@@ -39,7 +38,11 @@ function AchievementCard({
   );
 }
 
-export default function Achievements() {
+type AchievementsProps = {
+  achievements: AchievementItem[];
+};
+
+export default function Achievements({ achievements }: AchievementsProps) {
   return (
     <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -53,11 +56,17 @@ export default function Achievements() {
         </button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        {achievementsData.map((achievement) => (
-          <AchievementCard key={achievement.id} {...achievement} />
-        ))}
-      </div>
+      {achievements.length ? (
+        <div className="grid gap-4 md:grid-cols-3">
+          {achievements.map((achievement) => (
+            <AchievementCard key={achievement.id} {...achievement} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+          No achievements unlocked yet.
+        </div>
+      )}
     </section>
   );
 }

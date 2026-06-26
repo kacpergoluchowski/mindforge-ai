@@ -386,6 +386,8 @@ function mapCourseListItem(
     category: course.category,
     level: course.level,
     duration: formatDuration(course.duration_minutes),
+    modulesCount:
+      "course_modules" in course ? course.course_modules?.length ?? 0 : 0,
     lessons: course.lessons_count,
     xpReward: course.xp_reward,
     rating: Number(course.rating),

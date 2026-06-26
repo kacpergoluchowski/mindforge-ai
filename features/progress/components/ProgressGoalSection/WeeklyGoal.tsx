@@ -1,17 +1,13 @@
 import { Target } from "lucide-react";
-import { weeklyGoalData } from "../../data/progressData";
 
-export default function WeeklyGoal() {
-  const progress =
-    weeklyGoalData.target > 0
-      ? Math.min(
-          Math.max(
-            (weeklyGoalData.current / weeklyGoalData.target) * 100,
-            0
-          ),
-          100
-        )
-      : 0;
+type WeeklyGoalProps = {
+  completedLessons: number;
+  target: number;
+};
+
+export default function WeeklyGoal({ completedLessons, target }: WeeklyGoalProps) {
+  const progress = target > 0 ? Math.min((completedLessons / target) * 100, 100) : 0;
+  const remaining = Math.max(target - completedLessons, 0);
 
   return (
     <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
@@ -25,11 +21,11 @@ export default function WeeklyGoal() {
 
       <div className="flex items-end gap-2">
         <span className="text-5xl font-bold text-white">
-          {weeklyGoalData.current}
+          {completedLessons}
         </span>
 
         <span className="mb-2 text-slate-400">
-          / {weeklyGoalData.target} hours
+          / {target} lessons
         </span>
       </div>
 
@@ -53,15 +49,13 @@ export default function WeeklyGoal() {
         <div className="rounded-2xl bg-white/[0.03] p-4">
           <p className="text-sm text-slate-400">Remaining</p>
           <p className="mt-1 font-semibold text-white">
-            {weeklyGoalData.remaining}
+            {remaining} lessons
           </p>
         </div>
 
         <div className="rounded-2xl bg-white/[0.03] p-4">
           <p className="text-sm text-slate-400">Deadline</p>
-          <p className="mt-1 font-semibold text-white">
-            {weeklyGoalData.daysLeft}
-          </p>
+          <p className="mt-1 font-semibold text-white">This week</p>
         </div>
       </div>
     </section>

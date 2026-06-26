@@ -1,18 +1,18 @@
 import Achievements from "./Achievements";
 import RecentActivity from "./RecentActivity";
-import type { RecentActivityItem } from "../../types/progress.types";
+import type { ProgressSummary } from "../../types/progress.types";
 
 type ProgressActivitySectionProps = {
-  activities: RecentActivityItem[];
+  summary: ProgressSummary | null;
 };
 
 export default function ProgressActivitySection({
-  activities,
+  summary,
 }: ProgressActivitySectionProps) {
   return (
     <section className="grid gap-5 xl:grid-cols-[0.9fr_1.4fr]">
-      <RecentActivity activities={activities} />
-      <Achievements />
+      <RecentActivity activities={summary?.recentActivities ?? []} />
+      <Achievements achievements={summary?.achievements ?? []} />
     </section>
   );
 }

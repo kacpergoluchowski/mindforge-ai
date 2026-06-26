@@ -23,10 +23,10 @@ export default async function ProgressPage() {
         subtitle="Track your learning journey and achievements."
       />
       <ProgressStats profile={profile} summary={progressSummary} />
-      <ProgressOverviewSection totalXp={profile.xp} />
-      <ProgressTopicsSection />
-      <ProgressActivitySection activities={progressSummary?.recentActivities ?? []} />
-      <ProgressGoalSection />
+      <ProgressOverviewSection profile={profile} summary={progressSummary} />
+      <ProgressTopicsSection summary={progressSummary} />
+      <ProgressActivitySection summary={progressSummary} />
+      <ProgressGoalSection summary={progressSummary} />
     </div>
   );
 }

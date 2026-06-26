@@ -14,7 +14,11 @@ export default function ProgressStats({ profile, summary }: ProgressStatsProps) 
     profile.xpGoal > 0 ? Math.min((profile.xp / profile.xpGoal) * 100, 100) : 0;
   const stats = progressStats.map((stat) => {
     if (stat.title === "Total XP") {
-      return { ...stat, value: profile.xp.toLocaleString() };
+      return {
+        ...stat,
+        value: profile.xp.toLocaleString(),
+        subtitle: `+${(summary?.thisWeekXp ?? 0).toLocaleString()} this week`,
+      };
     }
 
     if (stat.title === "Level") {
@@ -27,7 +31,12 @@ export default function ProgressStats({ profile, summary }: ProgressStatsProps) 
     }
 
     if (stat.title === "Streak") {
-      return { ...stat, value: String(profile.streakDays) };
+      return {
+        ...stat,
+        title: "Lessons",
+        value: String(summary?.completedLessons ?? 0),
+        subtitle: "Completed lessons",
+      };
     }
 
     if (stat.title === "Rank") {

@@ -5,11 +5,15 @@ import LearningOverview from "@/features/dashboard/components/LearningOverview/L
 import RecommendedCourses from "@/features/dashboard/components/RecommendedCourses/RecommendedCourses";
 import StatsGrid from "@/features/dashboard/components/stats/StatsGrid";
 import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
+import { getProgressSummary } from "@/features/progress/api/getProgressSummary";
 import { getFirstName } from "@/features/profile/utils/profileFormatters";
 import { Bot, ChevronDown } from "lucide-react";
 
 export default async function DashboardPage() {
-  const profile = await getCurrentProfile();
+  const [profile, progressSummary] = await Promise.all([
+    getCurrentProfile(),
+    getProgressSummary(),
+  ]);
   const firstName = profile ? getFirstName(profile.fullName) : "there";
 
   return (
@@ -23,10 +27,10 @@ export default async function DashboardPage() {
           rightIcon: ChevronDown,
         }}
       />
-      <StatsGrid profile={profile} />
+      <StatsGrid profile={profile} summary={progressSummary} />
       <div className="grid gap-4 semiXl:grid-cols-5">
         <div className="h-full semiXl:col-span-3">
-          <LearningOverview />
+          <LearningOverview summary={progressSummary} />
         </div>
         <div className="h-full semiXl:col-span-2">
           <ContinueLearning />

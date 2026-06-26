@@ -1,9 +1,6 @@
 import clsx from "clsx";
 
-import {
-  calendarSummary,
-  learningCalendarData,
-} from "../../data/progressData";
+import type { CalendarSummaryItem, LearningCalendarDay } from "../../types/progress.types";
 
 const weekDays = [
   { id: "monday", label: "M" },
@@ -32,7 +29,14 @@ function getIntensity(value: number) {
   return value as keyof typeof intensityStyles;
 }
 
-export default function LearningCalendar() {
+type LearningCalendarProps = {
+  days: LearningCalendarDay[];
+};
+
+export default function LearningCalendar({ days }: LearningCalendarProps) {
+  const calendarDays = days.length ? days : getEmptyCalendarDays();
+  const calendarSummary = getCalendarSummary(calendarDays);
+
   return (
     <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6 flex items-center justify-between gap-4">
@@ -63,7 +67,7 @@ export default function LearningCalendar() {
           </div>
 
           <div className="grid grid-cols-7 gap-2">
-            {learningCalendarData.map((day) => (
+            {calendarDays.map((day) => (
               <div
                 key={day.id}
                 className={clsx(
@@ -102,4 +106,38 @@ export default function LearningCalendar() {
       </div>
     </section>
   );
+}
+
+function getEmptyCalendarDays(): LearningCalendarDay[] {
+  return Array.from({ length: 28 }, (_, index) => ({
+    id: index + 1,
+    day: "",
+    value: 0,
+  }));
+}
+
+function getCalendarSummary(days: LearningCalendarDay[]): CalendarSummaryItem[] {
+  const activeDays = days.filter((day) => day.value > 0);
+  const bestDay = [...days].sort((first, second) => second.value - first.value)[0];
+  const averageActivity = Math.round(
+    days.reduce((total, day) => total + day.value, 0) / Math.max(days.length, 1)
+  );
+
+  return [
+    {
+      id: 1,
+      label: "Active Days",
+      value: String(activeDays.length),
+    },
+    {
+      id: 2,
+      label: "Best Day",
+      value: bestDay?.value ? bestDay.day : "-",
+    },
+    {
+      id: 3,
+      label: "Avg Activity",
+      value: String(averageActivity),
+    },
+  ];
 }

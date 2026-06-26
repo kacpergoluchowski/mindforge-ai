@@ -33,6 +33,7 @@ type ProfileRow = {
   xp: number | null;
   xp_goal: number | null;
   streak_days: number | null;
+  last_learning_date: string | null;
   plan: string | null;
   created_at: string | null;
   profile_skills: Array<{
@@ -78,6 +79,10 @@ function mapAchievements(
 function normalizeProfile(user: User, row: ProfileRow | null): CurrentProfile {
   const email = user.email ?? "";
   const metadata = user.user_metadata;
+  const streakDays = getCurrentStreakDays({
+    lastLearningDate: row?.last_learning_date ?? null,
+    streakDays: row?.streak_days ?? 0,
+  });
 
   return {
     id: user.id,
@@ -92,12 +97,46 @@ function normalizeProfile(user: User, row: ProfileRow | null): CurrentProfile {
     level: row?.level ?? 1,
     xp: row?.xp ?? 0,
     xpGoal: row?.xp_goal ?? 1000,
-    streakDays: row?.streak_days ?? 0,
+    streakDays,
     plan: row?.plan ?? "free",
     createdAt: row?.created_at ?? user.created_at,
     skills: mapSkills(row),
     achievements: mapAchievements(row),
   };
+}
+
+type CurrentStreakInput = {
+  lastLearningDate: string | null;
+  streakDays: number;
+};
+
+function getCurrentStreakDays({
+  lastLearningDate,
+  streakDays,
+}: CurrentStreakInput): number {
+  const today = getDateKey(new Date());
+  const yesterday = getDateKey(addDays(new Date(), -1));
+
+  if (lastLearningDate === today || lastLearningDate === yesterday) {
+    return streakDays;
+  }
+
+  return 0;
+}
+
+function addDays(date: Date, days: number): Date {
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + days);
+
+  return nextDate;
+}
+
+function getDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 export const getCurrentProfile = cache(async () => {

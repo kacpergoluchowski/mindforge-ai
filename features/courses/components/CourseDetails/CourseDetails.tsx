@@ -1,5 +1,17 @@
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Clock3, Lock, Star, Trophy } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  CheckCircle2,
+  Clock3,
+  LayoutTemplate,
+  Lock,
+  PlayCircle,
+  Star,
+  Target,
+  Trophy,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import clsx from "clsx";
 
 import { startCourse } from "../../actions/courseActions";
@@ -18,6 +30,7 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
   const progress = course.userProgress?.progressPercent ?? 0;
   const courseStarted = Boolean(course.userProgress);
   const courseCompleted = course.userProgress?.status === "completed";
+  const overview = getCourseOverview(course);
 
   return (
     <div className="space-y-8">
@@ -95,65 +108,158 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
         </div>
       </section>
 
+      <section className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
+        <OverviewCard
+          icon={Target}
+          title="What you will learn"
+          items={overview.learningOutcomes}
+        />
+
+        <div className="grid gap-5">
+          <OverviewCard
+            icon={BookOpen}
+            title="Requirements"
+            items={overview.requirements}
+          />
+          <OverviewCard
+            icon={LayoutTemplate}
+            title="Final project"
+            items={overview.finalProject}
+          />
+        </div>
+      </section>
+
       <section className="space-y-5">
         <div>
           <h2 className="text-xl font-semibold text-white">Course content</h2>
           <p className="mt-1 text-sm text-slate-400">
-            {course.modules.length} modules ready for the first test flow.
+            {course.modules.length} modules, {course.lessons} lessons and{" "}
+            {course.xpReward} XP to earn.
           </p>
         </div>
 
         <div className="space-y-4">
           {course.modules.map((module) => (
-            <article
+            <CourseModuleCard
               key={module.id}
-              className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5"
-            >
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <h3 className="font-semibold text-white">{module.title}</h3>
-                  {module.description ? (
-                    <p className="mt-1 text-sm text-slate-400">
-                      {module.description}
-                    </p>
-                  ) : null}
-                </div>
-
-                <span className="text-sm text-slate-500">
-                  {module.lessons.length} lessons
-                </span>
-              </div>
-
-              <div className="mt-5 space-y-3">
-                {module.lessons.map((lesson) =>
-                  lesson.locked ? (
-                    <div
-                      key={lesson.id}
-                      className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 opacity-60 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <LessonRowContent lesson={lesson} />
-                    </div>
-                  ) : (
-                    <Link
-                      key={lesson.id}
-                      href={`/learn/courses/${course.slug}/lessons/${lesson.slug}`}
-                      className={clsx(
-                        "flex flex-col gap-3 rounded-xl border p-4 transition sm:flex-row sm:items-center sm:justify-between",
-                        lesson.completed
-                          ? "border-emerald-400/20 bg-emerald-500/10"
-                          : "border-white/10 bg-white/[0.02] hover:border-white/20"
-                      )}
-                    >
-                      <LessonRowContent lesson={lesson} />
-                    </Link>
-                  )
-                )}
-              </div>
-            </article>
+              courseSlug={course.slug}
+              module={module}
+            />
           ))}
         </div>
       </section>
     </div>
+  );
+}
+
+type OverviewCardProps = {
+  icon: LucideIcon;
+  items: string[];
+  title: string;
+};
+
+function OverviewCard({ icon: Icon, items, title }: OverviewCardProps) {
+  return (
+    <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5">
+      <div className="mb-5 flex items-center gap-3">
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-300">
+          <Icon className="size-5" />
+        </div>
+        <h2 className="text-lg font-semibold text-white">{title}</h2>
+      </div>
+
+      <div className="space-y-3">
+        {items.map((item) => (
+          <div key={item} className="flex gap-3 text-sm leading-6 text-slate-300">
+            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-400" />
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+type CourseModuleCardProps = {
+  courseSlug: string;
+  module: CourseDetail["modules"][number];
+};
+
+function CourseModuleCard({ courseSlug, module }: CourseModuleCardProps) {
+  const completedLessons = module.lessons.filter((lesson) => lesson.completed).length;
+  const totalLessons = module.lessons.length;
+  const progress = totalLessons ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const status = getModuleStatus(module);
+  const StatusIcon = status.icon;
+
+  return (
+    <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-3">
+            <h3 className="font-semibold text-white">{module.title}</h3>
+            <span
+              className={clsx(
+                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
+                status.className
+              )}
+            >
+              <StatusIcon className="size-3.5" />
+              {status.label}
+            </span>
+          </div>
+
+          {module.description ? (
+            <p className="mt-1 text-sm leading-6 text-slate-400">
+              {module.description}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="shrink-0 text-sm text-slate-400 lg:text-right">
+          <p>
+            {completedLessons}/{totalLessons} lessons completed
+          </p>
+          <p className="mt-1 font-semibold text-violet-300">{progress}%</p>
+        </div>
+      </div>
+
+      <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-800">
+        <div
+          className={clsx(
+            "h-full rounded-full",
+            progress === 100 ? "bg-emerald-500" : "bg-violet-500"
+          )}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div className="mt-5 space-y-3">
+        {module.lessons.map((lesson) =>
+          lesson.locked ? (
+            <div
+              key={lesson.id}
+              className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 opacity-60 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <LessonRowContent lesson={lesson} />
+            </div>
+          ) : (
+            <Link
+              key={lesson.id}
+              href={`/learn/courses/${courseSlug}/lessons/${lesson.slug}`}
+              className={clsx(
+                "flex flex-col gap-3 rounded-xl border p-4 transition sm:flex-row sm:items-center sm:justify-between",
+                lesson.completed
+                  ? "border-emerald-400/20 bg-emerald-500/10"
+                  : "border-white/10 bg-white/[0.02] hover:border-white/20"
+              )}
+            >
+              <LessonRowContent lesson={lesson} />
+            </Link>
+          )
+        )}
+      </div>
+    </article>
   );
 }
 
@@ -204,6 +310,78 @@ function LessonRowContent({ lesson }: LessonRowContentProps) {
       </div>
     </>
   );
+}
+
+function getCourseOverview(course: CourseDetail) {
+  const isHtmlCssCourse = course.title.toLowerCase().includes("html");
+
+  if (isHtmlCssCourse) {
+    return {
+      learningOutcomes: [
+        "Build clean HTML documents with semantic structure.",
+        "Style real UI sections with CSS, spacing, typography and colors.",
+        "Use Flexbox and Grid for responsive layouts.",
+        "Create forms, buttons, cards and reusable UI patterns.",
+        "Prepare a full responsive SaaS landing page as a portfolio project.",
+      ],
+      requirements: [
+        "No previous coding experience required.",
+        "Basic computer skills and willingness to practice.",
+        "VS Code and a browser with developer tools.",
+      ],
+      finalProject: [
+        "Responsive landing page for a fictional SaaS application.",
+        "Header, hero, features, pricing, FAQ and footer.",
+        "Semantic HTML, accessible forms, Flexbox, Grid and mobile-first CSS.",
+      ],
+    };
+  }
+
+  return {
+    learningOutcomes: [
+      `Understand the core concepts behind ${course.title}.`,
+      "Complete structured lessons with short quizzes.",
+      "Build practical skills step by step.",
+      "Track progress and earn XP as you move through the course.",
+    ],
+    requirements: [
+      "Basic programming curiosity.",
+      "A code editor and browser.",
+      "Time for practice after each lesson.",
+    ],
+    finalProject: [
+      "Complete the practical course project.",
+      "Apply the main skills from each module.",
+      "Use the result as a portfolio-ready learning milestone.",
+    ],
+  };
+}
+
+function getModuleStatus(module: CourseDetail["modules"][number]) {
+  const completedLessons = module.lessons.filter((lesson) => lesson.completed).length;
+  const hasUnlockedLesson = module.lessons.some((lesson) => !lesson.locked);
+
+  if (completedLessons === module.lessons.length) {
+    return {
+      className: "bg-emerald-500/10 text-emerald-300",
+      icon: CheckCircle2,
+      label: "Completed",
+    };
+  }
+
+  if (completedLessons > 0 || hasUnlockedLesson) {
+    return {
+      className: "bg-violet-500/10 text-violet-300",
+      icon: PlayCircle,
+      label: "In progress",
+    };
+  }
+
+  return {
+    className: "bg-slate-700/60 text-slate-300",
+    icon: Lock,
+    label: "Locked",
+  };
 }
 
 function formatStatus(status?: string): string {

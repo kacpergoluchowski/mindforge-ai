@@ -3,8 +3,7 @@
 import clsx from "clsx";
 import { Cell, Pie, PieChart } from "recharts";
 
-import { timeSpentData } from "../../data/progressData";
-import type { TimeSpentColor } from "../../types/progress.types";
+import type { TimeSpentColor, TimeSpentItem } from "../../types/progress.types";
 
 const chartColors: Record<TimeSpentColor, string> = {
   violet: "#8b5cf6",
@@ -20,7 +19,13 @@ const badgeStyles: Record<TimeSpentColor, string> = {
   orange: "bg-orange-400",
 };
 
-export default function TimeSpent() {
+type TimeSpentProps = {
+  items: TimeSpentItem[];
+};
+
+export default function TimeSpent({ items }: TimeSpentProps) {
+  const chartData = items.length ? items : getEmptyCategoryData();
+
   return (
     <article className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -28,7 +33,7 @@ export default function TimeSpent() {
           <h2 className="text-xl font-semibold text-white">Time Spent</h2>
 
           <p className="mt-1 text-sm text-emerald-400">
-            +2h 30m from last week
+            Based on started courses
           </p>
         </div>
 
@@ -44,7 +49,7 @@ export default function TimeSpent() {
         <div className="relative flex h-[230px] items-center justify-center overflow-hidden">
           <PieChart width={230} height={230}>
             <Pie
-              data={timeSpentData}
+              data={chartData}
               dataKey="value"
               nameKey="label"
               innerRadius={65}
@@ -52,20 +57,20 @@ export default function TimeSpent() {
               paddingAngle={4}
               stroke="none"
             >
-              {timeSpentData.map((item) => (
+              {chartData.map((item) => (
                 <Cell key={item.id} fill={chartColors[item.color]} />
               ))}
             </Pie>
           </PieChart>
 
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold text-white">12h 45m</span>
-            <span className="mt-1 text-sm text-slate-400">Total</span>
+            <span className="text-2xl font-bold text-white">{items.length}</span>
+            <span className="mt-1 text-sm text-slate-400">Topics</span>
           </div>
         </div>
 
         <div className="space-y-4">
-          {timeSpentData.map((item) => (
+          {chartData.map((item) => (
             <div
               key={item.id}
               className="flex items-center justify-between gap-3"
@@ -90,4 +95,15 @@ export default function TimeSpent() {
       </div>
     </article>
   );
+}
+
+function getEmptyCategoryData(): TimeSpentItem[] {
+  return [
+    {
+      id: 1,
+      label: "No courses",
+      value: 100,
+      color: "violet",
+    },
+  ];
 }

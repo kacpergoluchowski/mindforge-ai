@@ -96,7 +96,6 @@ export async function submitLessonQuiz(formData: FormData) {
   const courseSlug = String(formData.get("courseSlug") ?? "");
   const lessonId = String(formData.get("lessonId") ?? "");
   const lessonSlug = String(formData.get("lessonSlug") ?? "");
-  const nextLessonSlug = String(formData.get("nextLessonSlug") ?? "");
 
   if (!courseId || !courseSlug || !lessonId || !lessonSlug) {
     throw new Error("Missing lesson data.");
@@ -141,9 +140,10 @@ export async function submitLessonQuiz(formData: FormData) {
   const score = getQuizScore(quizQuestions, formData);
 
   if (score < passingQuizScore) {
-    redirect(
-      `/learn/courses/${courseSlug}/lessons/${lessonSlug}?quiz=retry&score=${score}`
-    );
+    return {
+      passed: false,
+      score,
+    };
   }
 
   const { data: existingProgress } = await supabase
@@ -168,14 +168,20 @@ export async function submitLessonQuiz(formData: FormData) {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("xp")
+      .select("xp, streak_days, last_learning_date")
       .eq("id", user.id)
       .maybeSingle();
+    const streak = getNextLearningStreak({
+      lastLearningDate: profile?.last_learning_date ?? null,
+      streakDays: profile?.streak_days ?? 0,
+    });
 
     await supabase
       .from("profiles")
       .update({
         xp: (profile?.xp ?? 0) + lesson.xp_reward,
+        streak_days: streak.days,
+        last_learning_date: streak.date,
         updated_at: new Date().toISOString(),
       })
       .eq("id", user.id);
@@ -250,11 +256,12 @@ export async function submitLessonQuiz(formData: FormData) {
   revalidatePath("/account/profile");
   revalidatePath("/learn/courses");
   revalidatePath(`/learn/courses/${courseSlug}`);
-  redirect(
-    nextLessonSlug
-      ? `/learn/courses/${courseSlug}/lessons/${nextLessonSlug}`
-      : `/learn/courses/${courseSlug}`
-  );
+  revalidatePath(`/learn/courses/${courseSlug}/lessons/${lessonSlug}`);
+
+  return {
+    passed: true,
+    score,
+  };
 }
 
 async function assertPreviousLessonsCompleted(
@@ -378,4 +385,51 @@ async function awardHtmlCssCompletionRewards(profileId: string) {
   if (skillsToInsert.length) {
     await supabase.from("profile_skills").insert(skillsToInsert);
   }
+}
+
+type LearningStreakInput = {
+  lastLearningDate: string | null;
+  streakDays: number;
+};
+
+function getNextLearningStreak({
+  lastLearningDate,
+  streakDays,
+}: LearningStreakInput) {
+  const today = getDateKey(new Date());
+  const yesterday = getDateKey(addDays(new Date(), -1));
+
+  if (lastLearningDate === today) {
+    return {
+      date: today,
+      days: streakDays,
+    };
+  }
+
+  if (lastLearningDate === yesterday) {
+    return {
+      date: today,
+      days: streakDays + 1,
+    };
+  }
+
+  return {
+    date: today,
+    days: 1,
+  };
+}
+
+function addDays(date: Date, days: number): Date {
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + days);
+
+  return nextDate;
+}
+
+function getDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }

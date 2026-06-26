@@ -45,7 +45,10 @@ export type PopularCourseCardProps = {
   description: string;
   rating: number;
   students: string;
+  modulesCount: number;
   lessons: number;
+  xpReward: number;
+  duration: string;
   level: string;
   icon: LucideIcon;
   color: PopularCourseColor;
@@ -71,6 +74,7 @@ export type CourseListItem = {
   category: string;
   level: string;
   duration: string;
+  modulesCount: number;
   lessons: number;
   xpReward: number;
   rating: number;

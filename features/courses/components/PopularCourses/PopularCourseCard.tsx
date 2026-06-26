@@ -1,5 +1,15 @@
 import clsx from "clsx";
-import { ArrowRight, Star, Users } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  Clock3,
+  Layers3,
+  PlayCircle,
+  Star,
+  Trophy,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 
 import { startCourse } from "../../actions/courseActions";
@@ -37,7 +47,10 @@ export default function PopularCourseCard({
   description,
   rating,
   students,
+  modulesCount,
   lessons,
+  xpReward,
+  duration,
   level,
   icon,
   color,
@@ -51,17 +64,32 @@ export default function PopularCourseCard({
   const normalizedProgress = Math.min(Math.max(progress, 0), 100);
   const isStarted = Boolean(status);
   const isCompleted = status === "completed";
+  const statusDetails = getCourseStatusDetails(status);
+  const StatusIcon = statusDetails.icon;
   const actionLessonSlug = nextLessonSlug ?? firstLessonSlug;
   const actionClassName =
     "mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-violet-500 py-3 font-medium text-white transition hover:bg-violet-600";
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-white/20 hover:bg-[#131f35]">
-      <CourseIcon icon={icon} className={styles.icon} />
+    <article className="flex h-full flex-col rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-white/20 hover:bg-[#131f35]">
+      <div className="flex items-start justify-between gap-4">
+        <CourseIcon icon={icon} className={styles.icon} />
+        <span
+          className={clsx(
+            "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium",
+            statusDetails.className
+          )}
+        >
+          <StatusIcon className="size-3.5" />
+          {statusDetails.label}
+        </span>
+      </div>
 
       <h3 className="text-lg font-semibold text-white">{title}</h3>
 
-      <p className="mt-3 text-sm leading-6 text-slate-400">{description}</p>
+      <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">
+        {description}
+      </p>
 
       <div className="mt-5 flex items-center gap-4 text-sm">
         <CourseMetric
@@ -73,9 +101,15 @@ export default function PopularCourseCard({
         <CourseMetric icon={Users} className="text-slate-400" value={students} />
       </div>
 
-      <div className="mt-5 flex items-center justify-between">
-        <span className="text-sm text-slate-400">{lessons} Lessons</span>
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <CourseInfo icon={Layers3} label="Modules" value={modulesCount || "-"} />
+        <CourseInfo icon={BookOpen} label="Lessons" value={lessons} />
+        <CourseInfo icon={Clock3} label="Duration" value={duration} />
+        <CourseInfo icon={Trophy} label="XP" value={xpReward} />
+      </div>
 
+      <div className="mt-5 flex items-center justify-between">
+        <span className="text-sm text-slate-400">Level</span>
         <span
           className={clsx(
             "rounded-full px-3 py-1 text-xs font-medium",
@@ -102,6 +136,8 @@ export default function PopularCourseCard({
           </div>
         </div>
       ) : null}
+
+      <div className="mt-auto" />
 
       {slug && actionLessonSlug && !isCompleted ? (
         <StartCourseForm
@@ -178,6 +214,24 @@ function CourseIcon({ className, icon: Icon }: CourseIconProps) {
   );
 }
 
+type CourseInfoProps = {
+  icon: PopularCourseCardProps["icon"];
+  label: string;
+  value: number | string;
+};
+
+function CourseInfo({ icon: Icon, label, value }: CourseInfoProps) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+      <div className="flex items-center gap-2 text-slate-400">
+        <Icon className="size-4 text-violet-300" />
+        <span className="text-xs">{label}</span>
+      </div>
+      <p className="mt-2 text-sm font-semibold text-white">{value}</p>
+    </div>
+  );
+}
+
 type CourseMetricProps = {
   className: string;
   icon: PopularCourseCardProps["icon"];
@@ -197,4 +251,28 @@ function CourseMetric({
       {value}
     </div>
   );
+}
+
+function getCourseStatusDetails(status?: string) {
+  if (status === "completed") {
+    return {
+      className: "bg-emerald-500/10 text-emerald-300",
+      icon: CheckCircle2,
+      label: "Completed",
+    };
+  }
+
+  if (status) {
+    return {
+      className: "bg-violet-500/10 text-violet-300",
+      icon: PlayCircle,
+      label: "In progress",
+    };
+  }
+
+  return {
+    className: "bg-slate-700/60 text-slate-300",
+    icon: BookOpen,
+    label: "Not started",
+  };
 }

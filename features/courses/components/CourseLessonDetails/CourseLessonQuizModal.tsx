@@ -1,8 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
+import Link from "next/link";
 import clsx from "clsx";
-import { CheckCircle2, X } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Loader2,
+  RotateCcw,
+  Trophy,
+  X,
+  XCircle,
+} from "lucide-react";
 
 import { submitLessonQuiz } from "../../actions/courseActions";
 import type { CourseLesson } from "../../types/courses.types";
@@ -12,11 +21,13 @@ type CourseLessonQuizModalProps = {
   courseId: string;
   courseSlug: string;
   lesson: CourseLesson;
+  nextLessonTitle: string | null;
   nextLessonSlug: string;
 };
 
 type QuizResult = {
   passed: boolean;
+  saved?: boolean;
   score: number;
 };
 
@@ -24,11 +35,13 @@ export default function CourseLessonQuizModal({
   courseId,
   courseSlug,
   lesson,
+  nextLessonTitle,
   nextLessonSlug,
 }: CourseLessonQuizModalProps) {
   const [open, setOpen] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<QuizResult | null>(null);
+  const [isSaving, startSaving] = useTransition();
 
   const answeredQuestions = Object.keys(selectedAnswers).length;
   const allAnswered = answeredQuestions === quizQuestionCount;
@@ -74,6 +87,31 @@ export default function CourseLessonQuizModal({
     setResult(null);
   }
 
+  function completeLesson() {
+    const formData = new FormData();
+    formData.set("courseId", courseId);
+    formData.set("courseSlug", courseSlug);
+    formData.set("lessonId", lesson.id);
+    formData.set("lessonSlug", lesson.slug);
+
+    lesson.quizQuestions.forEach((question) => {
+      formData.set(
+        `question_${question.id}`,
+        selectedAnswers[question.id] ?? ""
+      );
+    });
+
+    startSaving(async () => {
+      const saveResult = await submitLessonQuiz(formData);
+
+      setResult({
+        passed: saveResult.passed,
+        saved: saveResult.passed,
+        score: saveResult.score,
+      });
+    });
+  }
+
   return (
     <>
       <button
@@ -111,13 +149,7 @@ export default function CourseLessonQuizModal({
               </button>
             </div>
 
-            <form action={submitLessonQuiz} className="min-h-0 overflow-y-auto p-5">
-              <input type="hidden" name="courseId" value={courseId} />
-              <input type="hidden" name="courseSlug" value={courseSlug} />
-              <input type="hidden" name="lessonId" value={lesson.id} />
-              <input type="hidden" name="lessonSlug" value={lesson.slug} />
-              <input type="hidden" name="nextLessonSlug" value={nextLessonSlug} />
-
+            <div className="min-h-0 overflow-y-auto p-5">
               <div className="space-y-5">
                 {lesson.quizQuestions.map((question, index) => (
                   <fieldset
@@ -155,7 +187,7 @@ export default function CourseLessonQuizModal({
                             <input
                               required
                               type="radio"
-                              name={`question_${question.id}`}
+                              name={question.id}
                               value={option.id}
                               checked={isSelected}
                               onChange={() => selectAnswer(question.id, option.id)}
@@ -172,44 +204,57 @@ export default function CourseLessonQuizModal({
 
               <div className="sticky bottom-0 mt-6 rounded-2xl border border-white/10 bg-[#0d1424]/95 p-4 backdrop-blur">
                 {result ? (
-                  <div
-                    className={clsx(
-                      "mb-4 rounded-xl border p-4 text-sm",
-                      result.passed
-                        ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
-                        : "border-red-400/20 bg-red-500/10 text-red-200"
-                    )}
-                  >
-                    <div className="flex items-start gap-3">
-                      {result.passed ? (
-                        <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
-                      ) : null}
-                      <div>
-                        <p className="font-semibold">
-                          {result.passed ? "Quiz passed" : "Quiz not passed"}
-                        </p>
-                        <p className="mt-1">
-                          Your score: {result.score}/{quizQuestionCount}.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  result.passed ? (
+                    <QuizPassedSummary
+                      nextLessonTitle={nextLessonTitle}
+                      score={result.score}
+                      xpReward={lesson.xpReward}
+                    />
+                  ) : (
+                    <QuizFailedSummary score={result.score} />
+                  )
                 ) : null}
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
                   {result?.passed ? (
-                    <button
-                      type="submit"
-                      className="rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
-                    >
-                      Complete lesson
-                    </button>
+                    result.saved ? (
+                      nextLessonSlug ? (
+                        <Link
+                          href={`/learn/courses/${courseSlug}/lessons/${nextLessonSlug}`}
+                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
+                        >
+                          Next Lesson
+                          <ArrowRight className="size-4" />
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/learn/courses/${courseSlug}`}
+                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
+                        >
+                          Back to course
+                          <ArrowRight className="size-4" />
+                        </Link>
+                      )
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={completeLesson}
+                        disabled={isSaving}
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {isSaving ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : null}
+                        {nextLessonSlug ? "Claim XP" : "Complete course"}
+                      </button>
+                    )
                   ) : result ? (
                     <button
                       type="button"
                       onClick={tryAgain}
-                      className="rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
                     >
+                      <RotateCcw className="size-4" />
                       Try again
                     </button>
                   ) : (
@@ -224,10 +269,79 @@ export default function CourseLessonQuizModal({
                   )}
                 </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       ) : null}
     </>
+  );
+}
+
+type QuizPassedSummaryProps = {
+  nextLessonTitle: string | null;
+  score: number;
+  xpReward: number;
+};
+
+function QuizPassedSummary({
+  nextLessonTitle,
+  score,
+  xpReward,
+}: QuizPassedSummaryProps) {
+  return (
+    <div className="mb-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+      <div className="flex items-start gap-3">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300">
+          <CheckCircle2 className="size-5" />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <p className="text-base font-semibold text-white">Quiz passed</p>
+          <p className="mt-1 text-emerald-100/80">
+            Score: {score}/{quizQuestionCount}. Read this summary, claim your XP,
+            then choose when to continue.
+          </p>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border border-emerald-400/20 bg-slate-950/20 p-3">
+              <div className="flex items-center gap-2 text-xs text-emerald-100/70">
+                <Trophy className="size-4" />
+                Reward
+              </div>
+              <p className="mt-1 font-semibold text-white">+{xpReward} XP</p>
+            </div>
+
+            <div className="rounded-xl border border-emerald-400/20 bg-slate-950/20 p-3">
+              <p className="text-xs text-emerald-100/70">Next</p>
+              <p className="mt-1 line-clamp-2 font-semibold text-white">
+                {nextLessonTitle ?? "Course summary"}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type QuizFailedSummaryProps = {
+  score: number;
+};
+
+function QuizFailedSummary({ score }: QuizFailedSummaryProps) {
+  return (
+    <div className="mb-4 rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-100">
+      <div className="flex items-start gap-3">
+        <XCircle className="mt-0.5 size-5 shrink-0" />
+        <div>
+          <p className="font-semibold text-white">Quiz not passed</p>
+          <p className="mt-1">
+            Score: {score}/{quizQuestionCount}. You need at least{" "}
+            {passingQuizScore}/{quizQuestionCount}. Review the highlighted
+            answers and try again.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }

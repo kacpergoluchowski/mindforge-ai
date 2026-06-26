@@ -15,6 +15,7 @@ import {
 } from "@/features/profile/utils/profileFormatters";
 import type { MobileSidebarProps } from "./types/layoutTypes.types";
 import { navSections } from "./data/layoutData";
+import LanguageSettingsModal from "@/features/settings/components/LanguageSettingsModal/LanguageSettingsModal";
 
 
 export default function MobileSidebar({
@@ -81,18 +82,33 @@ export default function MobileSidebar({
               <div className="space-y-1">
                 {section.items.map(({ label, href, icon: Icon }) => {
                   const isActive = pathname === href;
+                  const isSettingsItem = href === "/account/settings";
+                  const className = clsx(
+                    "flex w-full items-center gap-4 rounded-2xl px-4 py-3 text-left text-sm font-medium transition",
+                    isActive
+                      ? "bg-violet-500/80 text-white shadow-lg shadow-violet-500/20"
+                      : "text-slate-300 hover:bg-white/[0.05] hover:text-white"
+                  );
+
+                  if (isSettingsItem) {
+                    return (
+                      <LanguageSettingsModal
+                        key={href}
+                        buttonClassName={className}
+                        onOpen={onClose}
+                      >
+                        <Icon className="size-5" />
+                        {label}
+                      </LanguageSettingsModal>
+                    );
+                  }
 
                   return (
                     <Link
                       key={href}
                       href={href}
                       onClick={onClose}
-                      className={clsx(
-                        "flex items-center gap-4 rounded-2xl px-4 py-3 text-sm font-medium transition",
-                        isActive
-                          ? "bg-violet-500/80 text-white shadow-lg shadow-violet-500/20"
-                          : "text-slate-300 hover:bg-white/[0.05] hover:text-white"
-                      )}
+                      className={className}
                     >
                       <Icon className="size-5" />
                       {label}
