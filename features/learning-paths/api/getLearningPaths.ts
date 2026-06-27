@@ -3,6 +3,7 @@ import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
 import type {
+  LearningPathDetails,
   LearningPath,
   PopularLearningPath,
   RoadmapStep,
@@ -25,9 +26,14 @@ type LearningPathRow = {
 type LearningPathStepRow = {
   id: string;
   course_id: string | null;
+  courses: CourseStepRow | CourseStepRow[] | null;
   title: string;
   description: string;
   position: number;
+};
+
+type CourseStepRow = {
+  slug: string;
 };
 
 type UserLearningPathRow = {
@@ -72,6 +78,9 @@ export const getLearningPaths = cache(async () => {
       learning_path_steps (
         id,
         course_id,
+        courses (
+          slug
+        ),
         title,
         description,
         position
@@ -136,21 +145,113 @@ export const getLearningPaths = cache(async () => {
   const popularPaths = paths
     .filter((path) => !userPaths.has(path.id))
     .map(mapPopularLearningPath);
-  const currentPath =
-    paths.find((path) => userPaths.has(path.id)) ?? paths[0] ?? null;
 
   return {
     myPaths: mappedPaths.filter((path) => path.started),
     popularPaths,
-    currentPath: currentPath
-      ? {
-          title: currentPath.title,
-          progress: getPathProgress(currentPath, userPaths, userCourses).progress,
-          steps: mapRoadmapSteps(currentPath, userPaths, userCourses),
-        }
-      : null,
   };
 });
+
+export const getLearningPathBySlug = cache(
+  async (slug: string): Promise<LearningPathDetails | null> => {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+      .from("learning_paths")
+      .select(
+        `
+        id,
+        slug,
+        title,
+        description,
+        level,
+        estimated_hours,
+        rating,
+        students_count,
+        icon,
+        color,
+        learning_path_steps (
+          id,
+          course_id,
+          courses (
+            slug
+          ),
+          title,
+          description,
+          position
+        )
+      `
+      )
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .maybeSingle();
+
+    if (error || !data) {
+      return null;
+    }
+
+    const path = data as LearningPathRow;
+    const courseIds = (path.learning_path_steps ?? []).flatMap((step) =>
+      step.course_id ? [step.course_id] : []
+    );
+
+    const [userPathResult, userCoursesResult] = user
+      ? await Promise.all([
+          supabase
+            .from("user_learning_paths")
+            .select("learning_path_id, status")
+            .eq("profile_id", user.id)
+            .eq("learning_path_id", path.id)
+            .maybeSingle(),
+          supabase
+            .from("user_courses")
+            .select("course_id, status, progress_percent")
+            .eq("profile_id", user.id)
+            .in(
+              "course_id",
+              courseIds.length
+                ? courseIds
+                : ["00000000-0000-0000-0000-000000000000"]
+            ),
+        ])
+      : [null, null];
+
+    const userPaths = new Map(
+      userPathResult?.data
+        ? [
+            [
+              (userPathResult.data as UserLearningPathRow).learning_path_id,
+              userPathResult.data as UserLearningPathRow,
+            ],
+          ]
+        : []
+    );
+    const userCourses = new Map(
+      ((userCoursesResult?.data ?? []) as UserCourseRow[]).map((course) => [
+        course.course_id,
+        course,
+      ])
+    );
+    const progress = getPathProgress(path, userPaths, userCourses);
+
+    return {
+      id: path.id,
+      slug: path.slug,
+      title: path.title,
+      description: path.description,
+      level: path.level,
+      estimatedHours: path.estimated_hours,
+      progress: progress.progress,
+      coursesCompleted: progress.completedCourses,
+      totalCourses: progress.totalCourses,
+      started: progress.started,
+      steps: mapRoadmapSteps(path, userPaths, userCourses),
+    };
+  }
+);
 
 function mapLearningPath(
   path: LearningPathRow,
@@ -159,6 +260,9 @@ function mapLearningPath(
   return {
     id: path.id,
     slug: path.slug,
+    description: path.description,
+    estimatedHours: path.estimated_hours,
+    level: path.level,
     title: path.title,
     progress: progress.progress,
     coursesCompleted: progress.completedCourses,
@@ -199,6 +303,7 @@ function mapRoadmapSteps(
 
   return steps.map((step, index) => {
     const course = step.course_id ? userCourses.get(step.course_id) : null;
+    const courseDetails = getRelation(step.courses);
     const completed = course?.status === "completed";
     const current =
       started && !completed && index === Math.max(firstOpenStepIndex, 0);
@@ -207,6 +312,8 @@ function mapRoadmapSteps(
       id: step.id,
       title: step.title,
       description: step.description,
+      courseSlug: courseDetails?.slug ?? null,
+      courseProgress: course?.progress_percent ?? 0,
       status: completed ? "completed" : current ? "current" : "locked",
     };
   });
@@ -224,8 +331,15 @@ function getPathProgress(
       ? userCourses.get(step.course_id)?.status === "completed"
       : false;
   }).length;
+  const progressPoints = steps.reduce((total, step) => {
+    if (!step.course_id) {
+      return total;
+    }
+
+    return total + (userCourses.get(step.course_id)?.progress_percent ?? 0);
+  }, 0);
   const progress = totalCourses
-    ? Math.round((completedCourses / totalCourses) * 100)
+    ? Math.round(progressPoints / totalCourses)
     : 0;
   const userPath = userPaths.get(path.id);
 
@@ -242,6 +356,10 @@ function sortSteps(steps: LearningPathStepRow[] | null) {
   return [...(steps ?? [])].sort((firstStep, secondStep) => {
     return firstStep.position - secondStep.position;
   });
+}
+
+function getRelation<T>(relation: T | T[] | null) {
+  return Array.isArray(relation) ? relation[0] ?? null : relation;
 }
 
 function mapPathColor(color: string): LearningPath["color"] {

@@ -24,7 +24,20 @@ export async function startLearningPath(formData: FormData) {
 
   const { data: path } = await supabase
     .from("learning_paths")
-    .select("id, title")
+    .select(
+      `
+      id,
+      title,
+      learning_path_steps (
+        course_id,
+        position,
+        courses (
+          title,
+          slug
+        )
+      )
+    `
+    )
     .eq("id", pathId)
     .eq("slug", pathSlug)
     .eq("is_published", true)
@@ -33,6 +46,13 @@ export async function startLearningPath(formData: FormData) {
   if (!path) {
     throw new Error("Learning path not found.");
   }
+
+  const firstStep = [...(path.learning_path_steps ?? [])].sort(
+    (firstStepItem, secondStepItem) => {
+      return firstStepItem.position - secondStepItem.position;
+    }
+  )[0];
+  const firstCourse = getRelation(firstStep?.courses ?? null);
 
   const { data: existingPath } = await supabase
     .from("user_learning_paths")
@@ -66,7 +86,46 @@ export async function startLearningPath(formData: FormData) {
     });
   }
 
+  if (firstStep?.course_id) {
+    const { data: existingCourse } = await supabase
+      .from("user_courses")
+      .select("id")
+      .eq("profile_id", user.id)
+      .eq("course_id", firstStep.course_id)
+      .maybeSingle();
+
+    if (!existingCourse) {
+      await supabase.from("user_courses").insert({
+        profile_id: user.id,
+        course_id: firstStep.course_id,
+        status: "in_progress",
+        progress_percent: 0,
+        started_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+
+      await supabase.from("activity_logs").insert({
+        profile_id: user.id,
+        type: "course_started",
+        title: `Started "${firstCourse?.title ?? "First path course"}"`,
+        description: "Course added from learning path",
+        metadata: {
+          course_id: firstStep.course_id,
+          course_slug: firstCourse?.slug,
+          learning_path_id: pathId,
+          learning_path_slug: pathSlug,
+        },
+      });
+    }
+  }
+
   revalidatePath("/dashboard");
+  revalidatePath("/learn/courses");
   revalidatePath("/learn/learning-paths");
-  redirect("/learn/learning-paths");
+  revalidatePath(`/learn/learning-paths/${pathSlug}`);
+  redirect(`/learn/learning-paths/${pathSlug}`);
+}
+
+function getRelation<T>(relation: T | T[] | null) {
+  return Array.isArray(relation) ? relation[0] ?? null : relation;
 }

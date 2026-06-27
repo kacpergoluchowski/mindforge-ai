@@ -20,6 +20,8 @@ import { passingQuizScore, quizQuestionCount } from "../../utils/lessonQuiz";
 type CourseLessonQuizModalProps = {
   courseId: string;
   courseSlug: string;
+  disabled?: boolean;
+  disabledReason?: string;
   lesson: CourseLesson;
   nextLessonTitle: string | null;
   nextLessonSlug: string;
@@ -34,6 +36,8 @@ type QuizResult = {
 export default function CourseLessonQuizModal({
   courseId,
   courseSlug,
+  disabled = false,
+  disabledReason = "Complete the required steps first.",
   lesson,
   nextLessonTitle,
   nextLessonSlug,
@@ -54,6 +58,10 @@ export default function CourseLessonQuizModal({
   }, [lesson.quizQuestions, selectedAnswers]);
 
   function openModal() {
+    if (disabled) {
+      return;
+    }
+
     setOpen(true);
     setResult(null);
   }
@@ -117,23 +125,31 @@ export default function CourseLessonQuizModal({
       <button
         type="button"
         onClick={openModal}
-        className="flex w-full items-center justify-center rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
+        disabled={disabled}
+        title={disabled ? disabledReason : undefined}
+        className="flex w-full items-center justify-center rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400"
       >
-        Take quiz
+        {disabled ? "Quiz locked" : "Take quiz"}
       </button>
 
+      {disabled ? (
+        <p className="mt-2 text-center text-xs leading-5 text-slate-500">
+          {disabledReason}
+        </p>
+      ) : null}
+
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
-          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1424] shadow-2xl">
-            <div className="flex items-start justify-between gap-4 border-b border-white/10 p-5">
-              <div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-3 backdrop-blur-sm sm:p-4">
+          <div className="flex max-h-[92dvh] w-full max-w-4xl min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1424] shadow-2xl">
+            <div className="flex items-start justify-between gap-3 border-b border-white/10 p-4 sm:gap-4 sm:p-5">
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-violet-300">
                   Lesson Quiz
                 </p>
-                <h2 className="mt-1 text-xl font-semibold text-white">
+                <h2 className="mt-1 break-words text-lg font-semibold text-white sm:text-xl">
                   {lesson.title}
                 </h2>
-                <p className="mt-2 text-sm text-slate-400">
+                <p className="mt-2 text-sm text-slate-400 break-words">
                   Score at least {passingQuizScore}/{quizQuestionCount} to
                   complete this lesson.
                 </p>
@@ -149,14 +165,14 @@ export default function CourseLessonQuizModal({
               </button>
             </div>
 
-            <div className="min-h-0 overflow-y-auto p-5">
+            <div className="min-h-0 overflow-y-auto p-4 sm:p-5">
               <div className="space-y-5">
                 {lesson.quizQuestions.map((question, index) => (
                   <fieldset
                     key={question.id}
-                    className="rounded-2xl border border-white/10 bg-white/[0.02] p-4"
+                    className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.02] p-3 sm:p-4"
                   >
-                    <legend className="text-sm font-semibold text-white">
+                    <legend className="break-words text-sm font-semibold text-white">
                       {index + 1}. {question.question}
                     </legend>
 
@@ -172,7 +188,7 @@ export default function CourseLessonQuizModal({
                           <label
                             key={option.id}
                             className={clsx(
-                              "flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm transition",
+                              "flex min-w-0 cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm transition",
                               result && isCorrect
                                 ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-100"
                                 : "border-white/10 bg-[#111a2d] text-slate-300 hover:border-violet-400/40 hover:text-white",
@@ -193,7 +209,9 @@ export default function CourseLessonQuizModal({
                               onChange={() => selectAnswer(question.id, option.id)}
                               className="mt-1 accent-violet-500"
                             />
-                            <span>{option.text}</span>
+                            <span className="min-w-0 break-words">
+                              {option.text}
+                            </span>
                           </label>
                         );
                       })}
@@ -202,7 +220,7 @@ export default function CourseLessonQuizModal({
                 ))}
               </div>
 
-              <div className="sticky bottom-0 mt-6 rounded-2xl border border-white/10 bg-[#0d1424]/95 p-4 backdrop-blur">
+              <div className="sticky bottom-0 mt-6 min-w-0 rounded-2xl border border-white/10 bg-[#0d1424]/95 p-3 backdrop-blur sm:p-4">
                 {result ? (
                   result.passed ? (
                     <QuizPassedSummary

@@ -99,6 +99,7 @@ export type CourseLesson = {
   xpReward: number;
   isPreview: boolean;
   completed: boolean;
+  practiceCompleted: boolean;
   locked: boolean;
   quizQuestions: CourseQuizQuestion[];
 };

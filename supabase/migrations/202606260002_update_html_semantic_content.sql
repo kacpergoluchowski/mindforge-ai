@@ -35,8 +35,13 @@ $$,
     'Set a meaningful title',
     'Place visible content inside body'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'html-document-structure';
+where slug = 'html-document-structure'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -68,8 +73,13 @@ $$,
     'Avoid skipping heading levels randomly',
     'Choose headings by meaning, not size'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'headings-and-paragraphs';
+where slug = 'headings-and-paragraphs'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -103,8 +113,13 @@ $$,
     'Build simple navigation',
     'Avoid unclear click here links'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'links-and-navigation';
+where slug = 'links-and-navigation'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -135,8 +150,13 @@ $$,
     'Use correct relative image paths',
     'Keep image files organized'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'images-and-alt-text';
+where slug = 'images-and-alt-text'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -176,8 +196,13 @@ $$,
     'Use lists for real grouped content',
     'Avoid unnecessary deep nesting'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'lists';
+where slug = 'lists'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -211,8 +236,13 @@ $$,
     'Write clear button labels',
     'Avoid clickable divs'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'buttons';
+where slug = 'buttons'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -243,8 +273,13 @@ $$,
     'Prefer semantic elements when possible',
     'Add classes for future CSS styling'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'divs-and-spans';
+where slug = 'divs-and-spans'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -277,8 +312,13 @@ $$,
     'Keep class names readable',
     'Make structure easy to scan'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'comments-and-clean-structure';
+where slug = 'comments-and-clean-structure'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -317,8 +357,13 @@ $$,
     'Add social or portfolio links',
     'Keep HTML readable'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'exercise-build-a-personal-profile-page';
+where slug = 'exercise-build-a-personal-profile-page'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -351,8 +396,13 @@ $$,
     'Understand accessibility benefits',
     'Use div only when a neutral wrapper is needed'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'why-semantic-html-matters';
+where slug = 'why-semantic-html-matters'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -396,8 +446,13 @@ $$,
     'Use article for standalone content',
     'Use footer for closing information'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'semantic-layout-elements';
+where slug = 'semantic-layout-elements'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -431,8 +486,13 @@ $$,
     'Keep links keyboard accessible',
     'Add aria-label when there are multiple nav areas'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'nav-and-accessible-navigation';
+where slug = 'nav-and-accessible-navigation'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -468,8 +528,13 @@ $$,
     'Choose useful input types',
     'Add a submit button'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'forms-and-labels';
+where slug = 'forms-and-labels'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -504,8 +569,13 @@ $$,
     'Add name attributes',
     'Label every control'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'inputs-textarea-select';
+where slug = 'inputs-textarea-select'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -536,8 +606,13 @@ $$,
     'Use type button outside forms',
     'Use type submit for form submission'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'buttons-vs-links';
+where slug = 'buttons-vs-links'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -568,8 +643,13 @@ $$,
     'Keep heading order logical',
     'Test keyboard navigation'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'basic-accessibility';
+where slug = 'basic-accessibility'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -605,8 +685,13 @@ $$,
     'Write descriptive link text',
     'Add a useful meta description'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'seo-basics';
+where slug = 'seo-basics'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
 
 update public.course_lessons
 set
@@ -641,5 +726,11 @@ $$,
     'Use semantic structure throughout',
     'Check headings and link text'
   ]
-where course_id = '10000000-0000-4000-8000-000000000001'
-  and slug = 'exercise-build-a-blog-article-page';
+where slug = 'exercise-build-a-blog-article-page'
+  and exists (
+    select 1
+    from public.courses
+    where courses.id = course_lessons.course_id
+      and courses.slug = 'html-css-foundations'
+  );
+

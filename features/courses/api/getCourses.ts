@@ -251,13 +251,24 @@ export const getCourseBySlug = cache(
             .eq("course_id", course.id),
         ])
       : [null, null];
+    const practiceProgressResult = user
+      ? await supabase
+          .from("user_lesson_practice")
+          .select("lesson_id")
+          .eq("profile_id", user.id)
+          .eq("course_id", course.id)
+      : null;
+    const completedPracticeLessonIds = practiceProgressResult?.error
+      ? []
+      : (practiceProgressResult?.data ?? []).map((item) => item.lesson_id);
 
     return mapCourseDetail(
       course,
       mapCourseProgress(
         userCourseResult?.data as UserCourseRow | null,
         (lessonProgressResult?.data ?? []).map((item) => item.lesson_id)
-      )
+      ),
+      completedPracticeLessonIds
     );
   }
 );
@@ -411,7 +422,8 @@ function sortCourseListLessons(
 
 function mapCourseDetail(
   course: CourseDetailRow,
-  userProgress: CourseProgressSummary | null
+  userProgress: CourseProgressSummary | null,
+  completedPracticeLessonIds: string[] = []
 ): CourseDetail {
   const modules = sortByPosition(course.course_modules);
   const completedLessonIds = userProgress?.completedLessonIds ?? [];
@@ -420,7 +432,12 @@ function mapCourseDetail(
   return {
     ...mapCourseListItem(course),
     modules: modules.map((module) =>
-      mapCourseModule(module, completedLessonIds, lockedLessonIds)
+      mapCourseModule(
+        module,
+        completedLessonIds,
+        completedPracticeLessonIds,
+        lockedLessonIds
+      )
     ),
     userProgress,
   };
@@ -429,6 +446,7 @@ function mapCourseDetail(
 function mapCourseModule(
   module: CourseModuleRow,
   completedLessonIds: string[],
+  completedPracticeLessonIds: string[],
   lockedLessonIds: Set<string>
 ): CourseModule {
   return {
@@ -437,7 +455,12 @@ function mapCourseModule(
     description: module.description,
     position: module.position,
     lessons: sortByPosition(module.course_lessons).map((lesson) =>
-      mapCourseLesson(lesson, completedLessonIds, lockedLessonIds)
+      mapCourseLesson(
+        lesson,
+        completedLessonIds,
+        completedPracticeLessonIds,
+        lockedLessonIds
+      )
     ),
   };
 }
@@ -445,6 +468,7 @@ function mapCourseModule(
 function mapCourseLesson(
   lesson: CourseLessonRow,
   completedLessonIds: string[],
+  completedPracticeLessonIds: string[],
   lockedLessonIds: Set<string>
 ): CourseLesson {
   return {
@@ -461,6 +485,7 @@ function mapCourseLesson(
     xpReward: lesson.xp_reward,
     isPreview: lesson.is_preview,
     completed: completedLessonIds.includes(lesson.id),
+    practiceCompleted: completedPracticeLessonIds.includes(lesson.id),
     locked: lockedLessonIds.has(lesson.id),
     quizQuestions: getLessonQuiz({
       id: lesson.id,

@@ -1,6 +1,9 @@
 export type LearningPath = {
   id: number | string;
   slug?: string;
+  description?: string;
+  estimatedHours?: number;
+  level?: string;
   title: string;
   progress: number;
   coursesCompleted: number;
@@ -28,7 +31,23 @@ export type PopularLearningPathColor = "blue" | "green" | "violet" | "yellow";
 
 export type RoadmapStep = {
   id: number | string;
+  courseProgress?: number;
+  courseSlug?: string | null;
   title: string;
   description: string;
   status: "completed" | "current" | "locked";
+};
+
+export type LearningPathDetails = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  level: string;
+  estimatedHours: number;
+  progress: number;
+  coursesCompleted: number;
+  totalCourses: number;
+  started: boolean;
+  steps: RoadmapStep[];
 };

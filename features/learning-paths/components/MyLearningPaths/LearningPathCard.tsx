@@ -1,3 +1,4 @@
+import Link from "next/link";
 import clsx from "clsx";
 import { ArrowRight, Brain, Code2, Layers3, MoreVertical } from "lucide-react";
 
@@ -40,6 +41,7 @@ const iconMap = {
 };
 
 export default function LearningPathCard({
+  slug,
   title,
   progress,
   coursesCompleted,
@@ -73,8 +75,8 @@ export default function LearningPathCard({
         {coursesCompleted} / {totalCourses} Courses
       </p>
 
-      <button
-        type="button"
+      <Link
+        href={slug ? `/learn/learning-paths/${slug}` : "/learn/learning-paths"}
         className={clsx(
           "mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-white/[0.03] py-4 font-medium transition hover:bg-white/[0.05]",
           styles.button
@@ -82,7 +84,7 @@ export default function LearningPathCard({
       >
         Continue Learning
         <ArrowRight className="size-4" />
-      </button>
+      </Link>
     </article>
   );
 }

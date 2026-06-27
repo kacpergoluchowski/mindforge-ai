@@ -1,5 +1,6 @@
+import Link from "next/link";
 import clsx from "clsx";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 import type { RoadmapStep as RoadmapStepProps } from "../../types/learningPaths.types";
 
@@ -30,35 +31,67 @@ const statusStyles: Record<RoadmapStepStatus, RoadmapStepStyle> = {
 };
 
 export default function RoadmapStep({
+  courseProgress,
+  courseSlug,
   title,
   description,
   status,
 }: RoadmapStepProps) {
   const styles = statusStyles[status];
+  const canOpenCourse = status === "current" && courseSlug;
 
   return (
-    <li className="relative flex items-center gap-5 py-2">
+    <li className="relative flex min-w-0 items-start gap-4 py-2 sm:items-center sm:gap-5">
       <RoadmapDot status={status} styles={styles} />
 
       <div
         className={clsx(
-          "flex min-w-0 flex-1 items-center justify-between gap-4 rounded-2xl px-4 py-2",
+          "flex min-w-0 flex-1 flex-col gap-4 rounded-2xl px-4 py-3 sm:flex-row sm:items-center sm:justify-between",
           status === "current" && "bg-violet-500/10"
         )}
       >
         <div className="min-w-0">
-          <h3 className="font-semibold text-white">{title}</h3>
-          <p className="text-sm text-slate-400">{description}</p>
+          <h3 className="break-words font-semibold text-white">{title}</h3>
+          <p className="mt-1 break-words text-sm leading-6 text-slate-400">
+            {description}
+          </p>
+
+          {status === "current" && typeof courseProgress === "number" ? (
+            <div className="mt-3 max-w-xs">
+              <div className="mb-1 flex items-center justify-between gap-3 text-xs text-slate-400">
+                <span>Course progress</span>
+                <span>{courseProgress}%</span>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+                <div
+                  className="h-full rounded-full bg-violet-500"
+                  style={{ width: `${Math.min(courseProgress, 100)}%` }}
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
 
-        <span
-          className={clsx(
-            "shrink-0 rounded-full px-3 py-1 text-xs font-medium",
-            styles.badge
-          )}
-        >
-          {styles.label}
-        </span>
+        <div className="flex shrink-0 flex-wrap items-center gap-3">
+          <span
+            className={clsx(
+              "rounded-full px-3 py-1 text-xs font-medium",
+              styles.badge
+            )}
+          >
+            {styles.label}
+          </span>
+
+          {canOpenCourse ? (
+            <Link
+              href={`/learn/courses/${courseSlug}`}
+              className="inline-flex items-center gap-2 rounded-full bg-violet-500 px-3 py-1 text-xs font-semibold text-white transition hover:bg-violet-600"
+            >
+              Open course
+              <ArrowRight className="size-3.5" />
+            </Link>
+          ) : null}
+        </div>
       </div>
     </li>
   );

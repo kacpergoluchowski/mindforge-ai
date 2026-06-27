@@ -1,0 +1,37 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+
+import { getLearningPathBySlug } from "@/features/learning-paths/api/getLearningPaths";
+import LearningPathTree from "@/features/learning-paths/components/LearningPathTree/LearningPathTree";
+
+type LearningPathDetailsPageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+export default async function LearningPathDetailsPage({
+  params,
+}: LearningPathDetailsPageProps) {
+  const { slug } = await params;
+  const path = await getLearningPathBySlug(slug);
+
+  if (!path) {
+    notFound();
+  }
+
+  return (
+    <div className="space-y-6">
+      <Link
+        href="/learn/learning-paths"
+        className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-white"
+      >
+        <ArrowLeft className="size-4" />
+        Back to learning paths
+      </Link>
+
+      <LearningPathTree path={path} />
+    </div>
+  );
+}

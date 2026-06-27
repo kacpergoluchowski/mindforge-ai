@@ -127,6 +127,12 @@ export async function submitLessonQuiz(formData: FormData) {
     profileId: user.id,
   });
 
+  await assertPracticeCompleted(supabase, {
+    courseId,
+    lessonId,
+    profileId: user.id,
+  });
+
   const quizQuestions = getLessonQuiz({
     id: lesson.id,
     title: lesson.title,
@@ -262,6 +268,87 @@ export async function submitLessonQuiz(formData: FormData) {
     passed: true,
     score,
   };
+}
+
+export async function completeLessonPractice(formData: FormData) {
+  const courseId = String(formData.get("courseId") ?? "");
+  const courseSlug = String(formData.get("courseSlug") ?? "");
+  const lessonId = String(formData.get("lessonId") ?? "");
+  const lessonSlug = String(formData.get("lessonSlug") ?? "");
+
+  if (!courseId || !courseSlug || !lessonId || !lessonSlug) {
+    throw new Error("Missing lesson data.");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: lesson } = await supabase
+    .from("course_lessons")
+    .select("id")
+    .eq("id", lessonId)
+    .eq("course_id", courseId)
+    .maybeSingle();
+
+  if (!lesson) {
+    throw new Error("Lesson not found.");
+  }
+
+  await assertPreviousLessonsCompleted(supabase, {
+    courseId,
+    lessonId,
+    profileId: user.id,
+  });
+
+  const { error } = await supabase.from("user_lesson_practice").upsert(
+    {
+      profile_id: user.id,
+      course_id: courseId,
+      lesson_id: lessonId,
+      completed_at: new Date().toISOString(),
+    },
+    {
+      onConflict: "profile_id,lesson_id",
+      ignoreDuplicates: false,
+    }
+  );
+
+  if (error) {
+    throw new Error("Could not complete practice task.");
+  }
+
+  revalidatePath(`/learn/courses/${courseSlug}/lessons/${lessonSlug}`);
+}
+
+async function assertPracticeCompleted(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  {
+    courseId,
+    lessonId,
+    profileId,
+  }: {
+    courseId: string;
+    lessonId: string;
+    profileId: string;
+  }
+) {
+  const { data: practice } = await supabase
+    .from("user_lesson_practice")
+    .select("id")
+    .eq("profile_id", profileId)
+    .eq("course_id", courseId)
+    .eq("lesson_id", lessonId)
+    .maybeSingle();
+
+  if (!practice) {
+    throw new Error("Complete the practice task before taking the quiz.");
+  }
 }
 
 async function assertPreviousLessonsCompleted(

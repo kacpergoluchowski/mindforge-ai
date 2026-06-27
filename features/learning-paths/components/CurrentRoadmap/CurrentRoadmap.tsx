@@ -13,12 +13,15 @@ export default function CurrentRoadmap({
   steps,
 }: CurrentRoadmapProps) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
-      <div className="mb-5 flex items-center justify-between gap-4">
+    <section
+      id="current-roadmap"
+      className="min-w-0 rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6"
+    >
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-xl font-semibold text-white">Current Roadmap</h2>
 
-        <div className="flex items-center gap-8">
-          <span className="hidden text-sm text-slate-400 md:inline">
+        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+          <span className="text-sm text-slate-400">
             {title}
           </span>
 
