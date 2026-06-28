@@ -149,25 +149,44 @@ export async function reviewChallengeSolution(formData: FormData) {
   const verdict = getReviewVerdict(feedback);
   const now = new Date().toISOString();
 
-  await supabase.from("user_challenges").upsert(
-    {
-      profile_id: user.id,
-      challenge_id: challengeId,
-      status: verdict === "passed" ? "submitted" : "in_progress",
-      progress_percent: verdict === "passed" ? 80 : 40,
-      solution_text: solution,
-      ai_feedback: feedback,
-      ai_verdict: verdict,
-      reviewed_at: now,
-      submitted_at: verdict === "passed" ? now : null,
-      updated_at: now,
-      started_at: now,
-    },
-    {
+  const reviewPayload = {
+    profile_id: user.id,
+    challenge_id: challengeId,
+    status: verdict === "passed" ? "submitted" : "in_progress",
+    progress_percent: verdict === "passed" ? 80 : 40,
+    solution_text: solution,
+    ai_feedback: feedback,
+    ai_verdict: verdict,
+    reviewed_at: now,
+    submitted_at: verdict === "passed" ? now : null,
+    updated_at: now,
+    started_at: now,
+  };
+  const { error: reviewError } = await supabase
+    .from("user_challenges")
+    .upsert(reviewPayload, {
       onConflict: "profile_id,challenge_id",
       ignoreDuplicates: false,
-    }
-  );
+    });
+
+  if (reviewError) {
+    await supabase.from("user_challenges").upsert(
+      {
+        profile_id: user.id,
+        challenge_id: challengeId,
+        status: verdict === "passed" ? "submitted" : "in_progress",
+        progress_percent: verdict === "passed" ? 80 : 40,
+        solution_text: solution,
+        submitted_at: verdict === "passed" ? now : null,
+        updated_at: now,
+        started_at: now,
+      },
+      {
+        onConflict: "profile_id,challenge_id",
+        ignoreDuplicates: false,
+      }
+    );
+  }
 
   revalidatePath("/learn/challenges");
 
@@ -224,17 +243,17 @@ export async function completeChallenge(formData: FormData) {
   const now = new Date().toISOString();
 
   const challengeProgressPayload = {
-      profile_id: user.id,
-      challenge_id: challengeId,
-      status: "completed",
-      progress_percent: 100,
-      solution_text: solution || null,
-      ai_verdict: "passed",
-      submitted_at: now,
-      completed_at: now,
-      updated_at: now,
-      ...(existingProgress ? {} : { started_at: now }),
-    };
+    profile_id: user.id,
+    challenge_id: challengeId,
+    status: "completed",
+    progress_percent: 100,
+    solution_text: solution || null,
+    ai_verdict: "passed",
+    submitted_at: now,
+    completed_at: now,
+    updated_at: now,
+    ...(existingProgress ? {} : { started_at: now }),
+  };
 
   const { error: progressError } = await supabase.from("user_challenges").upsert(
     challengeProgressPayload,
@@ -245,7 +264,29 @@ export async function completeChallenge(formData: FormData) {
   );
 
   if (progressError) {
-    throw new Error("Could not complete challenge.");
+    const { error: fallbackProgressError } = await supabase
+      .from("user_challenges")
+      .upsert(
+        {
+          profile_id: user.id,
+          challenge_id: challengeId,
+          status: "completed",
+          progress_percent: 100,
+          solution_text: solution || null,
+          submitted_at: now,
+          completed_at: now,
+          updated_at: now,
+          ...(existingProgress ? {} : { started_at: now }),
+        },
+        {
+          onConflict: "profile_id,challenge_id",
+          ignoreDuplicates: false,
+        }
+      );
+
+    if (fallbackProgressError) {
+      throw new Error("Could not complete challenge.");
+    }
   }
 
   const { data: profile } = await supabase

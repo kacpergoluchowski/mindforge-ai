@@ -164,7 +164,17 @@ export const getChallengeBySlug = cache(
           .eq("challenge_id", challenge.id)
           .maybeSingle()
       : null;
-    const progress = userChallengeResult?.data as UserChallengeRow | null;
+    const fallbackUserChallengeResult =
+      user && userChallengeResult?.error
+        ? await supabase
+            .from("user_challenges")
+            .select("challenge_id, status, progress_percent, solution_text")
+            .eq("profile_id", user.id)
+            .eq("challenge_id", challenge.id)
+            .maybeSingle()
+        : null;
+    const progress = (userChallengeResult?.data ??
+      fallbackUserChallengeResult?.data) as UserChallengeRow | null;
 
     return {
       ...mapFeaturedChallenge(
