@@ -28,6 +28,7 @@ import {
 } from "../../actions/aiMentorActions";
 import type {
   AiChat,
+  AiChatType,
   AiChatMessage,
   AiMentorData,
 } from "../../types/ai-mentor.types";
@@ -45,7 +46,8 @@ export default function AiMentorChat({ data }: AiMentorChatProps) {
   const visibleMessages = optimisticMessages.length
     ? [...data.messages, ...optimisticMessages]
     : data.messages;
-  const lessonContextActive = isLessonContextChat(data.selectedChat);
+  const chatType = data.selectedChat?.type ?? "general";
+  const contextChatActive = chatType !== "general";
 
   useEffect(() => {
     const bodyOverflow = document.body.style.overflow;
@@ -125,11 +127,11 @@ export default function AiMentorChat({ data }: AiMentorChatProps) {
                 <h1 className="truncate font-semibold">
                   {data.selectedChat?.title ?? "AI Mentor"}
                 </h1>
-                {lessonContextActive ? <LessonContextBadge /> : null}
+                {contextChatActive ? <ChatTypeBadge type={chatType} /> : null}
               </div>
               <p className="hidden text-xs text-slate-500 sm:block">
-                {lessonContextActive
-                  ? "Answering with lesson context"
+                {contextChatActive
+                  ? `Answering with ${chatType} context`
                   : "Your personal learning companion"}
               </p>
             </div>
@@ -190,10 +192,14 @@ type OptimisticAiChatMessage = AiChatMessage & {
   pending?: boolean;
 };
 
-function LessonContextBadge() {
+type ChatTypeBadgeProps = {
+  type: AiChatType;
+};
+
+function ChatTypeBadge({ type }: ChatTypeBadgeProps) {
   return (
     <span className="hidden shrink-0 rounded-full border border-violet-400/20 bg-violet-500/10 px-2.5 py-1 text-xs font-medium text-violet-300 sm:inline-flex">
-      Lesson context
+      {getChatTypeLabel(type)}
     </span>
   );
 }
@@ -211,6 +217,9 @@ function ChatSidebar({
   className,
   onClose,
 }: ChatSidebarProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const visibleChats = getVisibleChats(chats, searchQuery);
+
   return (
     <aside className={`${className} flex-col`}>
       <div className="flex items-center justify-between gap-3">
@@ -258,6 +267,8 @@ function ChatSidebar({
         <input
           type="text"
           placeholder="Search chats..."
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
           className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] pl-10 pr-3 text-sm outline-none placeholder:text-slate-500"
         />
       </div>
@@ -265,7 +276,9 @@ function ChatSidebar({
       <nav className="mt-6 min-h-0 flex-1 overflow-hidden">
         <ChatGroup
           activeChatId={activeChatId}
-          chats={chats.length ? chats : getWelcomeChat()}
+          chats={visibleChats}
+          hasRealChats={chats.length > 0}
+          searchQuery={searchQuery}
           title="Chats"
         />
       </nav>
@@ -281,11 +294,36 @@ function ChatSidebar({
 type ChatGroupProps = {
   activeChatId: string | null;
   chats: AiChat[];
+  hasRealChats: boolean;
+  searchQuery: string;
   title: string;
 };
 
-function ChatGroup({ activeChatId, chats, title }: ChatGroupProps) {
+function ChatGroup({
+  activeChatId,
+  chats,
+  hasRealChats,
+  searchQuery,
+  title,
+}: ChatGroupProps) {
   const [editingChatId, setEditingChatId] = useState<string | null>(null);
+  const normalizedSearchQuery = searchQuery.trim();
+
+  if (!chats.length) {
+    return (
+      <div className="mb-6">
+        <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {title}
+        </p>
+
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-4 text-sm text-slate-500">
+          {normalizedSearchQuery
+            ? "No chats found."
+            : "No chats yet. Start with a new message."}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mb-6">
@@ -299,7 +337,9 @@ function ChatGroup({ activeChatId, chats, title }: ChatGroupProps) {
             ? "/ai-mentor/chat"
             : `/ai-mentor/chat?chat=${chat.id}`;
 
-          const isActive = chat.id === activeChatId || chat.id.startsWith("welcome");
+          const isActive =
+            chat.id === activeChatId ||
+            (!activeChatId && chat.id.startsWith("welcome"));
           const isEditing = editingChatId === chat.id;
 
           if (isEditing) {
@@ -343,38 +383,44 @@ function ChatGroup({ activeChatId, chats, title }: ChatGroupProps) {
                 className="flex min-w-0 flex-1 items-center gap-2 px-3 py-2 text-left text-sm"
               >
                 <MessageSquare className="size-4 shrink-0" />
-                <span className="truncate">{chat.title}</span>
+                <span className="min-w-0 flex-1 truncate">{chat.title}</span>
               </Link>
 
-              {!chat.id.startsWith("welcome") ? (
-                <div className="flex shrink-0 items-center pr-1 opacity-100 sm:opacity-0 sm:transition sm:group-hover:opacity-100">
-                  <button
-                    type="button"
-                    title="Rename chat"
-                    aria-label="Rename chat"
-                    className="flex size-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-white/[0.06] hover:text-white"
-                    onClick={() => setEditingChatId(chat.id)}
-                  >
-                    <Pencil className="size-3.5" />
-                  </button>
+              {hasRealChats && !chat.id.startsWith("welcome") ? (
+                <>
+                  <span className="mr-2 shrink-0 rounded-full bg-white/[0.05] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500 transition sm:group-hover:hidden">
+                    {getChatTypeLabel(chat.type)}
+                  </span>
 
-                  <form action={deleteAiChat}>
-                    <input type="hidden" name="chatId" value={chat.id} />
-                    <input
-                      type="hidden"
-                      name="activeChatId"
-                      value={activeChatId ?? ""}
-                    />
+                  <div className="hidden shrink-0 items-center pr-1 sm:group-hover:flex">
                     <button
-                      type="submit"
-                      title="Delete chat"
-                      aria-label="Delete chat"
-                      className="flex size-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-500/10 hover:text-red-300"
+                      type="button"
+                      title="Rename chat"
+                      aria-label="Rename chat"
+                      className="flex size-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-white/[0.06] hover:text-white"
+                      onClick={() => setEditingChatId(chat.id)}
                     >
-                      <Trash2 className="size-3.5" />
+                      <Pencil className="size-3.5" />
                     </button>
-                  </form>
-                </div>
+
+                    <form action={deleteAiChat}>
+                      <input type="hidden" name="chatId" value={chat.id} />
+                      <input
+                        type="hidden"
+                        name="activeChatId"
+                        value={activeChatId ?? ""}
+                      />
+                      <button
+                        type="submit"
+                        title="Delete chat"
+                        aria-label="Delete chat"
+                        className="flex size-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-500/10 hover:text-red-300"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    </form>
+                  </div>
+                </>
               ) : null}
             </div>
           );
@@ -417,7 +463,7 @@ function WelcomeState() {
 
       <p className="mt-3 max-w-xl text-sm leading-7 text-slate-400 sm:text-base">
         Ask about your current lesson, practice task, code problem or career
-        path. This screen is ready for the API integration.
+        path. I can use your MindForge progress to give more useful answers.
       </p>
     </div>
   );
@@ -550,17 +596,42 @@ function ChatComposer({
   );
 }
 
-function getWelcomeChat(): AiChat[] {
-  return [
-    {
-      id: "welcome-chat",
-      title: "Welcome to AI Mentor",
-      createdAt: "",
-      updatedAt: "",
-    },
-  ];
+function getVisibleChats(chats: AiChat[], searchQuery: string): AiChat[] {
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+
+  if (!chats.length && !normalizedSearchQuery) {
+    return [
+      {
+        id: "welcome-chat",
+        title: "Welcome to AI Mentor",
+        type: "general",
+        sourceId: null,
+        sourceTitle: null,
+        createdAt: "",
+        updatedAt: "",
+      },
+    ];
+  }
+
+  if (!normalizedSearchQuery) {
+    return chats;
+  }
+
+  return chats.filter((chat) =>
+    [chat.title, getChatTypeLabel(chat.type), chat.sourceTitle ?? ""]
+      .join(" ")
+      .toLowerCase()
+      .includes(normalizedSearchQuery)
+  );
 }
 
-function isLessonContextChat(chat: AiChat | null): boolean {
-  return chat?.title.startsWith("Lesson:") ?? false;
+function getChatTypeLabel(type: AiChatType): string {
+  const labels: Record<AiChatType, string> = {
+    general: "General",
+    lesson: "Lesson",
+    challenge: "Challenge",
+    roadmap: "Roadmap",
+  };
+
+  return labels[type];
 }

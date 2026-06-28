@@ -4,9 +4,14 @@ export type RecentConversation = {
   time: string;
 };
 
+export type AiChatType = "general" | "lesson" | "challenge" | "roadmap";
+
 export type AiChat = {
   id: string;
   title: string;
+  type: AiChatType;
+  sourceId: string | null;
+  sourceTitle: string | null;
   createdAt: string;
   updatedAt: string;
 };

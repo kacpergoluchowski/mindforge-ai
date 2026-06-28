@@ -9,6 +9,10 @@ import { getProgressSummary } from "@/features/progress/api/getProgressSummary";
 import { getFirstName } from "@/features/profile/utils/profileFormatters";
 import { Bot, ChevronDown } from "lucide-react";
 
+export const metadata = {
+  title: "Dashboard",
+};
+
 export default async function DashboardPage() {
   const [profile, progressSummary] = await Promise.all([
     getCurrentProfile(),

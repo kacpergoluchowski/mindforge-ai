@@ -5,6 +5,10 @@ import PopularCourses from "@/features/courses/components/PopularCourses/Popular
 import PageHeader from "@/components/shared/PageHeader";
 import { Plus } from "lucide-react";
 
+export const metadata = {
+  title: "Courses",
+};
+
 type CoursesPageProps = {
   searchParams: Promise<{
     category?: string;

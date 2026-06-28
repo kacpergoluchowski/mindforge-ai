@@ -1,8 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import clsx from "clsx";
-import { Bot, CheckCircle2, Loader2, X, XCircle } from "lucide-react";
+import {
+  Bot,
+  CheckCircle2,
+  Gauge,
+  LayoutDashboard,
+  Loader2,
+  Trophy,
+  X,
+  XCircle,
+} from "lucide-react";
 
 import {
   completeChallenge,
@@ -11,6 +21,7 @@ import {
 
 type ChallengeSolutionReviewProps = {
   challengeId: string | number;
+  xpReward: number;
   starterCode: string | null;
   initialSolution: string | null;
   initialFeedback: string | null;
@@ -20,6 +31,7 @@ type ChallengeSolutionReviewProps = {
 
 export default function ChallengeSolutionReview({
   challengeId,
+  xpReward,
   starterCode,
   initialSolution,
   initialFeedback,
@@ -33,6 +45,7 @@ export default function ChallengeSolutionReview({
   );
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [completed, setCompleted] = useState(alreadyCompleted);
   const [completeError, setCompleteError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -91,6 +104,8 @@ export default function ChallengeSolutionReview({
       try {
         await completeChallenge(formData);
         setCompleted(true);
+        setModalOpen(false);
+        setSuccessModalOpen(true);
       } catch {
         setCompleteError("Could not complete challenge. Try again in a moment.");
       }
@@ -299,6 +314,74 @@ export default function ChallengeSolutionReview({
           </div>
         </div>
       ) : null}
+
+      {successModalOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-xl overflow-hidden rounded-3xl border border-emerald-400/20 bg-[#0d1424] shadow-2xl">
+            <div className="border-b border-white/10 bg-emerald-500/10 p-6 text-center">
+              <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300">
+                <Trophy className="size-8" />
+              </div>
+
+              <h2 className="mt-5 text-2xl font-bold text-white">
+                Challenge completed
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                Nice work. Your progress and XP have been saved.
+              </p>
+            </div>
+
+            <div className="grid gap-3 p-5 sm:grid-cols-2">
+              <SuccessStat
+                icon={Trophy}
+                label="XP earned"
+                value={`+${xpReward} XP`}
+              />
+              <SuccessStat
+                icon={CheckCircle2}
+                label="Challenges solved"
+                value="+1"
+              />
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-white/10 p-5 sm:flex-row sm:justify-end">
+              <Link
+                href="/learn/challenges"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white"
+              >
+                <Gauge className="size-4" />
+                Back to Challenges
+              </Link>
+
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
+              >
+                <LayoutDashboard className="size-4" />
+                Go to Dashboard
+              </Link>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
+  );
+}
+
+type SuccessStatProps = {
+  icon: typeof Trophy;
+  label: string;
+  value: string;
+};
+
+function SuccessStat({ icon: Icon, label, value }: SuccessStatProps) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+      <div className="flex items-center gap-2 text-sm text-slate-400">
+        <Icon className="size-4 text-emerald-300" />
+        {label}
+      </div>
+      <p className="mt-2 text-xl font-bold text-white">{value}</p>
+    </div>
   );
 }

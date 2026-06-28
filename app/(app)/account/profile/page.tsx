@@ -3,6 +3,10 @@ import ProfileSidebar from "@/features/profile/components/ProfileSidebar/Profile
 import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
 import { redirect } from "next/navigation";
 
+export const metadata = {
+  title: "Profile",
+};
+
 export default async function ProfilePage() {
   const profile = await getCurrentProfile();
 

@@ -2,6 +2,7 @@ import Image from "next/image";
 
 export default function Logo() {
   return (
+    <div className="flex justify-center">
       <Image
         src="/images/logo.png"
         alt="MindForge AI logo"
@@ -10,5 +11,6 @@ export default function Logo() {
         loading="eager"
         className="h-auto w-[160px] lg:w-[180px]"
       />
+    </div>
   );
 }

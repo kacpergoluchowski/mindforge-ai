@@ -4,6 +4,10 @@ import MyLearningPaths from "@/features/learning-paths/components/MyLearningPath
 import PopularLearningPaths from "@/features/learning-paths/components/PopularLearningPaths/PopularLearningPaths";
 import { Plus } from "lucide-react";
 
+export const metadata = {
+  title: "Learning Paths",
+};
+
 export default async function LearningPathsPage() {
   const { myPaths, popularPaths } = await getLearningPaths();
 

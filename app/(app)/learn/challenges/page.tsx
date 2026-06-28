@@ -6,6 +6,10 @@ import ChallengeStats from "@/features/challenges/components/ChallengeStats/Chal
 import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
 import { Plus } from "lucide-react";
 
+export const metadata = {
+  title: "Challenges",
+};
+
 export default async function ChallengesPage() {
   const profile = await getCurrentProfile();
 

@@ -8,6 +8,10 @@ import { getProgressSummary } from "@/features/progress/api/getProgressSummary";
 import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
 import { redirect } from "next/navigation";
 
+export const metadata = {
+  title: "Progress",
+};
+
 export default async function ProgressPage() {
   const [profile, progressSummary] = await Promise.all([
     getCurrentProfile(),

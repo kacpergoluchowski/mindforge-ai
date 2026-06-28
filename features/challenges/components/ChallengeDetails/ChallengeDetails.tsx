@@ -15,7 +15,9 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 import { startChallenge } from "../../actions/challengeActions";
+import { createAiChallengeChat } from "@/features/ai-mentor/actions/aiMentorActions";
 import type { ChallengeDetail } from "../../types/challenges.types";
+import ChallengeAskAiButton from "./ChallengeAskAiButton";
 import ChallengeSolutionReview from "./ChallengeSolutionReview";
 
 type ChallengeDetailsProps = {
@@ -156,6 +158,7 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
           <WorkspacePanel icon={PlayCircle} title="Solution workspace">
             <ChallengeSolutionReview
               challengeId={challenge.id}
+              xpReward={challenge.points}
               starterCode={challenge.starterCode}
               initialSolution={challenge.userSolution}
               initialFeedback={challenge.aiFeedback}
@@ -240,6 +243,11 @@ function StatusPanel({
           </button>
         </form>
       )}
+
+      <form action={createAiChallengeChat} className="mt-3">
+        <input type="hidden" name="challengeId" value={challenge.id} />
+        <ChallengeAskAiButton />
+      </form>
     </div>
   );
 }

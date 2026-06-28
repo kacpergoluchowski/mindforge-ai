@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
 
 import { getLearningPathBySlug } from "@/features/learning-paths/api/getLearningPaths";
 import LearningPathTree from "@/features/learning-paths/components/LearningPathTree/LearningPathTree";
@@ -10,6 +11,17 @@ type LearningPathDetailsPageProps = {
     slug: string;
   }>;
 };
+
+export async function generateMetadata({
+  params,
+}: LearningPathDetailsPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const path = await getLearningPathBySlug(slug);
+
+  return {
+    title: path?.title ?? "Learning Path",
+  };
+}
 
 export default async function LearningPathDetailsPage({
   params,
