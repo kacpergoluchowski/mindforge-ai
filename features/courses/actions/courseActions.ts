@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { generateAiMentorResponse } from "@/features/ai-mentor/api/generateAiMentorResponse";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -10,6 +11,8 @@ import {
   getQuizScore,
   passingQuizScore,
 } from "../utils/lessonQuiz";
+
+const MAX_REVIEW_CODE_LENGTH = 12000;
 
 export async function startCourse(formData: FormData) {
   const courseId = String(formData.get("courseId") ?? "");
@@ -324,6 +327,80 @@ export async function completeLessonPractice(formData: FormData) {
   }
 
   revalidatePath(`/learn/courses/${courseSlug}/lessons/${lessonSlug}`);
+}
+
+export async function reviewLessonPracticeCode(formData: FormData) {
+  const courseId = String(formData.get("courseId") ?? "");
+  const lessonId = String(formData.get("lessonId") ?? "");
+  const code = String(formData.get("code") ?? "")
+    .trim()
+    .slice(0, MAX_REVIEW_CODE_LENGTH);
+
+  if (!courseId || !lessonId || !code) {
+    throw new Error("Missing review data.");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const [{ data: course }, { data: lesson }, { data: profile }] =
+    await Promise.all([
+      supabase
+        .from("courses")
+        .select("id, title, level, category")
+        .eq("id", courseId)
+        .eq("is_published", true)
+        .maybeSingle(),
+      supabase
+        .from("course_lessons")
+        .select("id, title, summary, objective, checklist")
+        .eq("id", lessonId)
+        .eq("course_id", courseId)
+        .maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("full_name, username")
+        .eq("id", user.id)
+        .maybeSingle(),
+    ]);
+
+  if (!course || !lesson) {
+    throw new Error("Lesson not found.");
+  }
+
+  return generateAiMentorResponse({
+    history: [],
+    userName: profile?.full_name ?? profile?.username,
+    learningContext: [
+      "Practice review context from MindForge:",
+      `Course: ${course.title}`,
+      `Category: ${course.category}`,
+      `Level: ${course.level}`,
+      `Lesson: ${lesson.title}`,
+      `Summary: ${lesson.summary}`,
+      `Objective: ${lesson.objective ?? "not specified"}`,
+      `Checklist: ${(lesson.checklist ?? []).join(", ") || "not specified"}`,
+    ].join("\n"),
+    message: [
+      "Review this learner's practice code.",
+      "Give concise feedback with:",
+      "1. What is good",
+      "2. What should be fixed",
+      "3. One improved example or exact next step",
+      "4. Whether it looks ready to mark as practice done",
+      "",
+      "Learner code:",
+      "```",
+      code,
+      "```",
+    ].join("\n"),
+  });
 }
 
 async function assertPracticeCompleted(

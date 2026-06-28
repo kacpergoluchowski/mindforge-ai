@@ -6,20 +6,25 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import {
   ArrowLeft,
   Bot,
+  Check,
   MessageSquare,
   MoreHorizontal,
   PanelLeft,
   Paperclip,
+  Pencil,
   Plus,
   Search,
   SendHorizonal,
   Sparkles,
+  Trash2,
   X,
 } from "lucide-react";
 
 import {
   createAiChat,
+  deleteAiChat,
   sendAiMentorMessage,
+  updateAiChatTitle,
 } from "../../actions/aiMentorActions";
 import type {
   AiChat,
@@ -40,6 +45,7 @@ export default function AiMentorChat({ data }: AiMentorChatProps) {
   const visibleMessages = optimisticMessages.length
     ? [...data.messages, ...optimisticMessages]
     : data.messages;
+  const lessonContextActive = isLessonContextChat(data.selectedChat);
 
   useEffect(() => {
     const bodyOverflow = document.body.style.overflow;
@@ -115,11 +121,16 @@ export default function AiMentorChat({ data }: AiMentorChatProps) {
             </div>
 
             <div className="min-w-0">
-              <h1 className="truncate font-semibold">
-                {data.selectedChat?.title ?? "AI Mentor"}
-              </h1>
+              <div className="flex min-w-0 items-center gap-2">
+                <h1 className="truncate font-semibold">
+                  {data.selectedChat?.title ?? "AI Mentor"}
+                </h1>
+                {lessonContextActive ? <LessonContextBadge /> : null}
+              </div>
               <p className="hidden text-xs text-slate-500 sm:block">
-                Your personal learning companion
+                {lessonContextActive
+                  ? "Answering with lesson context"
+                  : "Your personal learning companion"}
               </p>
             </div>
           </div>
@@ -178,6 +189,14 @@ export default function AiMentorChat({ data }: AiMentorChatProps) {
 type OptimisticAiChatMessage = AiChatMessage & {
   pending?: boolean;
 };
+
+function LessonContextBadge() {
+  return (
+    <span className="hidden shrink-0 rounded-full border border-violet-400/20 bg-violet-500/10 px-2.5 py-1 text-xs font-medium text-violet-300 sm:inline-flex">
+      Lesson context
+    </span>
+  );
+}
 
 type ChatSidebarProps = {
   activeChatId: string | null;
@@ -266,6 +285,8 @@ type ChatGroupProps = {
 };
 
 function ChatGroup({ activeChatId, chats, title }: ChatGroupProps) {
+  const [editingChatId, setEditingChatId] = useState<string | null>(null);
+
   return (
     <div className="mb-6">
       <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -278,19 +299,84 @@ function ChatGroup({ activeChatId, chats, title }: ChatGroupProps) {
             ? "/ai-mentor/chat"
             : `/ai-mentor/chat?chat=${chat.id}`;
 
+          const isActive = chat.id === activeChatId || chat.id.startsWith("welcome");
+          const isEditing = editingChatId === chat.id;
+
+          if (isEditing) {
+            return (
+              <form
+                key={chat.id}
+                action={updateAiChatTitle}
+                className="flex items-center gap-2 rounded-xl bg-white/[0.04] px-2 py-1.5"
+                onSubmit={() => setEditingChatId(null)}
+              >
+                <input type="hidden" name="chatId" value={chat.id} />
+                <input
+                  name="title"
+                  defaultValue={chat.title}
+                  autoFocus
+                  className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
+                />
+                <button
+                  type="submit"
+                  title="Save chat title"
+                  aria-label="Save chat title"
+                  className="flex size-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/[0.06] hover:text-white"
+                >
+                  <Check className="size-4" />
+                </button>
+              </form>
+            );
+          }
+
           return (
-            <Link
+            <div
               key={chat.id}
-              href={href}
-              className={`flex w-full min-w-0 items-center gap-2 rounded-xl px-3 py-2 text-left text-sm transition ${
-                chat.id === activeChatId || chat.id.startsWith("welcome")
+              className={`group flex min-w-0 items-center rounded-xl transition ${
+                isActive
                   ? "bg-violet-500/15 text-white"
                   : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
               }`}
             >
-              <MessageSquare className="size-4 shrink-0" />
-              <span className="truncate">{chat.title}</span>
-            </Link>
+              <Link
+                href={href}
+                className="flex min-w-0 flex-1 items-center gap-2 px-3 py-2 text-left text-sm"
+              >
+                <MessageSquare className="size-4 shrink-0" />
+                <span className="truncate">{chat.title}</span>
+              </Link>
+
+              {!chat.id.startsWith("welcome") ? (
+                <div className="flex shrink-0 items-center pr-1 opacity-100 sm:opacity-0 sm:transition sm:group-hover:opacity-100">
+                  <button
+                    type="button"
+                    title="Rename chat"
+                    aria-label="Rename chat"
+                    className="flex size-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-white/[0.06] hover:text-white"
+                    onClick={() => setEditingChatId(chat.id)}
+                  >
+                    <Pencil className="size-3.5" />
+                  </button>
+
+                  <form action={deleteAiChat}>
+                    <input type="hidden" name="chatId" value={chat.id} />
+                    <input
+                      type="hidden"
+                      name="activeChatId"
+                      value={activeChatId ?? ""}
+                    />
+                    <button
+                      type="submit"
+                      title="Delete chat"
+                      aria-label="Delete chat"
+                      className="flex size-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-500/10 hover:text-red-300"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </form>
+                </div>
+              ) : null}
+            </div>
           );
         })}
       </div>
@@ -473,4 +559,8 @@ function getWelcomeChat(): AiChat[] {
       updatedAt: "",
     },
   ];
+}
+
+function isLessonContextChat(chat: AiChat | null): boolean {
+  return chat?.title.startsWith("Lesson:") ?? false;
 }

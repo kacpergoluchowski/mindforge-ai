@@ -1,10 +1,12 @@
+import Link from "next/link";
 import clsx from "clsx";
-import { Star, TrendingUp, Users } from "lucide-react";
+import { Clock3, Star, TrendingUp, Users } from "lucide-react";
 
-import type { FeaturedChallengeCardProps } from "../../types/challenges.types";
-
-type ChallengeColor = FeaturedChallengeCardProps["color"];
-type ChallengeDifficulty = FeaturedChallengeCardProps["difficulty"];
+import type {
+  ChallengeColor,
+  ChallengeDifficulty,
+  FeaturedChallengeCardProps,
+} from "../../types/challenges.types";
 
 const iconStyles: Record<ChallengeColor, string> = {
   violet: "bg-violet-500/10 text-violet-400",
@@ -15,12 +17,21 @@ const iconStyles: Record<ChallengeColor, string> = {
 };
 
 const difficultyStyles: Record<ChallengeDifficulty, string> = {
+  Beginner: "text-emerald-400",
   Easy: "text-emerald-400",
   Medium: "text-orange-400",
   Hard: "text-red-400",
 };
 
+const statusLabels = {
+  not_started: "Solve",
+  in_progress: "Continue",
+  submitted: "Review",
+  completed: "Completed",
+} as const;
+
 export default function FeaturedChallengeCard({
+  slug,
   title,
   description,
   category,
@@ -31,8 +42,10 @@ export default function FeaturedChallengeCard({
   successRate,
   icon,
   color,
+  duration,
+  status,
 }: FeaturedChallengeCardProps) {
-  return (
+  const content = (
     <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-3 transition hover:border-violet-500/30">
       <div className="flex items-center gap-4">
         <ChallengeIcon color={color} icon={icon} />
@@ -55,6 +68,7 @@ export default function FeaturedChallengeCard({
               value={rating}
             />
             <ChallengeMetric icon={Users} value={participants} />
+            {duration && <ChallengeMetric icon={Clock3} value={duration} />}
             <ChallengeMetric
               icon={TrendingUp}
               value={`${successRate} Success`}
@@ -62,9 +76,23 @@ export default function FeaturedChallengeCard({
           </div>
         </div>
 
-        <ChallengeAction difficulty={difficulty} points={points} />
+        <ChallengeAction
+          difficulty={difficulty}
+          points={points}
+          status={status}
+        />
       </div>
     </article>
+  );
+
+  if (!slug) {
+    return content;
+  }
+
+  return (
+    <Link href={`/learn/challenges/${slug}`} className="block">
+      {content}
+    </Link>
   );
 }
 
@@ -108,23 +136,27 @@ function ChallengeMetric({
 type ChallengeActionProps = {
   difficulty: ChallengeDifficulty;
   points: number;
+  status?: FeaturedChallengeCardProps["status"];
 };
 
-function ChallengeAction({ difficulty, points }: ChallengeActionProps) {
+function ChallengeAction({
+  difficulty,
+  points,
+  status,
+}: ChallengeActionProps) {
+  const buttonLabel = status ? statusLabels[status] : "Solve";
+
   return (
     <div className="text-right">
       <p className={clsx("font-semibold", difficultyStyles[difficulty])}>
         {difficulty}
       </p>
 
-      <p className="mt-1 text-white">{points} pts</p>
+      <p className="mt-1 text-white">{points} XP</p>
 
-      <button
-        type="button"
-        className="mt-3 rounded-xl bg-violet-500 px-5 py-2 text-sm font-medium text-white transition hover:bg-violet-600"
-      >
-        Solve
-      </button>
+      <span className="mt-3 inline-flex rounded-xl bg-violet-500 px-5 py-2 text-sm font-medium text-white transition">
+        {buttonLabel}
+      </span>
     </div>
   );
 }

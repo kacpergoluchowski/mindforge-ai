@@ -11,8 +11,8 @@ import {
 } from "lucide-react";
 
 import type {
+  FeaturedChallenge,
   ChallengeStatCardProps,
-  FeaturedChallengeCardProps,
 } from "../types/challenges.types";
 
 export const challengeStats = [
@@ -68,6 +68,7 @@ export const challengeCategories = [
 export const featuredChallenges = [
   {
     id: 1,
+    slug: "two-sum",
     title: "Two Sum",
     description: "Find two numbers in an array that add up to a target.",
     category: "Algorithms",
@@ -81,6 +82,7 @@ export const featuredChallenges = [
   },
   {
     id: 2,
+    slug: "valid-parentheses",
     title: "Valid Parentheses",
     description: "Determine if the input string has valid parentheses.",
     category: "Data Structures",
@@ -94,6 +96,7 @@ export const featuredChallenges = [
   },
   {
     id: 3,
+    slug: "responsive-navigation-bar",
     title: "Responsive Navigation Bar",
     description: "Build a responsive navigation bar with mobile menu.",
     category: "Frontend",
@@ -107,6 +110,7 @@ export const featuredChallenges = [
   },
   {
     id: 4,
+    slug: "jwt-authentication",
     title: "JWT Authentication",
     description: "Implement JWT authentication for a REST API.",
     category: "Backend",
@@ -120,6 +124,7 @@ export const featuredChallenges = [
   },
   {
     id: 5,
+    slug: "employee-management-system",
     title: "Employee Management System",
     description: "Design and implement a complete database schema.",
     category: "Database",
@@ -131,7 +136,7 @@ export const featuredChallenges = [
     icon: Database,
     color: "yellow",
   },
-] satisfies Array<FeaturedChallengeCardProps & { id: number }>;
+] satisfies FeaturedChallenge[];
 
 export const weeklyLeaderboard = [
   {

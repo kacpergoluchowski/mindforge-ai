@@ -1,9 +1,11 @@
 import { ChevronDown } from "lucide-react";
 
-import { featuredChallenges } from "../../data/challengesData";
+import { getFeaturedChallenges } from "../../api/getChallenges";
 import FeaturedChallengeCard from "./FeaturedChallengeCard";
 
-export default function FeaturedChallenges() {
+export default async function FeaturedChallenges() {
+  const challenges = await getFeaturedChallenges();
+
   return (
     <section className="space-y-5">
       <div className="flex items-center justify-between">
@@ -20,7 +22,7 @@ export default function FeaturedChallenges() {
       </div>
 
       <div className="space-y-5">
-        {featuredChallenges.map((challenge) => (
+        {challenges.map((challenge) => (
           <FeaturedChallengeCard
             key={challenge.id}
             {...challenge}

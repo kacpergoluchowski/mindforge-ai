@@ -6,6 +6,7 @@ type GenerateAiMentorResponseParams = {
   message: string;
   history: AiChatMessage[];
   userName?: string | null;
+  learningContext?: string;
 };
 
 const AI_MENTOR_MODEL = process.env.OPENAI_MODEL ?? "gpt-4.1-mini";
@@ -19,6 +20,7 @@ export async function generateAiMentorResponse({
   message,
   history,
   userName,
+  learningContext,
 }: GenerateAiMentorResponseParams): Promise<string> {
   if (!process.env.OPENAI_API_KEY) {
     return "OpenAI API key is not configured yet. Add OPENAI_API_KEY to .env.local and restart the dev server.";
@@ -26,7 +28,7 @@ export async function generateAiMentorResponse({
 
   const response = await openai.responses.create({
     model: AI_MENTOR_MODEL,
-    instructions: getAiMentorInstructions(userName),
+    instructions: getAiMentorInstructions(userName, learningContext),
     input: [
       ...history.slice(-MAX_HISTORY_MESSAGES).map((item) => ({
         role: item.role,
@@ -46,7 +48,10 @@ export async function generateAiMentorResponse({
   );
 }
 
-function getAiMentorInstructions(userName?: string | null): string {
+function getAiMentorInstructions(
+  userName?: string | null,
+  learningContext?: string
+): string {
   const learnerName = userName?.trim() || "the learner";
 
   return [
@@ -56,5 +61,8 @@ function getAiMentorInstructions(userName?: string | null): string {
     "If the user asks in Polish, answer in Polish. If the user asks in English, answer in English.",
     "Do not invent user progress or platform data. If you do not know something, say it directly.",
     "When explaining code, keep it beginner-friendly and show small examples when useful.",
+    learningContext
+      ? `Use this platform learning context when relevant:\n${learningContext}`
+      : "No platform learning context is available yet.",
   ].join(" ");
 }

@@ -8,7 +8,6 @@ import {
   Code2,
   Clock3,
   FileText,
-  Lightbulb,
   ListChecks,
   PlayCircle,
   Target,
@@ -16,9 +15,12 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { createAiLessonChat } from "@/features/ai-mentor/actions/aiMentorActions";
 import { completeLessonPractice } from "../../actions/courseActions";
 import type { CourseDetail, CourseLesson } from "../../types/courses.types";
+import AskAiMentorButton from "./AskAiMentorButton";
 import CourseLessonQuizModal from "./CourseLessonQuizModal";
+import PracticeReviewModal from "./PracticeReviewModal";
 
 type CourseLessonDetailsProps = {
   course: CourseDetail;
@@ -36,7 +38,6 @@ export default function CourseLessonDetails({
   const lessonNumber = lessonIndex + 1;
   const lessonProgress = Math.round((lessonNumber / lessons.length) * 100);
   const contentBlocks = formatContent(lesson.content);
-  const keyConcepts = getKeyConcepts(lesson);
   const practiceTasks = getPracticeTasks(lesson);
 
   return (
@@ -100,8 +101,14 @@ export default function CourseLessonDetails({
           </LessonCard>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <LessonCard icon={Lightbulb} title="Key Concepts">
-              <LessonList items={keyConcepts} />
+            <LessonCard icon={ClipboardCheck} title="Checklist">
+              {lesson.checklist.length ? (
+                <LessonList items={lesson.checklist} />
+              ) : (
+                <p className="text-sm text-slate-400">
+                  Complete the lesson and make sure you understand the key idea.
+                </p>
+              )}
             </LessonCard>
 
             <LessonCard icon={ListChecks} title="Practice Task">
@@ -113,16 +120,6 @@ export default function CourseLessonDetails({
               />
             </LessonCard>
           </div>
-
-          <LessonCard icon={ClipboardCheck} title="Checklist">
-            {lesson.checklist.length ? (
-              <LessonList items={lesson.checklist} />
-            ) : (
-              <p className="text-sm text-slate-400">
-                Complete the lesson and make sure you understand the key idea.
-              </p>
-            )}
-          </LessonCard>
 
           <LessonCard icon={PlayCircle} title="Finish this lesson">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -157,6 +154,7 @@ export default function CourseLessonDetails({
 
         <LessonProgressPanel
           availableNextLesson={availableNextLesson}
+          courseId={course.id}
           courseSlug={course.slug}
           lesson={lesson}
           lessonNumber={lessonNumber}
@@ -170,6 +168,7 @@ export default function CourseLessonDetails({
 
 type LessonProgressPanelProps = {
   availableNextLesson?: CourseLesson | null;
+  courseId: string;
   courseSlug: string;
   lesson: CourseLesson;
   lessonNumber: number;
@@ -179,6 +178,7 @@ type LessonProgressPanelProps = {
 
 function LessonProgressPanel({
   availableNextLesson,
+  courseId,
   courseSlug,
   lesson,
   lessonNumber,
@@ -227,6 +227,12 @@ function LessonProgressPanel({
           bottom of the page.
         </p>
       </div>
+
+      <form action={createAiLessonChat} className="mt-4">
+        <input type="hidden" name="courseId" value={courseId} />
+        <input type="hidden" name="lessonId" value={lesson.id} />
+        <AskAiMentorButton />
+      </form>
 
       {availableNextLesson ? (
         <Link
@@ -323,26 +329,34 @@ function PracticeTask({
             </p>
           </div>
 
-          {lesson.practiceCompleted ? (
-            <span className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-300">
-              <CheckCircle2 className="size-4" />
-              Done
-            </span>
-          ) : (
-            <form action={completeLessonPractice} className="shrink-0">
-              <input type="hidden" name="courseId" value={courseId} />
-              <input type="hidden" name="courseSlug" value={courseSlug} />
-              <input type="hidden" name="lessonId" value={lesson.id} />
-              <input type="hidden" name="lessonSlug" value={lesson.slug} />
-              <button
-                type="submit"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-600 sm:w-auto"
-              >
-                <ClipboardCheck className="size-4" />
-                Mark practice as done
-              </button>
-            </form>
-          )}
+          <div className="flex shrink-0 flex-col gap-3">
+            <PracticeReviewModal
+              courseId={courseId}
+              lessonId={lesson.id}
+              lessonTitle={lesson.title}
+            />
+
+            {lesson.practiceCompleted ? (
+              <span className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-300">
+                <CheckCircle2 className="size-4" />
+                Done
+              </span>
+            ) : (
+              <form action={completeLessonPractice} className="shrink-0">
+                <input type="hidden" name="courseId" value={courseId} />
+                <input type="hidden" name="courseSlug" value={courseSlug} />
+                <input type="hidden" name="lessonId" value={lesson.id} />
+                <input type="hidden" name="lessonSlug" value={lesson.slug} />
+                <button
+                  type="submit"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-600 sm:w-auto"
+                >
+                  <ClipboardCheck className="size-4" />
+                  Mark practice as done
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -550,18 +564,6 @@ function pushParagraphBlocks(
         type: "paragraph",
       });
     });
-}
-
-function getKeyConcepts(lesson: CourseLesson): string[] {
-  if (lesson.checklist.length) {
-    return lesson.checklist.slice(0, 4);
-  }
-
-  return [
-    lesson.objective ?? "Understand the main concept of this lesson.",
-    "Connect the theory with a small practical example.",
-    "Prepare for the quiz before moving to the next lesson.",
-  ];
 }
 
 function getPracticeTasks(lesson: CourseLesson): string[] {

@@ -50,12 +50,13 @@ type StatTrendProps = {
 
 function StatTrend({ trend, value }: StatTrendProps) {
   const TrendIcon = trend === "up" ? ArrowUpRight : ArrowDownRight;
+  const suffix = value === "Live" ? "data" : "this month";
 
   return (
     <div className="mt-3 flex items-center gap-1 text-sm">
       <TrendIcon className={clsx("size-4", trendStyles[trend])} />
       <span className={clsx("font-medium", trendStyles[trend])}>{value}</span>
-      <span className="text-slate-500">this month</span>
+      <span className="text-slate-500">{suffix}</span>
     </div>
   );
 }
