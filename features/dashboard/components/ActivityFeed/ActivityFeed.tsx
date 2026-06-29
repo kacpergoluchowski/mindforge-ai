@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { getActivityLogs } from "../../api/getActivityLogs";
 import type { ActivityItem } from "../../types/dashboard.types";
 import ActivityFeedItem from "./ActivityFeedItem";
@@ -11,13 +12,18 @@ export default async function ActivityFeed() {
   return (
     <section className="flex w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:h-70">
       <div className="mb-7 flex shrink-0 items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">Activity Feed</h2>
+        <h2 className="text-lg font-semibold text-white">
+          <TranslatedText
+            translationKey="dashboard.activityFeed"
+            fallback="Activity Feed"
+          />
+        </h2>
 
         <Link
           href="/learn/progress"
           className="text-sm text-slate-400 transition hover:text-white"
         >
-          View all
+          <TranslatedText translationKey="common.viewAll" fallback="View all" />
         </Link>
       </div>
 
@@ -29,7 +35,10 @@ export default async function ActivityFeed() {
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
-          No activity yet.
+          <TranslatedText
+            translationKey="dashboard.noActivity"
+            fallback="No activity yet."
+          />
         </div>
       )}
     </section>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { ArrowRight, Brain, Code2, Layers3, MoreVertical } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { LearningPath } from "../../types/learningPaths.types";
 
 type LearningPathColor = LearningPath["color"];
@@ -66,13 +67,21 @@ export default function LearningPathCard({
       <h3 className="text-xl font-semibold text-white">{title}</h3>
 
       <p className={clsx("mt-2 text-sm", styles.iconText)}>
-        {normalizedProgress}% Complete
+        <TranslatedText
+          fallback="{progress}% Complete"
+          translationKey="learningPaths.percentComplete"
+          values={{ progress: normalizedProgress }}
+        />
       </p>
 
       <PathProgress progress={normalizedProgress} styles={styles} />
 
       <p className="mt-5 text-sm text-slate-400">
-        {coursesCompleted} / {totalCourses} Courses
+        <TranslatedText
+          fallback="{completed} / {total} Courses"
+          translationKey="learningPaths.coursesCompleted"
+          values={{ completed: coursesCompleted, total: totalCourses }}
+        />
       </p>
 
       <Link
@@ -82,7 +91,10 @@ export default function LearningPathCard({
           styles.button
         )}
       >
-        Continue Learning
+        <TranslatedText
+          fallback="Continue Learning"
+          translationKey="learningPaths.continuePath"
+        />
         <ArrowRight className="size-4" />
       </Link>
     </article>

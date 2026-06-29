@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
+
 type SectionHeaderProps = {
-  title: string;
-  buttonText?: string;
+  title: ReactNode;
+  buttonText?: ReactNode;
 };
 
 export default function SectionHeader({

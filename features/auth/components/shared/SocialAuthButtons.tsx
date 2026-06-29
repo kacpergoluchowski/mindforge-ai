@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import { createClient } from "@/lib/supabase/client";
 
 import type { Provider } from "@supabase/supabase-js";
@@ -33,6 +34,7 @@ const providers: Array<{
 export default function SocialAuthButtons({
   onError,
 }: SocialAuthButtonsProps) {
+  const { t } = useI18n();
   const [loadingProvider, setLoadingProvider] = useState<Provider | null>(null);
 
   const handleOAuth = async (provider: Provider) => {
@@ -64,7 +66,12 @@ export default function SocialAuthButtons({
           className="flex items-center justify-center gap-3 rounded-lg border border-slate-700/70 bg-slate-950/30 px-5 py-3.5 text-white transition hover:border-violet-400/50 hover:bg-violet-500/5 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <span className={`text-sm font-bold ${markClassName}`}>{mark}</span>
-          {loadingProvider === provider ? "Connecting..." : `Continue with ${name}`}
+          {loadingProvider === provider
+            ? t("auth.connecting", "Connecting...")
+            : t("auth.continueWith", "Continue with {provider}").replace(
+                "{provider}",
+                name
+              )}
         </button>
       ))}
     </div>

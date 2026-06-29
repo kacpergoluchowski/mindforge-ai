@@ -1,5 +1,6 @@
 import Link from "next/link";
 import clsx from "clsx";
+import type { ReactNode } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { createAiLessonChat } from "@/features/ai-mentor/actions/aiMentorActions";
 import { completeLessonPractice } from "../../actions/courseActions";
 import type { CourseDetail, CourseLesson } from "../../types/courses.types";
@@ -47,7 +49,10 @@ export default function CourseLessonDetails({
         className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-white"
       >
         <ArrowLeft className="size-4" />
-        Back to course
+        <TranslatedText
+          fallback="Back to course"
+          translationKey="courses.lesson.backToCourse"
+        />
       </Link>
 
       <section className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 p-4 sm:p-6 md:p-8">
@@ -58,7 +63,7 @@ export default function CourseLessonDetails({
                 {course.title}
               </span>
               <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-slate-300">
-                {formatLessonType(lesson.type)}
+                <LessonTypeLabel type={lesson.type} />
               </span>
             </div>
 
@@ -72,23 +77,70 @@ export default function CourseLessonDetails({
           </div>
 
           <div className="grid w-full min-w-0 gap-3 text-sm text-slate-300 sm:grid-cols-3 lg:min-w-52 lg:grid-cols-1">
-            <LessonMeta icon={FileText} label="Lesson" value={`${lessonNumber}/${lessons.length}`} />
-            <LessonMeta icon={Clock3} label="Duration" value={lesson.duration} />
-            <LessonMeta icon={Trophy} label="Reward" value={`${lesson.xpReward} XP`} />
+            <LessonMeta
+              icon={FileText}
+              label={
+                <TranslatedText
+                  fallback="Lesson"
+                  translationKey="courses.lesson.lesson"
+                />
+              }
+              value={`${lessonNumber}/${lessons.length}`}
+            />
+            <LessonMeta
+              icon={Clock3}
+              label={
+                <TranslatedText
+                  fallback="Duration"
+                  translationKey="courses.duration"
+                />
+              }
+              value={lesson.duration}
+            />
+            <LessonMeta
+              icon={Trophy}
+              label={
+                <TranslatedText
+                  fallback="Reward"
+                  translationKey="courses.lesson.reward"
+                />
+              }
+              value={`${lesson.xpReward} XP`}
+            />
           </div>
         </div>
       </section>
 
       <div className="grid min-w-0 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0 space-y-6">
-          <LessonCard icon={Target} title="Objective">
+          <LessonCard
+            icon={Target}
+            title={
+              <TranslatedText
+                fallback="Objective"
+                translationKey="courses.lesson.objective"
+              />
+            }
+          >
             <p className="text-base leading-8 text-slate-300">
-              {lesson.objective ??
-                "Understand the main concept and apply it in practice."}
+              {lesson.objective ?? (
+                <TranslatedText
+                  fallback="Understand the main concept and apply it in practice."
+                  translationKey="courses.lesson.defaultObjective"
+                />
+              )}
             </p>
           </LessonCard>
 
-          <LessonCard icon={FileText} title="Lesson Content">
+          <LessonCard
+            icon={FileText}
+            title={
+              <TranslatedText
+                fallback="Lesson Content"
+                translationKey="courses.lesson.content"
+              />
+            }
+          >
             <div className="space-y-5 text-base leading-8 text-slate-300">
               {contentBlocks.map((block, index) => (
                 <LessonContentBlock
@@ -101,17 +153,36 @@ export default function CourseLessonDetails({
           </LessonCard>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <LessonCard icon={ClipboardCheck} title="Checklist">
+            <LessonCard
+              icon={ClipboardCheck}
+              title={
+                <TranslatedText
+                  fallback="Checklist"
+                  translationKey="courses.lesson.checklist"
+                />
+              }
+            >
               {lesson.checklist.length ? (
                 <LessonList items={lesson.checklist} />
               ) : (
                 <p className="text-sm text-slate-400">
-                  Complete the lesson and make sure you understand the key idea.
+                  <TranslatedText
+                    fallback="Complete the lesson and make sure you understand the key idea."
+                    translationKey="courses.lesson.emptyChecklist"
+                  />
                 </p>
               )}
             </LessonCard>
 
-            <LessonCard icon={ListChecks} title="Practice Task">
+            <LessonCard
+              icon={ListChecks}
+              title={
+                <TranslatedText
+                  fallback="Practice Task"
+                  translationKey="courses.lesson.practiceTask"
+                />
+              }
+            >
               <PracticeTask
                 courseId={course.id}
                 courseSlug={course.slug}
@@ -121,15 +192,28 @@ export default function CourseLessonDetails({
             </LessonCard>
           </div>
 
-          <LessonCard icon={PlayCircle} title="Finish this lesson">
+          <LessonCard
+            icon={PlayCircle}
+            title={
+              <TranslatedText
+                fallback="Finish this lesson"
+                translationKey="courses.lesson.finishLesson"
+              />
+            }
+          >
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p className="font-semibold text-white">
-                  Ready to check your knowledge?
+                  <TranslatedText
+                    fallback="Ready to check your knowledge?"
+                    translationKey="courses.lesson.readyToCheck"
+                  />
                 </p>
                 <p className="mt-2 text-sm leading-6 text-slate-400">
-                  Complete the practice task, then pass the quiz with at least
-                  4 correct answers to unlock the next lesson and earn XP.
+                  <TranslatedText
+                    fallback="Complete the practice task, then pass the quiz with at least 4 correct answers to unlock the next lesson and earn XP."
+                    translationKey="courses.lesson.finishInstruction"
+                  />
                 </p>
               </div>
 
@@ -144,7 +228,6 @@ export default function CourseLessonDetails({
                     nextLessonTitle={nextLesson?.title ?? null}
                     nextLessonSlug={nextLesson?.slug ?? ""}
                     disabled={!lesson.practiceCompleted}
-                    disabledReason="Complete the practice task first."
                   />
                 )}
               </div>
@@ -189,9 +272,18 @@ function LessonProgressPanel({
     <aside className="min-w-0 rounded-2xl border border-white/10 bg-[#111a2d]/80 p-4 sm:p-5 xl:sticky xl:top-24">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-white">Lesson Progress</h2>
+          <h2 className="text-lg font-semibold text-white">
+            <TranslatedText
+              fallback="Lesson Progress"
+              translationKey="courses.lesson.lessonProgress"
+            />
+          </h2>
           <p className="mt-1 text-sm text-slate-400">
-            Lesson {lessonNumber} of {totalLessons}
+            <TranslatedText
+              fallback="Lesson {current} of {total}"
+              translationKey="courses.lesson.lessonCounter"
+              values={{ current: lessonNumber, total: totalLessons }}
+            />
           </p>
         </div>
 
@@ -211,20 +303,62 @@ function LessonProgressPanel({
 
       <div className="mt-5 space-y-3 text-sm">
         <ProgressRow
-          label="Status"
-          value={lesson.completed ? "Completed" : "In progress"}
+          label={
+            <TranslatedText
+              fallback="Status"
+              translationKey="courses.lesson.status"
+            />
+          }
+          value={
+            lesson.completed ? (
+              <TranslatedText
+                fallback="Completed"
+                translationKey="common.completed"
+              />
+            ) : (
+              <TranslatedText
+                fallback="In progress"
+                translationKey="common.inProgress"
+              />
+            )
+          }
           valueClassName={lesson.completed ? "text-emerald-400" : "text-violet-300"}
         />
-        <ProgressRow label="Type" value={formatLessonType(lesson.type)} />
-        <ProgressRow label="Duration" value={lesson.duration} />
-        <ProgressRow label="Reward" value={`${lesson.xpReward} XP`} />
+        <ProgressRow
+          label={
+            <TranslatedText fallback="Type" translationKey="courses.lesson.type" />
+          }
+          value={<LessonTypeLabel type={lesson.type} />}
+        />
+        <ProgressRow
+          label={
+            <TranslatedText fallback="Duration" translationKey="courses.duration" />
+          }
+          value={lesson.duration}
+        />
+        <ProgressRow
+          label={
+            <TranslatedText
+              fallback="Reward"
+              translationKey="courses.lesson.reward"
+            />
+          }
+          value={`${lesson.xpReward} XP`}
+        />
       </div>
 
       <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-        <p className="text-sm font-semibold text-white">How to finish</p>
+        <p className="text-sm font-semibold text-white">
+          <TranslatedText
+            fallback="How to finish"
+            translationKey="courses.lesson.howToFinishTitle"
+          />
+        </p>
         <p className="mt-2 break-words text-sm leading-6 text-slate-400">
-          Read the lesson, complete the practice task, then pass the quiz at the
-          bottom of the page.
+          <TranslatedText
+            fallback="Read the lesson, complete the practice task, then pass the quiz at the bottom of the page."
+            translationKey="courses.lesson.howToFinish"
+          />
         </p>
       </div>
 
@@ -239,7 +373,10 @@ function LessonProgressPanel({
           href={`/learn/courses/${courseSlug}/lessons/${availableNextLesson.slug}`}
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white"
         >
-          Next Lesson
+          <TranslatedText
+            fallback="Next Lesson"
+            translationKey="courses.lesson.nextLesson"
+          />
           <ArrowRight className="size-4" />
         </Link>
       ) : null}
@@ -260,7 +397,12 @@ function LessonContentBlock({ block, highlighted }: LessonContentBlockProps) {
           <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300">
             <ListChecks className="size-4" />
           </div>
-          <p className="font-semibold text-white">Mini task</p>
+          <p className="font-semibold text-white">
+            <TranslatedText
+              fallback="Mini task"
+              translationKey="courses.lesson.miniTask"
+            />
+          </p>
         </div>
 
         <p className="break-words text-sm leading-7 text-emerald-50/90">
@@ -275,7 +417,10 @@ function LessonContentBlock({ block, highlighted }: LessonContentBlockProps) {
       <div className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/70">
         <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3 text-sm font-medium text-slate-300">
           <Code2 className="size-4 text-violet-300" />
-          Code example
+          <TranslatedText
+            fallback="Code example"
+            translationKey="courses.lesson.codeExample"
+          />
         </div>
         <pre className="max-w-full overflow-x-auto p-4 text-xs leading-6 text-slate-200 sm:text-sm">
           <code>{block.content}</code>
@@ -318,14 +463,30 @@ function PracticeTask({
         <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p className="font-semibold text-white">
-              {lesson.practiceCompleted
-                ? "Practice completed"
-                : "Finish the practical task"}
+              {lesson.practiceCompleted ? (
+                <TranslatedText
+                  fallback="Practice completed"
+                  translationKey="courses.lesson.practiceCompleted"
+                />
+              ) : (
+                <TranslatedText
+                  fallback="Finish the practical task"
+                  translationKey="courses.lesson.finishPracticeTask"
+                />
+              )}
             </p>
             <p className="mt-1 break-words text-sm leading-6 text-slate-400">
-              {lesson.practiceCompleted
-                ? "You can now take the quiz for this lesson."
-                : "Do the task in your editor, check it in the browser, then mark it as done."}
+              {lesson.practiceCompleted ? (
+                <TranslatedText
+                  fallback="You can now take the quiz for this lesson."
+                  translationKey="courses.lesson.practiceCompletedDescription"
+                />
+              ) : (
+                <TranslatedText
+                  fallback="Do the task in your editor, check it in the browser, then mark it as done."
+                  translationKey="courses.lesson.practiceTodoDescription"
+                />
+              )}
             </p>
           </div>
 
@@ -339,7 +500,7 @@ function PracticeTask({
             {lesson.practiceCompleted ? (
               <span className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-300">
                 <CheckCircle2 className="size-4" />
-                Done
+                <TranslatedText fallback="Done" translationKey="common.completed" />
               </span>
             ) : (
               <form action={completeLessonPractice} className="shrink-0">
@@ -352,7 +513,10 @@ function PracticeTask({
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-600 sm:w-auto"
                 >
                   <ClipboardCheck className="size-4" />
-                  Mark practice as done
+                  <TranslatedText
+                    fallback="Mark practice as done"
+                    translationKey="courses.lesson.markPracticeDone"
+                  />
                 </button>
               </form>
             )}
@@ -364,11 +528,11 @@ function PracticeTask({
 }
 
 type LessonCardProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   id?: string;
   icon: LucideIcon;
-  title: string;
+  title: ReactNode;
 };
 
 function LessonCard({
@@ -402,7 +566,7 @@ function LessonCard({
 
 type LessonMetaProps = {
   icon: LucideIcon;
-  label: string;
+  label: ReactNode;
   value: string;
 };
 
@@ -436,8 +600,8 @@ function LessonList({ items }: LessonListProps) {
 }
 
 type ProgressRowProps = {
-  label: string;
-  value: string;
+  label: ReactNode;
+  value: ReactNode;
   valueClassName?: string;
 };
 
@@ -456,20 +620,38 @@ function CompletedBadge() {
   return (
     <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-5 py-3 font-semibold text-emerald-300">
       <CheckCircle2 className="size-5" />
-      Completed
+      <TranslatedText fallback="Completed" translationKey="common.completed" />
     </span>
   );
 }
 
-function formatLessonType(type: string): string {
-  const labels: Record<string, string> = {
-    exercise: "Exercise",
-    final_project: "Final Project",
-    lesson: "Lesson",
-    project: "Project",
+function LessonTypeLabel({ type }: { type: string }) {
+  const labels: Record<string, { fallback: string; translationKey: string }> = {
+    exercise: {
+      fallback: "Exercise",
+      translationKey: "courses.lesson.types.exercise",
+    },
+    final_project: {
+      fallback: "Final Project",
+      translationKey: "courses.lesson.types.finalProject",
+    },
+    lesson: {
+      fallback: "Lesson",
+      translationKey: "courses.lesson.types.lesson",
+    },
+    project: {
+      fallback: "Project",
+      translationKey: "courses.lesson.types.project",
+    },
   };
+  const label = labels[type] ?? labels.lesson;
 
-  return labels[type] ?? "Lesson";
+  return (
+    <TranslatedText
+      fallback={label.fallback}
+      translationKey={label.translationKey}
+    />
+  );
 }
 
 type LessonContentBlock =

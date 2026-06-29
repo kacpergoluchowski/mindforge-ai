@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Atom, Brain, Check, Code2, Database, Hexagon, Star } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { startLearningPath } from "../../actions/learningPathActions";
 import type { PopularLearningPath } from "../../types/learningPaths.types";
 
@@ -87,7 +88,11 @@ export default function PopularLearningPathCard({
             styles.badge
           )}
         >
-          {courses} Courses
+          <TranslatedText
+            fallback="{count} Courses"
+            translationKey="learningPaths.coursesCount"
+            values={{ count: courses }}
+          />
         </span>
       </div>
 
@@ -99,7 +104,10 @@ export default function PopularLearningPathCard({
             type="submit"
             className="flex w-full items-center justify-center rounded-xl bg-violet-500 py-3 text-sm font-semibold text-white transition hover:bg-violet-600"
           >
-            Start Path
+            <TranslatedText
+              fallback="Start Path"
+              translationKey="learningPaths.startPath"
+            />
           </button>
         </form>
       ) : null}

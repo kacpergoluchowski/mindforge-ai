@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Bot, Loader2, Sparkles, X } from "lucide-react";
 
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import { reviewLessonPracticeCode } from "../../actions/courseActions";
 
 type PracticeReviewModalProps = {
@@ -16,6 +17,7 @@ export default function PracticeReviewModal({
   lessonId,
   lessonTitle,
 }: PracticeReviewModalProps) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState("");
   const [review, setReview] = useState<string | null>(null);
@@ -47,7 +49,12 @@ export default function PracticeReviewModal({
         const result = await reviewLessonPracticeCode(formData);
         setReview(result);
       } catch {
-        setError("AI review is not available right now. Try again in a moment.");
+        setError(
+          t(
+            "courses.lesson.aiReviewUnavailable",
+            "AI review is not available right now. Try again in a moment."
+          )
+        );
       }
     });
   }
@@ -60,7 +67,7 @@ export default function PracticeReviewModal({
         className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-violet-400/20 bg-violet-500/10 px-4 py-3 text-sm font-semibold text-violet-200 transition hover:border-violet-400/40 hover:bg-violet-500/15 sm:w-auto"
       >
         <Bot className="size-4" />
-        Review with AI
+        {t("courses.lesson.reviewWithAi", "Review with AI")}
       </button>
 
       {open ? (
@@ -69,14 +76,16 @@ export default function PracticeReviewModal({
             <div className="flex items-start justify-between gap-4 border-b border-white/10 p-4 sm:p-5">
               <div className="min-w-0">
                 <p className="text-sm font-medium text-violet-300">
-                  AI Practice Review
+                  {t("courses.lesson.aiPracticeReview", "AI Practice Review")}
                 </p>
                 <h2 className="mt-1 break-words text-lg font-semibold text-white sm:text-xl">
                   {lessonTitle}
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-slate-400">
-                  Paste your HTML, CSS or notes from this practice task. AI will
-                  give you quick feedback before you mark it as done.
+                  {t(
+                    "courses.lesson.aiPracticeReviewDescription",
+                    "Paste your HTML, CSS or notes from this practice task. AI will give you quick feedback before you mark it as done."
+                  )}
                 </p>
               </div>
 
@@ -84,7 +93,7 @@ export default function PracticeReviewModal({
                 type="button"
                 onClick={closeModal}
                 className="rounded-xl border border-white/10 p-2 text-slate-400 transition hover:border-white/20 hover:text-white"
-                aria-label="Close AI review"
+                aria-label={t("courses.lesson.closeAiReview", "Close AI review")}
               >
                 <X className="size-5" />
               </button>
@@ -97,7 +106,7 @@ export default function PracticeReviewModal({
                     htmlFor="practice-code"
                     className="text-sm font-semibold text-white"
                   >
-                    Your code
+                    {t("courses.lesson.yourCode", "Your code")}
                   </label>
                   <textarea
                     id="practice-code"
@@ -113,14 +122,16 @@ export default function PracticeReviewModal({
                     <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-violet-500/15 text-violet-300">
                       <Sparkles className="size-4" />
                     </div>
-                    <p className="font-semibold text-white">AI feedback</p>
+                    <p className="font-semibold text-white">
+                      {t("courses.lesson.aiFeedback", "AI feedback")}
+                    </p>
                   </div>
 
                   <div className="mt-4 min-h-72 whitespace-pre-wrap text-sm leading-7 text-slate-300">
                     {isPending ? (
                       <div className="flex items-center gap-2 text-slate-400">
                         <Loader2 className="size-4 animate-spin" />
-                        Reviewing your code...
+                        {t("courses.lesson.reviewingCode", "Reviewing your code...")}
                       </div>
                     ) : review ? (
                       review
@@ -128,7 +139,10 @@ export default function PracticeReviewModal({
                       <p className="text-red-300">{error}</p>
                     ) : (
                       <p className="text-slate-500">
-                        Feedback will appear here after review.
+                        {t(
+                          "courses.lesson.feedbackPlaceholder",
+                          "Feedback will appear here after review."
+                        )}
                       </p>
                     )}
                   </div>
@@ -141,7 +155,7 @@ export default function PracticeReviewModal({
                   onClick={closeModal}
                   className="rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white"
                 >
-                  Close
+                  {t("common.close", "Close")}
                 </button>
 
                 <button
@@ -155,7 +169,7 @@ export default function PracticeReviewModal({
                   ) : (
                     <Bot className="size-4" />
                   )}
-                  Review with AI
+                  {t("courses.lesson.reviewWithAi", "Review with AI")}
                 </button>
               </div>
             </div>

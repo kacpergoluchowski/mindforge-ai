@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { getLearningPathBySlug } from "@/features/learning-paths/api/getLearningPaths";
 import LearningPathTree from "@/features/learning-paths/components/LearningPathTree/LearningPathTree";
 
@@ -40,7 +41,10 @@ export default async function LearningPathDetailsPage({
         className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-white"
       >
         <ArrowLeft className="size-4" />
-        Back to learning paths
+        <TranslatedText
+          fallback="Back to learning paths"
+          translationKey="learningPaths.backToPaths"
+        />
       </Link>
 
       <LearningPathTree path={path} />

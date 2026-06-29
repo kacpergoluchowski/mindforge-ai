@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { ChallengeStatCardProps } from "../../types/challenges.types";
 
 type StatColor = ChallengeStatCardProps["color"];
@@ -30,9 +31,13 @@ export default function ChallengeStatCard({
     <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-white/20 hover:bg-[#131f35]">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-slate-400">{title}</p>
+          <p className="text-sm text-slate-400">
+            <ChallengeStatTitle title={title} />
+          </p>
 
-          <h3 className="mt-3 text-2xl font-bold text-white">{value}</h3>
+          <h3 className="mt-3 text-2xl font-bold text-white">
+            <ChallengeStatValue title={title} value={value} />
+          </h3>
 
           <StatTrend trend={trend} value={change} />
         </div>
@@ -55,10 +60,80 @@ function StatTrend({ trend, value }: StatTrendProps) {
   return (
     <div className="mt-3 flex items-center gap-1 text-sm">
       <TrendIcon className={clsx("size-4", trendStyles[trend])} />
-      <span className={clsx("font-medium", trendStyles[trend])}>{value}</span>
-      <span className="text-slate-500">{suffix}</span>
+      <span className={clsx("font-medium", trendStyles[trend])}>
+        {value === "Live" ? (
+          <TranslatedText fallback="Live" translationKey="challenges.live" />
+        ) : (
+          value
+        )}
+      </span>
+      <span className="text-slate-500">
+        {suffix === "data" ? (
+          <TranslatedText fallback="data" translationKey="challenges.data" />
+        ) : (
+          <TranslatedText
+            fallback="this month"
+            translationKey="challenges.thisMonth"
+          />
+        )}
+      </span>
     </div>
   );
+}
+
+function ChallengeStatTitle({ title }: { title: string }) {
+  const keys: Record<string, string> = {
+    "Challenge XP": "challenges.stats.challengeXp",
+    "Challenges Solved": "challenges.stats.challengesSolved",
+    "Current Rank": "challenges.stats.currentRank",
+    "Current Streak": "challenges.stats.currentStreak",
+    "Total Points": "challenges.stats.totalPoints",
+  };
+
+  return (
+    <TranslatedText
+      fallback={title}
+      translationKey={keys[title] ?? "challenges.challengeStats"}
+    />
+  );
+}
+
+function ChallengeStatValue({
+  title,
+  value,
+}: {
+  title: string;
+  value: string;
+}) {
+  if (title === "Current Streak") {
+    return (
+      <TranslatedText
+        fallback={value}
+        translationKey="challenges.daysCount"
+        values={{ count: value.replace(/\D/g, "") || value }}
+      />
+    );
+  }
+
+  const rankKeys: Record<string, string> = {
+    Bronze: "challenges.ranks.bronze",
+    Diamond: "challenges.ranks.diamond",
+    Gold: "challenges.ranks.gold",
+    Platinum: "challenges.ranks.platinum",
+    Silver: "challenges.ranks.silver",
+    Starter: "challenges.ranks.starter",
+  };
+
+  if (title === "Current Rank") {
+    return (
+      <TranslatedText
+        fallback={value}
+        translationKey={rankKeys[value] ?? "challenges.ranks.starter"}
+      />
+    );
+  }
+
+  return value;
 }
 
 type StatIconProps = {

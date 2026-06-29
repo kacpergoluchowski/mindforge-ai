@@ -3,6 +3,7 @@ import AILearningBanner from "@/features/courses/components/AILearningBanner";
 import ContinueLearning from "@/features/courses/components/ContinueLearning/ContinueLearning";
 import PopularCourses from "@/features/courses/components/PopularCourses/PopularCourses";
 import PageHeader from "@/components/shared/PageHeader";
+import TranslatedText from "@/components/shared/TranslatedText";
 import { Plus } from "lucide-react";
 
 export const metadata = {
@@ -22,10 +23,20 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Courses"
-        subtitle="Explore courses designed to improve your skills"
+        title={<TranslatedText translationKey="courses.title" fallback="Courses" />}
+        subtitle={
+          <TranslatedText
+            translationKey="courses.subtitle"
+            fallback="Explore courses designed to improve your skills"
+          />
+        }
         action={{
-          label: "Create Course",
+          label: (
+            <TranslatedText
+              translationKey="courses.createCourse"
+              fallback="Create Course"
+            />
+          ),
           icon: Plus,
         }}
       />

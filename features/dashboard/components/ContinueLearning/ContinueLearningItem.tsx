@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { ContinueLearningCourse } from "../../types/dashboard.types";
 
 type ContinueLearningItemProps = {
@@ -24,7 +25,11 @@ export default function ContinueLearningItem({
         </h3>
 
         <p className="mt-1 text-sm text-slate-400">
-          {progress}% complete
+          <TranslatedText
+            fallback="{progress}% complete"
+            translationKey="dashboard.percentComplete"
+            values={{ progress }}
+          />
         </p>
 
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">

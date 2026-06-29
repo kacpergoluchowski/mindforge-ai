@@ -1,20 +1,25 @@
 import { Play, Trophy } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
+
 type BannerActionProps = {
   icon?: LucideIcon;
   label: string;
+  translationKey: string;
   variant: "primary" | "secondary";
 };
 
 const bannerActions: BannerActionProps[] = [
   {
     label: "Browse Challenges",
+    translationKey: "challenges.browseChallenges",
     variant: "primary",
   },
   {
     icon: Play,
     label: "How It Works",
+    translationKey: "challenges.howItWorks",
     variant: "secondary",
   },
 ];
@@ -28,16 +33,26 @@ export default function ChallengeBanner() {
         <div>
           <div className="mb-4 flex items-center gap-2 text-violet-400">
             <Trophy className="size-5" />
-            <span className="text-sm font-medium">Push Your Limits</span>
+            <span className="text-sm font-medium">
+              <TranslatedText
+                fallback="Push Your Limits"
+                translationKey="challenges.bannerBadge"
+              />
+            </span>
           </div>
 
           <h2 className="text-3xl font-bold text-white lg:text-5xl">
-            Solve. Learn. Grow.
+            <TranslatedText
+              fallback="Solve. Learn. Grow."
+              translationKey="challenges.bannerTitle"
+            />
           </h2>
 
           <p className="mt-4 max-w-xl text-slate-400">
-            Join thousands of developers improving their skills through real
-            coding challenges.
+            <TranslatedText
+              fallback="Join thousands of developers improving their skills through real coding challenges."
+              translationKey="challenges.bannerSubtitle"
+            />
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
@@ -53,14 +68,19 @@ export default function ChallengeBanner() {
   );
 }
 
-function BannerAction({ icon: Icon, label, variant }: BannerActionProps) {
+function BannerAction({
+  icon: Icon,
+  label,
+  translationKey,
+  variant,
+}: BannerActionProps) {
   if (variant === "primary") {
     return (
       <button
         type="button"
         className="rounded-2xl bg-violet-500 px-6 py-3 font-medium text-white transition hover:bg-violet-600"
       >
-        {label}
+        <TranslatedText fallback={label} translationKey={translationKey} />
       </button>
     );
   }
@@ -71,7 +91,7 @@ function BannerAction({ icon: Icon, label, variant }: BannerActionProps) {
       className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-3 text-slate-300 transition hover:bg-white/[0.05]"
     >
       {Icon && <Icon className="size-4" />}
-      {label}
+      <TranslatedText fallback={label} translationKey={translationKey} />
     </button>
   );
 }

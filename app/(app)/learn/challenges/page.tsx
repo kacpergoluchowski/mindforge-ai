@@ -1,4 +1,5 @@
 import PageHeader from "@/components/shared/PageHeader";
+import TranslatedText from "@/components/shared/TranslatedText";
 import ChallengeBanner from "@/features/challenges/components/ChallengeBanner";
 import ChallengeCategories from "@/features/challenges/components/ChallengeCategories";
 import ChallengesMainSection from "@/features/challenges/components/ChallengesMainSection/ChallengesMainSection";
@@ -16,10 +17,22 @@ export default async function ChallengesPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Challenges"
-        subtitle="Test your skills, solve real problems and level up."
+        title={
+          <TranslatedText translationKey="challenges.title" fallback="Challenges" />
+        }
+        subtitle={
+          <TranslatedText
+            translationKey="challenges.subtitle"
+            fallback="Test your skills, solve real problems and level up."
+          />
+        }
         action={{
-          label: "Create Challenge",
+          label: (
+            <TranslatedText
+              translationKey="challenges.createChallenge"
+              fallback="Create Challenge"
+            />
+          ),
           icon: Plus,
         }}
       />

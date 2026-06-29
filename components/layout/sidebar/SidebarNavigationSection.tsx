@@ -1,16 +1,25 @@
+"use client";
+
 import { NavigationSection } from "../types/layoutTypes.types";
 import SidebarNavigationItem from "./SidebarNavigationItem";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import { getNavigationSectionKey } from "@/lib/i18n/navigation";
 
 export default function SidebarNavigationSection({
   section,
 }: {
   section: NavigationSection;
 }) {
+  const { t } = useI18n();
+  const title = section.title
+    ? t(getNavigationSectionKey(section.title) ?? "", section.title)
+    : undefined;
+
   return (
     <div className="space-y-2">
-      {section.title && (
+      {title && (
         <h2 className="px-4 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-          {section.title}
+          {title}
         </h2>
       )}
 

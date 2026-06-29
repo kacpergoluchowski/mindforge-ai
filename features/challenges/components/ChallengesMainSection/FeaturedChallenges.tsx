@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { getFeaturedChallenges } from "../../api/getChallenges";
 import FeaturedChallengeCard from "./FeaturedChallengeCard";
 
@@ -10,14 +11,17 @@ export default async function FeaturedChallenges() {
     <section className="space-y-5">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-white">
-          Featured Challenges
+          <TranslatedText
+            fallback="Featured Challenges"
+            translationKey="challenges.featuredChallenges"
+          />
         </h2>
 
         <button
           type="button"
           className="text-sm text-slate-300 transition hover:text-white"
         >
-          View all
+          <TranslatedText fallback="View all" translationKey="common.viewAll" />
         </button>
       </div>
 
@@ -44,7 +48,10 @@ export default async function FeaturedChallenges() {
           hover:text-white
         "
       >
-        Load More Challenges
+        <TranslatedText
+          fallback="Load More Challenges"
+          translationKey="challenges.loadMore"
+        />
         <ChevronDown className="size-4" />
       </button>
     </section>

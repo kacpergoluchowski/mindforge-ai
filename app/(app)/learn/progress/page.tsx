@@ -1,4 +1,5 @@
 import PageHeader from "@/components/shared/PageHeader";
+import TranslatedText from "@/components/shared/TranslatedText";
 import ProgressActivitySection from "@/features/progress/components/ProgressActivitySection/ProgressActivitySection";
 import ProgressGoalSection from "@/features/progress/components/ProgressGoalSection/ProgressGoalSection";
 import ProgressOverviewSection from "@/features/progress/components/ProgressOverviewSection/ProgressOverviewSection";
@@ -23,8 +24,13 @@ export default async function ProgressPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Progress"
-        subtitle="Track your learning journey and achievements."
+        title={<TranslatedText translationKey="progress.title" fallback="Progress" />}
+        subtitle={
+          <TranslatedText
+            translationKey="progress.subtitle"
+            fallback="Track your learning journey and achievements."
+          />
+        }
       />
       <ProgressStats profile={profile} summary={progressSummary} />
       <ProgressOverviewSection profile={profile} summary={progressSummary} />

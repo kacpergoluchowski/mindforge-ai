@@ -1,5 +1,6 @@
 import { Atom, FileCode2, Hexagon } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { getContinueLearningCourses } from "@/features/courses/api/getCourses";
 
 import ContinueLearningItem from "./ContinueLearningItem";
@@ -19,13 +20,18 @@ export default async function ContinueLearning() {
   return (
     <section className="flex h-full w-full flex-col rounded-3xl border border-white/10 bg-white/[0.03] p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">Continue Learning</h2>
+        <h2 className="text-lg font-semibold text-white">
+          <TranslatedText
+            translationKey="dashboard.continueLearning"
+            fallback="Continue Learning"
+          />
+        </h2>
 
         <button
           type="button"
           className="text-sm text-slate-400 transition hover:text-white"
         >
-          View all
+          <TranslatedText translationKey="common.viewAll" fallback="View all" />
         </button>
       </div>
 
@@ -37,7 +43,10 @@ export default async function ContinueLearning() {
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
-          No courses in progress.
+          <TranslatedText
+            translationKey="dashboard.noCoursesInProgress"
+            fallback="No courses in progress."
+          />
         </div>
       )}
     </section>

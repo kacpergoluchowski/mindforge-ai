@@ -1,10 +1,11 @@
 import { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 type PageHeaderProps = {
-  title: string;
-  subtitle: string;
+  title: ReactNode;
+  subtitle: ReactNode;
   action?: {
-    label: string;
+    label: ReactNode;
     icon?: LucideIcon;
     rightIcon?: LucideIcon;
     onClick?: () => void;

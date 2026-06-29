@@ -1,4 +1,5 @@
 import PageHeader from "@/components/shared/PageHeader";
+import TranslatedText from "@/components/shared/TranslatedText";
 import { getLearningPaths } from "@/features/learning-paths/api/getLearningPaths";
 import MyLearningPaths from "@/features/learning-paths/components/MyLearningPaths/MyLearningPaths";
 import PopularLearningPaths from "@/features/learning-paths/components/PopularLearningPaths/PopularLearningPaths";
@@ -14,10 +15,25 @@ export default async function LearningPathsPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Learning Paths"
-        subtitle="AI-powered roadmaps designed to help you master any skill."
+        title={
+          <TranslatedText
+            translationKey="learningPaths.title"
+            fallback="Learning Paths"
+          />
+        }
+        subtitle={
+          <TranslatedText
+            translationKey="learningPaths.subtitle"
+            fallback="AI-powered roadmaps designed to help you master any skill."
+          />
+        }
         action={{
-          label: "Create AI Path",
+          label: (
+            <TranslatedText
+              translationKey="learningPaths.createPath"
+              fallback="Create AI Path"
+            />
+          ),
           icon: Plus,
         }}
       />

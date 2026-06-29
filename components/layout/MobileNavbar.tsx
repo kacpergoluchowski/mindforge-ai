@@ -4,9 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { mobileNavItems } from "./data/layoutData";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import { getNavigationLabelKey } from "@/lib/i18n/navigation";
 
 export default function MobileNavbar() {
   const pathname = usePathname();
+  const { t } = useI18n();
 
   return (
     <nav className="fixed inset-x-4 bottom-4 z-25 rounded-3xl border border-white/10 bg-[#0b1220]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
@@ -14,6 +17,12 @@ export default function MobileNavbar() {
         {mobileNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
+          const label = t(
+            item.label === "Learn"
+              ? "navigation.learn"
+              : (getNavigationLabelKey(item.href) ?? ""),
+            item.label
+          );
 
           return (
             <li key={item.href}>
@@ -25,7 +34,7 @@ export default function MobileNavbar() {
                 )}
               >
                 <Icon className="size-5" />
-                <span>{item.label}</span>
+                <span>{label}</span>
               </Link>
             </li>
           );

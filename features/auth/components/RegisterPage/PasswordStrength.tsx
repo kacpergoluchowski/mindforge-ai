@@ -1,4 +1,7 @@
+"use client";
+
 import clsx from "clsx";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 type PasswordStrengthProps = {
   password: string;
@@ -22,8 +25,14 @@ function getPasswordScore(password: string) {
 }
 
 export default function PasswordStrength({ password }: PasswordStrengthProps) {
+  const { t } = useI18n();
   const score = getPasswordScore(password);
-  const label = score <= 2 ? "Weak" : score <= 4 ? "Medium" : "Strong";
+  const label =
+    score <= 2
+      ? t("auth.register.passwordWeak", "Weak")
+      : score <= 4
+        ? t("auth.register.passwordMedium", "Medium")
+        : t("auth.register.passwordStrong", "Strong");
   const activeStyle =
     score <= 2
       ? "bg-rose-500"
@@ -34,7 +43,7 @@ export default function PasswordStrength({ password }: PasswordStrengthProps) {
   return (
     <div>
       <div className="mb-2 flex justify-between text-sm text-slate-500">
-        <span>Password strength</span>
+        <span>{t("auth.register.passwordStrength", "Password strength")}</span>
         <span>{label}</span>
       </div>
 

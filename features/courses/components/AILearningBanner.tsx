@@ -1,4 +1,5 @@
 import { Sparkles } from "lucide-react";
+import TranslatedText from "@/components/shared/TranslatedText";
 
 export default function AICourseBanner() {
   return (
@@ -9,23 +10,31 @@ export default function AICourseBanner() {
       <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[1fr_360px]">
         <div>
           <span className="inline-flex rounded-lg border border-violet-400/40 bg-violet-500/10 px-3 py-1 text-xs font-medium uppercase text-violet-300">
-            New
+            <TranslatedText translationKey="courses.aiBanner.badge" fallback="New" />
           </span>
 
           <h2 className="mt-4 text-2xl font-bold text-white lg:text-3xl">
-            AI-Powered Learning
+            <TranslatedText
+              translationKey="courses.aiBanner.title"
+              fallback="AI-Powered Learning"
+            />
           </h2>
 
           <p className="mt-3 max-w-md text-sm leading-6 text-slate-400 lg:text-base">
-            Get personalized course recommendations based on your learning goals
-            and progress.
+            <TranslatedText
+              translationKey="courses.aiBanner.description"
+              fallback="Get personalized course recommendations based on your learning goals and progress."
+            />
           </p>
 
           <button
             type="button"
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-600"
           >
-            Discover with AI
+            <TranslatedText
+              translationKey="courses.aiBanner.action"
+              fallback="Discover with AI"
+            />
             <Sparkles className="size-4" />
           </button>
         </div>

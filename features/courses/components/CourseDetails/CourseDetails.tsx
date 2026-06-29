@@ -12,8 +12,10 @@ import {
   Trophy,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import clsx from "clsx";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { startCourse } from "../../actions/courseActions";
 import type { CourseDetail } from "../../types/courses.types";
 
@@ -39,7 +41,10 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
         className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-white"
       >
         <ArrowLeft className="size-4" />
-        Back to courses
+        <TranslatedText
+          translationKey="courses.details.backToCourses"
+          fallback="Back to courses"
+        />
       </Link>
 
       <section className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-6 md:p-8">
@@ -67,12 +72,22 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
                 type="submit"
                 className="rounded-xl bg-violet-500 px-6 py-3 font-semibold text-white transition hover:bg-violet-600"
               >
-                {courseStarted ? "Continue Course" : "Start Course"}
+                {courseStarted ? (
+                  <TranslatedText
+                    translationKey="courses.continueCourse"
+                    fallback="Continue Course"
+                  />
+                ) : (
+                  <TranslatedText
+                    translationKey="courses.startCourse"
+                    fallback="Start Course"
+                  />
+                )}
               </button>
             </form>
           ) : courseCompleted ? (
             <span className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-6 py-3 font-semibold text-emerald-300">
-              Completed
+              <TranslatedText translationKey="common.completed" fallback="Completed" />
             </span>
           ) : null}
         </div>
@@ -80,15 +95,36 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
         <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.02] p-4">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-white">Your progress</p>
+              <p className="text-sm font-medium text-white">
+                <TranslatedText
+                  translationKey="courses.details.yourProgress"
+                  fallback="Your progress"
+                />
+              </p>
               <p className="mt-1 text-sm text-slate-400">
-                {courseStarted
-                  ? `${progress}% completed`
-                  : "Start the course to track progress."}
+                {courseStarted ? (
+                  <TranslatedText
+                    translationKey="courses.details.percentCompleted"
+                    fallback="{progress}% completed"
+                    values={{ progress }}
+                  />
+                ) : (
+                  <TranslatedText
+                    translationKey="courses.details.startToTrack"
+                    fallback="Start the course to track progress."
+                  />
+                )}
               </p>
             </div>
             <span className="text-sm font-semibold text-violet-300">
-              {courseStarted ? formatStatus(course.userProgress?.status) : "Not started"}
+              {courseStarted ? (
+                <CourseStatus status={course.userProgress?.status} />
+              ) : (
+                <TranslatedText
+                  translationKey="courses.status.notStarted"
+                  fallback="Not started"
+                />
+              )}
             </span>
           </div>
 
@@ -101,29 +137,62 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <CourseMeta label="Level" value={course.level} />
-          <CourseMeta label="Duration" value={course.duration} icon={Clock3} />
-          <CourseMeta label="Lessons" value={course.lessons} />
-          <CourseMeta label="XP Reward" value={course.xpReward} icon={Trophy} />
+          <CourseMeta
+            label={<TranslatedText translationKey="courses.level" fallback="Level" />}
+            value={course.level}
+          />
+          <CourseMeta
+            label={
+              <TranslatedText translationKey="courses.duration" fallback="Duration" />
+            }
+            value={course.duration}
+            icon={Clock3}
+          />
+          <CourseMeta
+            label={<TranslatedText translationKey="courses.lessons" fallback="Lessons" />}
+            value={course.lessons}
+          />
+          <CourseMeta
+            label={
+              <TranslatedText translationKey="courses.xpReward" fallback="XP Reward" />
+            }
+            value={course.xpReward}
+            icon={Trophy}
+          />
         </div>
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
         <OverviewCard
           icon={Target}
-          title="What you will learn"
+          title={
+            <TranslatedText
+              translationKey="courses.details.whatYouWillLearn"
+              fallback="What you will learn"
+            />
+          }
           items={overview.learningOutcomes}
         />
 
         <div className="grid gap-5">
           <OverviewCard
             icon={BookOpen}
-            title="Requirements"
+            title={
+              <TranslatedText
+                translationKey="courses.details.requirements"
+                fallback="Requirements"
+              />
+            }
             items={overview.requirements}
           />
           <OverviewCard
             icon={LayoutTemplate}
-            title="Final project"
+            title={
+              <TranslatedText
+                translationKey="courses.details.finalProject"
+                fallback="Final project"
+              />
+            }
             items={overview.finalProject}
           />
         </div>
@@ -131,10 +200,22 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
 
       <section className="space-y-5">
         <div>
-          <h2 className="text-xl font-semibold text-white">Course content</h2>
+          <h2 className="text-xl font-semibold text-white">
+            <TranslatedText
+              translationKey="courses.details.courseContent"
+              fallback="Course content"
+            />
+          </h2>
           <p className="mt-1 text-sm text-slate-400">
-            {course.modules.length} modules, {course.lessons} lessons and{" "}
-            {course.xpReward} XP to earn.
+            <TranslatedText
+              translationKey="courses.details.courseContentSummary"
+              fallback="{modules} modules, {lessons} lessons and {xp} XP to earn."
+              values={{
+                lessons: course.lessons,
+                modules: course.modules.length,
+                xp: course.xpReward,
+              }}
+            />
           </p>
         </div>
 
@@ -155,7 +236,7 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
 type OverviewCardProps = {
   icon: LucideIcon;
   items: string[];
-  title: string;
+  title: ReactNode;
 };
 
 function OverviewCard({ icon: Icon, items, title }: OverviewCardProps) {
@@ -218,7 +299,11 @@ function CourseModuleCard({ courseSlug, module }: CourseModuleCardProps) {
 
         <div className="shrink-0 text-sm text-slate-400 lg:text-right">
           <p>
-            {completedLessons}/{totalLessons} lessons completed
+            <TranslatedText
+              translationKey="courses.details.moduleLessonsCompleted"
+              fallback="{completed}/{total} lessons completed"
+              values={{ completed: completedLessons, total: totalLessons }}
+            />
           </p>
           <p className="mt-1 font-semibold text-violet-300">{progress}%</p>
         </div>
@@ -294,17 +379,17 @@ function LessonRowContent({ lesson }: LessonRowContentProps) {
         <span>{lesson.xpReward} XP</span>
         {lesson.isPreview ? (
           <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
-            Preview
+            <TranslatedText translationKey="courses.details.preview" fallback="Preview" />
           </span>
         ) : null}
         {lesson.completed ? (
           <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
-            Done
+            <TranslatedText translationKey="common.completed" fallback="Done" />
           </span>
         ) : null}
         {lesson.locked ? (
           <span className="rounded-full bg-slate-700/60 px-2.5 py-1 text-xs font-medium text-slate-300">
-            Locked
+            <TranslatedText translationKey="common.locked" fallback="Locked" />
           </span>
         ) : null}
       </div>
@@ -384,20 +469,29 @@ function getModuleStatus(module: CourseDetail["modules"][number]) {
   };
 }
 
-function formatStatus(status?: string): string {
+function CourseStatus({ status }: { status?: string }) {
   if (status === "completed") {
-    return "Completed";
+    return (
+      <TranslatedText translationKey="common.completed" fallback="Completed" />
+    );
   }
 
   if (status === "in_progress") {
-    return "In progress";
+    return (
+      <TranslatedText translationKey="common.inProgress" fallback="In progress" />
+    );
   }
 
-  return "Not started";
+  return (
+    <TranslatedText
+      translationKey="courses.status.notStarted"
+      fallback="Not started"
+    />
+  );
 }
 
 type CourseMetaProps = {
-  label: string;
+  label: ReactNode;
   value: number | string;
   icon?: typeof Star;
 };

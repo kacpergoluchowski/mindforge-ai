@@ -14,6 +14,7 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import {
   completeChallenge,
   reviewChallengeSolution,
@@ -38,6 +39,7 @@ export default function ChallengeSolutionReview({
   initialVerdict,
   alreadyCompleted,
 }: ChallengeSolutionReviewProps) {
+  const { t } = useI18n();
   const [solution, setSolution] = useState(initialSolution ?? starterCode ?? "");
   const [feedback, setFeedback] = useState<string | null>(initialFeedback);
   const [verdict, setVerdict] = useState<"passed" | "needs_work" | null>(
@@ -76,7 +78,12 @@ export default function ChallengeSolutionReview({
         setFeedback(result.feedback);
         setVerdict(result.verdict);
       } catch {
-        setError("AI verification is not available right now. Try again soon.");
+        setError(
+          t(
+            "challenges.errors.aiUnavailable",
+            "AI verification is not available right now. Try again soon."
+          )
+        );
       }
     });
   }
@@ -107,7 +114,12 @@ export default function ChallengeSolutionReview({
         setModalOpen(false);
         setSuccessModalOpen(true);
       } catch {
-        setCompleteError("Could not complete challenge. Try again in a moment.");
+        setCompleteError(
+          t(
+            "challenges.errors.completeFailed",
+            "Could not complete challenge. Try again in a moment."
+          )
+        );
       }
     });
   }
@@ -118,11 +130,15 @@ export default function ChallengeSolutionReview({
         <div className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/60">
           <div className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-3">
             <div>
-              <p className="text-sm font-semibold text-white">Your solution</p>
-              <p className="text-xs text-slate-500">HTML, CSS, JS or notes</p>
+              <p className="text-sm font-semibold text-white">
+                {t("challenges.yourSolution", "Your solution")}
+              </p>
+              <p className="text-xs text-slate-500">
+                {t("challenges.solutionHint", "HTML, CSS, JS or notes")}
+              </p>
             </div>
             <span className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-500">
-              editor
+              {t("challenges.editor", "editor")}
             </span>
           </div>
 
@@ -141,10 +157,14 @@ export default function ChallengeSolutionReview({
               <Bot className="size-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-white">AI verification</h3>
+              <h3 className="font-semibold text-white">
+                {t("challenges.aiVerification", "AI verification")}
+              </h3>
               <p className="mt-1 text-sm leading-6 text-slate-400">
-                AI checks your code against the challenge requirements and opens
-                feedback in a modal.
+                {t(
+                  "challenges.aiVerificationDescription",
+                  "AI checks your code against the challenge requirements and opens feedback in a modal."
+                )}
               </p>
             </div>
           </div>
@@ -160,12 +180,15 @@ export default function ChallengeSolutionReview({
             ) : (
               <Bot className="size-4" />
             )}
-            Verify with AI
+            {t("challenges.verifyWithAi", "Verify with AI")}
           </button>
 
           {completed ? (
             <div className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm font-semibold text-emerald-300">
-              Challenge completed. XP has been added to your profile.
+              {t(
+                "challenges.challengeCompletedInline",
+                "Challenge completed. XP has been added to your profile."
+              )}
             </div>
           ) : null}
 
@@ -181,7 +204,7 @@ export default function ChallengeSolutionReview({
               onClick={() => setModalOpen(true)}
               className="mt-4 w-full rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white"
             >
-              View last feedback
+              {t("challenges.viewLastFeedback", "View last feedback")}
             </button>
           ) : null}
         </aside>
@@ -193,10 +216,10 @@ export default function ChallengeSolutionReview({
             <div className="flex items-start justify-between gap-4 border-b border-white/10 p-5">
               <div>
                 <p className="text-sm font-medium text-violet-300">
-                  AI verification
+                  {t("challenges.aiVerification", "AI verification")}
                 </p>
                 <h2 className="mt-1 text-xl font-semibold text-white">
-                  Challenge feedback
+                  {t("challenges.challengeFeedback", "Challenge feedback")}
                 </h2>
               </div>
 
@@ -205,7 +228,10 @@ export default function ChallengeSolutionReview({
                 onClick={closeModal}
                 disabled={isPending || isCompleting}
                 className="rounded-xl border border-white/10 p-2 text-slate-400 transition hover:border-white/20 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                aria-label="Close feedback modal"
+                aria-label={t(
+                  "challenges.closeFeedbackModal",
+                  "Close feedback modal"
+                )}
               >
                 <X className="size-5" />
               </button>
@@ -218,11 +244,13 @@ export default function ChallengeSolutionReview({
                     <Loader2 className="size-7 animate-spin" />
                   </div>
                   <h3 className="mt-5 text-lg font-semibold text-white">
-                    Checking your solution...
+                    {t("challenges.checkingSolution", "Checking your solution...")}
                   </h3>
                   <p className="mt-2 max-w-md text-sm leading-6 text-slate-400">
-                    AI is comparing your code with the requirements and
-                    acceptance criteria.
+                    {t(
+                      "challenges.checkingSolutionDescription",
+                      "AI is comparing your code with the requirements and acceptance criteria."
+                    )}
                   </p>
                 </div>
               ) : feedback ? (
@@ -247,12 +275,20 @@ export default function ChallengeSolutionReview({
                           canComplete ? "text-emerald-300" : "text-orange-300"
                         )}
                       >
-                        {canComplete ? "Looks good" : "Needs work"}
+                        {canComplete
+                          ? t("challenges.looksGood", "Looks good")
+                          : t("challenges.needsWork", "Needs work")}
                       </p>
                       <p className="text-sm text-slate-400">
                         {canComplete
-                          ? "You can complete this challenge."
-                          : "Go back, improve your solution and verify again."}
+                          ? t(
+                              "challenges.canCompleteChallenge",
+                              "You can complete this challenge."
+                            )
+                          : t(
+                              "challenges.improveAndVerifyAgain",
+                              "Go back, improve your solution and verify again."
+                            )}
                       </p>
                     </div>
                   </div>
@@ -269,7 +305,11 @@ export default function ChallengeSolutionReview({
                 </div>
               ) : (
                 <p className="rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-sm leading-6 text-red-300">
-                  {error ?? "Could not verify solution."}
+                  {error ??
+                    t(
+                      "challenges.errors.verifyFailed",
+                      "Could not verify solution."
+                    )}
                 </p>
               )}
             </div>
@@ -287,7 +327,7 @@ export default function ChallengeSolutionReview({
                   ) : (
                     <CheckCircle2 className="size-4" />
                   )}
-                  Complete challenge
+                  {t("challenges.completeChallenge", "Complete challenge")}
                 </button>
               ) : null}
 
@@ -298,7 +338,7 @@ export default function ChallengeSolutionReview({
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-white transition hover:bg-emerald-600"
                 >
                   <CheckCircle2 className="size-4" />
-                  Done
+                  {t("common.completed", "Done")}
                 </button>
               ) : (
                 <button
@@ -307,7 +347,7 @@ export default function ChallengeSolutionReview({
                   disabled={isPending || isCompleting}
                   className="rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Back to challenge
+                  {t("challenges.backToChallenge", "Back to challenge")}
                 </button>
               )}
             </div>
@@ -324,22 +364,25 @@ export default function ChallengeSolutionReview({
               </div>
 
               <h2 className="mt-5 text-2xl font-bold text-white">
-                Challenge completed
+                {t("challenges.challengeCompleted", "Challenge completed")}
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-400">
-                Nice work. Your progress and XP have been saved.
+                {t(
+                  "challenges.challengeCompletedDescription",
+                  "Nice work. Your progress and XP have been saved."
+                )}
               </p>
             </div>
 
             <div className="grid gap-3 p-5 sm:grid-cols-2">
               <SuccessStat
                 icon={Trophy}
-                label="XP earned"
+                label={t("challenges.xpEarned", "XP earned")}
                 value={`+${xpReward} XP`}
               />
               <SuccessStat
                 icon={CheckCircle2}
-                label="Challenges solved"
+                label={t("challenges.stats.challengesSolved", "Challenges solved")}
                 value="+1"
               />
             </div>
@@ -350,7 +393,7 @@ export default function ChallengeSolutionReview({
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white"
               >
                 <Gauge className="size-4" />
-                Back to Challenges
+                {t("challenges.backToChallenges", "Back to Challenges")}
               </Link>
 
               <Link
@@ -358,7 +401,7 @@ export default function ChallengeSolutionReview({
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
               >
                 <LayoutDashboard className="size-4" />
-                Go to Dashboard
+                {t("challenges.goToDashboard", "Go to Dashboard")}
               </Link>
             </div>
           </div>

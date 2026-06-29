@@ -1,7 +1,9 @@
 import Link from "next/link";
 import clsx from "clsx";
+import type { ReactNode } from "react";
 import { Clock3, Star, TrendingUp, Users } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type {
   ChallengeColor,
   ChallengeDifficulty,
@@ -24,10 +26,22 @@ const difficultyStyles: Record<ChallengeDifficulty, string> = {
 };
 
 const statusLabels = {
-  not_started: "Solve",
-  in_progress: "Continue",
-  submitted: "Review",
-  completed: "Completed",
+  not_started: {
+    fallback: "Solve",
+    translationKey: "challenges.solve",
+  },
+  in_progress: {
+    fallback: "Continue",
+    translationKey: "common.continue",
+  },
+  submitted: {
+    fallback: "Review",
+    translationKey: "challenges.review",
+  },
+  completed: {
+    fallback: "Completed",
+    translationKey: "common.completed",
+  },
 } as const;
 
 export default function FeaturedChallengeCard({
@@ -71,7 +85,13 @@ export default function FeaturedChallengeCard({
             {duration && <ChallengeMetric icon={Clock3} value={duration} />}
             <ChallengeMetric
               icon={TrendingUp}
-              value={`${successRate} Success`}
+              value={
+                <TranslatedText
+                  fallback="{rate} Success"
+                  translationKey="challenges.successRate"
+                  values={{ rate: successRate }}
+                />
+              }
             />
           </div>
         </div>
@@ -117,7 +137,7 @@ function ChallengeIcon({ color, icon: Icon }: ChallengeIconProps) {
 type ChallengeMetricProps = {
   icon: FeaturedChallengeCardProps["icon"];
   iconClassName?: string;
-  value: string | number;
+  value: ReactNode;
 };
 
 function ChallengeMetric({
@@ -144,19 +164,35 @@ function ChallengeAction({
   points,
   status,
 }: ChallengeActionProps) {
-  const buttonLabel = status ? statusLabels[status] : "Solve";
+  const buttonLabel = status ? statusLabels[status] : statusLabels.not_started;
 
   return (
     <div className="text-right">
       <p className={clsx("font-semibold", difficultyStyles[difficulty])}>
-        {difficulty}
+        <DifficultyLabel difficulty={difficulty} />
       </p>
 
       <p className="mt-1 text-white">{points} XP</p>
 
       <span className="mt-3 inline-flex rounded-xl bg-violet-500 px-5 py-2 text-sm font-medium text-white transition">
-        {buttonLabel}
+        <TranslatedText
+          fallback={buttonLabel.fallback}
+          translationKey={buttonLabel.translationKey}
+        />
       </span>
     </div>
+  );
+}
+
+function DifficultyLabel({ difficulty }: { difficulty: ChallengeDifficulty }) {
+  const keys: Record<ChallengeDifficulty, string> = {
+    Beginner: "common.beginner",
+    Easy: "challenges.difficulty.easy",
+    Medium: "challenges.difficulty.medium",
+    Hard: "challenges.difficulty.hard",
+  };
+
+  return (
+    <TranslatedText fallback={difficulty} translationKey={keys[difficulty]} />
   );
 }

@@ -1,3 +1,4 @@
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { LearningCategory } from "../../types/dashboard.types";
 
 type LearningDonutChartProps = {
@@ -67,7 +68,12 @@ export default function LearningDonutChart({
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-lg font-bold text-white">{totalLabel}</span>
-          <span className="text-xs text-slate-400">This week</span>
+          <span className="text-xs text-slate-400">
+            <TranslatedText
+              fallback="This week"
+              translationKey="dashboard.thisWeek"
+            />
+          </span>
         </div>
       </div>
     </div>

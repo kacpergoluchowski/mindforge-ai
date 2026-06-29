@@ -1,6 +1,8 @@
 import { Clock3, GraduationCap, Route } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { LearningPathDetails } from "../../types/learningPaths.types";
 import LearningPathTreeStep from "./LearningPathTreeStep";
 
@@ -15,7 +17,10 @@ export default function LearningPathTree({ path }: LearningPathTreeProps) {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 max-w-3xl">
             <span className="inline-flex rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
-              Learning Path
+              <TranslatedText
+                fallback="Learning Path"
+                translationKey="learningPaths.learningPath"
+              />
             </span>
 
             <h1 className="mt-5 break-words text-3xl font-bold text-white lg:text-4xl">
@@ -30,17 +35,32 @@ export default function LearningPathTree({ path }: LearningPathTreeProps) {
           <div className="grid min-w-0 gap-3 sm:grid-cols-3 lg:w-[420px]">
             <PathStat
               icon={Route}
-              label="Progress"
+              label={
+                <TranslatedText
+                  fallback="Progress"
+                  translationKey="learningPaths.progress"
+                />
+              }
               value={`${path.progress}%`}
             />
             <PathStat
               icon={GraduationCap}
-              label="Courses"
+              label={
+                <TranslatedText
+                  fallback="Courses"
+                  translationKey="learningPaths.courses"
+                />
+              }
               value={`${path.coursesCompleted}/${path.totalCourses}`}
             />
             <PathStat
               icon={Clock3}
-              label="Estimate"
+              label={
+                <TranslatedText
+                  fallback="Estimate"
+                  translationKey="learningPaths.estimate"
+                />
+              }
               value={`${path.estimatedHours}h`}
             />
           </div>
@@ -57,14 +77,32 @@ export default function LearningPathTree({ path }: LearningPathTreeProps) {
       <section className="min-w-0 rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 lg:p-8">
         <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-white">Path Tree</h2>
+            <h2 className="text-xl font-semibold text-white">
+              <TranslatedText
+                fallback="Path Tree"
+                translationKey="learningPaths.pathTree"
+              />
+            </h2>
             <p className="mt-2 text-sm leading-6 text-slate-400">
-              Complete steps one by one to unlock the next stage.
+              <TranslatedText
+                fallback="Complete steps one by one to unlock the next stage."
+                translationKey="learningPaths.pathTreeSubtitle"
+              />
             </p>
           </div>
 
           <span className="w-fit rounded-full bg-violet-500/10 px-3 py-1 text-sm font-medium text-violet-300">
-            {path.started ? "Active path" : "Not started"}
+            {path.started ? (
+              <TranslatedText
+                fallback="Active path"
+                translationKey="learningPaths.activePath"
+              />
+            ) : (
+              <TranslatedText
+                fallback="Not started"
+                translationKey="learningPaths.notStarted"
+              />
+            )}
           </span>
         </div>
 
@@ -82,7 +120,10 @@ export default function LearningPathTree({ path }: LearningPathTreeProps) {
           </ol>
         ) : (
           <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-sm text-slate-400">
-            This path has no steps yet.
+            <TranslatedText
+              fallback="This path has no steps yet."
+              translationKey="learningPaths.noSteps"
+            />
           </div>
         )}
       </section>
@@ -92,7 +133,7 @@ export default function LearningPathTree({ path }: LearningPathTreeProps) {
 
 type PathStatProps = {
   icon: LucideIcon;
-  label: string;
+  label: ReactNode;
   value: string;
 };
 

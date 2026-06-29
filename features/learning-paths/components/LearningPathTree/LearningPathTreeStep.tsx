@@ -2,6 +2,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { ArrowRight, Check, Lock, Play } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { RoadmapStep } from "../../types/learningPaths.types";
 
 type LearningPathTreeStepProps = {
@@ -17,19 +18,16 @@ const statusStyles: Record<
     badge: "bg-emerald-500/10 text-emerald-300",
     node: "bg-emerald-500 text-white shadow-emerald-500/30",
     panel: "border-emerald-400/20 bg-emerald-500/10",
-    label: "Completed",
   },
   current: {
     badge: "bg-violet-500/10 text-violet-300",
     node: "bg-violet-500 text-white shadow-violet-500/40 ring-8 ring-violet-500/10",
     panel: "border-violet-400/30 bg-violet-500/10",
-    label: "Current",
   },
   locked: {
     badge: "bg-slate-700/40 text-slate-400",
     node: "border border-slate-600 bg-[#0b1220] text-slate-500",
     panel: "border-white/10 bg-[#111a2d]/70",
-    label: "Locked",
   },
 };
 
@@ -37,7 +35,6 @@ type StepStyle = {
   badge: string;
   node: string;
   panel: string;
-  label: string;
 };
 
 export default function LearningPathTreeStep({
@@ -73,7 +70,12 @@ export default function LearningPathTreeStep({
                 styles.badge
               )}
             >
-              Step {index + 1} - {styles.label}
+              <TranslatedText
+                fallback="Step {number}"
+                translationKey="learningPaths.stepNumber"
+                values={{ number: index + 1 }}
+              />{" "}
+              - <StepStatusLabel status={step.status} />
             </span>
 
             <h3 className="mt-4 break-words text-lg font-semibold text-white">
@@ -90,7 +92,10 @@ export default function LearningPathTreeStep({
               href={`/learn/courses/${step.courseSlug}`}
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-600"
             >
-              Open course
+              <TranslatedText
+                fallback="Open course"
+                translationKey="learningPaths.openCourse"
+              />
               <ArrowRight className="size-4" />
             </Link>
           ) : null}
@@ -99,7 +104,12 @@ export default function LearningPathTreeStep({
         {step.status === "current" ? (
           <div className="mt-5">
             <div className="mb-2 flex items-center justify-between gap-3 text-xs text-slate-400">
-              <span>Course progress</span>
+              <span>
+                <TranslatedText
+                  fallback="Course progress"
+                  translationKey="learningPaths.courseProgress"
+                />
+              </span>
               <span>{step.courseProgress ?? 0}%</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-slate-800">
@@ -112,6 +122,34 @@ export default function LearningPathTreeStep({
         ) : null}
       </article>
     </li>
+  );
+}
+
+function StepStatusLabel({ status }: { status: RoadmapStep["status"] }) {
+  const labels: Record<
+    RoadmapStep["status"],
+    { fallback: string; translationKey: string }
+  > = {
+    completed: {
+      fallback: "Completed",
+      translationKey: "common.completed",
+    },
+    current: {
+      fallback: "Current",
+      translationKey: "learningPaths.current",
+    },
+    locked: {
+      fallback: "Locked",
+      translationKey: "common.locked",
+    },
+  };
+  const label = labels[status];
+
+  return (
+    <TranslatedText
+      fallback={label.fallback}
+      translationKey={label.translationKey}
+    />
   );
 }
 

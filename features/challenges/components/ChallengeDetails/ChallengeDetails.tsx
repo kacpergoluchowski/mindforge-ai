@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { startChallenge } from "../../actions/challengeActions";
 import { createAiChallengeChat } from "@/features/ai-mentor/actions/aiMentorActions";
 import type { ChallengeDetail } from "../../types/challenges.types";
@@ -24,19 +25,10 @@ type ChallengeDetailsProps = {
   challenge: ChallengeDetail;
 };
 
-const statusLabels = {
-  not_started: "Not started",
-  in_progress: "In progress",
-  submitted: "Submitted",
-  completed: "Completed",
-} as const;
-
 export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
   const isStarted = Boolean(challenge.status);
   const isCompleted = challenge.status === "completed";
-  const statusLabel = challenge.status
-    ? statusLabels[challenge.status]
-    : "Not started";
+  const status = challenge.status ?? "not_started";
 
   return (
     <div className="space-y-6">
@@ -46,11 +38,14 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
           className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-white"
         >
           <ArrowLeft className="size-4" />
-          Back to challenges
+          <TranslatedText
+            fallback="Back to challenges"
+            translationKey="challenges.backToChallenges"
+          />
         </Link>
 
         <span className="rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300">
-          {statusLabel}
+          <ChallengeStatusLabel status={status} />
         </span>
       </div>
 
@@ -61,10 +56,20 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
               {challenge.category}
             </span>
             <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-slate-300">
-              {challenge.difficulty}
+              <ChallengeDifficultyLabel difficulty={challenge.difficulty} />
             </span>
             <span className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-              {challenge.aiFeedback ? "AI reviewed" : "AI ready"}
+              {challenge.aiFeedback ? (
+                <TranslatedText
+                  fallback="AI reviewed"
+                  translationKey="challenges.aiReviewed"
+                />
+              ) : (
+                <TranslatedText
+                  fallback="AI ready"
+                  translationKey="challenges.aiReady"
+                />
+              )}
             </span>
           </div>
         </div>
@@ -78,7 +83,10 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
 
               <div className="min-w-0">
                 <p className="text-sm font-medium text-violet-300">
-                  Challenge workspace
+                  <TranslatedText
+                    fallback="Challenge workspace"
+                    translationKey="challenges.challengeWorkspace"
+                  />
                 </p>
                 <h1 className="mt-3 max-w-4xl text-3xl font-bold leading-tight text-white md:text-5xl">
                   {challenge.title}
@@ -92,22 +100,46 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
             <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               <ChallengeMetric
                 icon={Clock3}
-                label="Time"
-                value={challenge.duration ?? "Practice"}
+                label={
+                  <TranslatedText fallback="Time" translationKey="challenges.time" />
+                }
+                value={
+                  challenge.duration ?? (
+                    <TranslatedText
+                      fallback="Practice"
+                      translationKey="challenges.practice"
+                    />
+                  )
+                }
               />
               <ChallengeMetric
                 icon={Trophy}
-                label="Reward"
+                label={
+                  <TranslatedText
+                    fallback="Reward"
+                    translationKey="challenges.reward"
+                  />
+                }
                 value={`${challenge.points} XP`}
               />
               <ChallengeMetric
                 icon={Star}
-                label="Rating"
+                label={
+                  <TranslatedText
+                    fallback="Rating"
+                    translationKey="challenges.rating"
+                  />
+                }
                 value={challenge.rating}
               />
               <ChallengeMetric
                 icon={Users}
-                label="Solvers"
+                label={
+                  <TranslatedText
+                    fallback="Solvers"
+                    translationKey="challenges.solvers"
+                  />
+                }
                 value={challenge.participants}
               />
             </div>
@@ -118,7 +150,7 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
               challenge={challenge}
               isCompleted={isCompleted}
               isStarted={isStarted}
-              statusLabel={statusLabel}
+              status={status}
             />
           </aside>
         </div>
@@ -126,20 +158,34 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
 
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <main className="space-y-6">
-          <WorkspacePanel icon={Target} title="Task brief">
+          <WorkspacePanel
+            icon={Target}
+            title={
+              <TranslatedText
+                fallback="Task brief"
+                translationKey="challenges.taskBrief"
+              />
+            }
+          >
             <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
                 <p className="text-sm font-semibold text-white">
-                  What you need to build
+                  <TranslatedText
+                    fallback="What you need to build"
+                    translationKey="challenges.whatToBuild"
+                  />
                 </p>
                 <p className="mt-3 text-sm leading-7 text-slate-400">
-                  Build this challenge as a real frontend task. Your solution
-                  should be readable, responsive and close to something you
-                  could show in a portfolio.
+                  <TranslatedText
+                    fallback="Build this challenge as a real frontend task. Your solution should be readable, responsive and close to something you could show in a portfolio."
+                    translationKey="challenges.whatToBuildDescription"
+                  />
                 </p>
                 <p className="mt-4 text-sm leading-7 text-slate-400">
-                  Paste your HTML, CSS, JavaScript or notes in the editor below.
-                  AI will verify the result and return feedback.
+                  <TranslatedText
+                    fallback="Paste your HTML, CSS, JavaScript or notes in the editor below. AI will verify the result and return feedback."
+                    translationKey="challenges.pasteSolutionDescription"
+                  />
                 </p>
               </div>
 
@@ -155,7 +201,15 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
             </div>
           </WorkspacePanel>
 
-          <WorkspacePanel icon={PlayCircle} title="Solution workspace">
+          <WorkspacePanel
+            icon={PlayCircle}
+            title={
+              <TranslatedText
+                fallback="Solution workspace"
+                translationKey="challenges.solutionWorkspace"
+              />
+            }
+          >
             <ChallengeSolutionReview
               challengeId={challenge.id}
               xpReward={challenge.points}
@@ -169,12 +223,28 @@ export default function ChallengeDetails({ challenge }: ChallengeDetailsProps) {
         </main>
 
         <aside className="space-y-6 xl:sticky xl:top-6 xl:self-start">
-          <WorkspacePanel icon={CheckCircle2} title="Acceptance criteria">
+          <WorkspacePanel
+            icon={CheckCircle2}
+            title={
+              <TranslatedText
+                fallback="Acceptance criteria"
+                translationKey="challenges.acceptanceCriteria"
+              />
+            }
+          >
             <Checklist items={challenge.checklist} />
           </WorkspacePanel>
 
           {challenge.solutionNotes ? (
-            <WorkspacePanel icon={FileText} title="Review guide">
+            <WorkspacePanel
+              icon={FileText}
+              title={
+                <TranslatedText
+                  fallback="Review guide"
+                  translationKey="challenges.reviewGuide"
+                />
+              }
+            >
               <p className="text-sm leading-7 text-slate-300">
                 {challenge.solutionNotes}
               </p>
@@ -190,14 +260,14 @@ type StatusPanelProps = {
   challenge: ChallengeDetail;
   isCompleted: boolean;
   isStarted: boolean;
-  statusLabel: string;
+  status: NonNullable<ChallengeDetail["status"]> | "not_started";
 };
 
 function StatusPanel({
   challenge,
   isCompleted,
   isStarted,
-  statusLabel,
+  status,
 }: StatusPanelProps) {
   return (
     <div>
@@ -206,14 +276,26 @@ function StatusPanel({
           <Flag className="size-5" />
         </div>
         <div>
-          <p className="font-semibold text-white">Challenge status</p>
-          <p className="text-sm text-slate-400">{statusLabel}</p>
+          <p className="font-semibold text-white">
+            <TranslatedText
+              fallback="Challenge status"
+              translationKey="challenges.challengeStatus"
+            />
+          </p>
+          <p className="text-sm text-slate-400">
+            <ChallengeStatusLabel status={status} />
+          </p>
         </div>
       </div>
 
       <div className="mt-6 rounded-2xl border border-white/10 bg-slate-950/30 p-4">
         <div className="mb-2 flex items-center justify-between text-sm">
-          <span className="text-slate-400">Progress</span>
+          <span className="text-slate-400">
+            <TranslatedText
+              fallback="Progress"
+              translationKey="learningPaths.progress"
+            />
+          </span>
           <span className="font-semibold text-white">
             {challenge.progress}%
           </span>
@@ -228,7 +310,7 @@ function StatusPanel({
 
       {isCompleted ? (
         <span className="mt-5 flex w-full items-center justify-center rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-5 py-3 font-semibold text-emerald-300">
-          Completed
+          <TranslatedText fallback="Completed" translationKey="common.completed" />
         </span>
       ) : (
         <form action={startChallenge} className="mt-5">
@@ -239,7 +321,17 @@ function StatusPanel({
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
           >
             <PlayCircle className="size-5" />
-            {isStarted ? "Continue Challenge" : "Start Challenge"}
+            {isStarted ? (
+              <TranslatedText
+                fallback="Continue Challenge"
+                translationKey="challenges.continueChallenge"
+              />
+            ) : (
+              <TranslatedText
+                fallback="Start Challenge"
+                translationKey="challenges.startChallenge"
+              />
+            )}
           </button>
         </form>
       )}
@@ -255,7 +347,7 @@ function StatusPanel({
 type WorkspacePanelProps = {
   children: ReactNode;
   icon: LucideIcon;
-  title: string;
+  title: ReactNode;
 };
 
 function WorkspacePanel({ children, icon: Icon, title }: WorkspacePanelProps) {
@@ -275,8 +367,8 @@ function WorkspacePanel({ children, icon: Icon, title }: WorkspacePanelProps) {
 
 type ChallengeMetricProps = {
   icon: LucideIcon;
-  label: string;
-  value: number | string;
+  label: ReactNode;
+  value: ReactNode;
 };
 
 function ChallengeMetric({ icon: Icon, label, value }: ChallengeMetricProps) {
@@ -304,7 +396,14 @@ function RequirementStep({ index, text }: { index: number; text: string }) {
 
 function Checklist({ items }: { items: string[] }) {
   if (!items.length) {
-    return <p className="text-sm leading-6 text-slate-400">No checklist yet.</p>;
+    return (
+      <p className="text-sm leading-6 text-slate-400">
+        <TranslatedText
+          fallback="No checklist yet."
+          translationKey="challenges.noChecklist"
+        />
+      </p>
+    );
   }
 
   return (
@@ -316,5 +415,58 @@ function Checklist({ items }: { items: string[] }) {
         </div>
       ))}
     </div>
+  );
+}
+
+function ChallengeStatusLabel({
+  status,
+}: {
+  status: NonNullable<ChallengeDetail["status"]> | "not_started";
+}) {
+  const labels: Record<
+    NonNullable<ChallengeDetail["status"]> | "not_started",
+    { fallback: string; translationKey: string }
+  > = {
+    completed: {
+      fallback: "Completed",
+      translationKey: "common.completed",
+    },
+    in_progress: {
+      fallback: "In progress",
+      translationKey: "common.inProgress",
+    },
+    not_started: {
+      fallback: "Not started",
+      translationKey: "challenges.notStarted",
+    },
+    submitted: {
+      fallback: "Submitted",
+      translationKey: "challenges.submitted",
+    },
+  };
+  const label = labels[status];
+
+  return (
+    <TranslatedText
+      fallback={label.fallback}
+      translationKey={label.translationKey}
+    />
+  );
+}
+
+function ChallengeDifficultyLabel({
+  difficulty,
+}: {
+  difficulty: ChallengeDetail["difficulty"];
+}) {
+  const keys: Record<ChallengeDetail["difficulty"], string> = {
+    Beginner: "common.beginner",
+    Easy: "challenges.difficulty.easy",
+    Hard: "challenges.difficulty.hard",
+    Medium: "challenges.difficulty.medium",
+  };
+
+  return (
+    <TranslatedText fallback={difficulty} translationKey={keys[difficulty]} />
   );
 }

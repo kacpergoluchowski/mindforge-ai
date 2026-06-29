@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 import type { FormEvent } from "react";
 
@@ -14,6 +15,7 @@ import LoginField from "./LoginField";
 import LoginIntro from "./LoginIntro";
 
 export default function LoginForm() {
+  const { t } = useI18n();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,7 +44,7 @@ export default function LoginForm() {
       router.replace("/dashboard");
       router.refresh();
     } catch {
-      setError("Unable to log in. Please try again.");
+      setError(t("auth.login.error", "Unable to log in. Please try again."));
     } finally {
       setIsLoading(false);
     }
@@ -56,10 +58,10 @@ export default function LoginForm() {
 
       <div className="hidden lg:block">
         <h2 className="text-3xl font-bold text-white">
-          Log in to your account
+          {t("auth.login.title", "Log in to your account")}
         </h2>
         <p className="mt-2 text-lg text-slate-400">
-          Welcome back! Please enter your details.
+          {t("auth.login.subtitle", "Welcome back! Please enter your details.")}
         </p>
       </div>
 
@@ -67,25 +69,28 @@ export default function LoginForm() {
 
       <div className="my-8 flex items-center gap-4">
         <div className="h-px flex-1 bg-slate-700/70" />
-        <span className="text-sm text-slate-500">or</span>
+        <span className="text-sm text-slate-500">{t("common.or", "or")}</span>
         <div className="h-px flex-1 bg-slate-700/70" />
       </div>
 
       <form onSubmit={handleLogin} className="space-y-6">
         <LoginField
           id="email"
-          label="Email address"
+          label={t("auth.login.email", "Email address")}
           type="email"
-          placeholder="Enter your email address"
+          placeholder={t(
+            "auth.login.emailPlaceholder",
+            "Enter your email address"
+          )}
           icon={Mail}
           autoComplete="email"
         />
 
         <LoginField
           id="password"
-          label="Password"
+          label={t("auth.login.password", "Password")}
           type="password"
-          placeholder="Enter your password"
+          placeholder={t("auth.login.passwordPlaceholder", "Enter your password")}
           icon={Lock}
           autoComplete="current-password"
         />
@@ -93,14 +98,14 @@ export default function LoginForm() {
         <div className="flex items-center justify-between gap-4 text-sm">
           <label className="flex items-center gap-3 text-slate-400">
             <input name="remember" type="checkbox" className="size-4 accent-violet-500" />
-            Remember me
+            {t("auth.login.rememberMe", "Remember me")}
           </label>
 
           <Link
             href="/forgot-password"
             className="font-medium text-violet-400 hover:text-violet-300"
           >
-            Forgot password?
+            {t("auth.login.forgotPassword", "Forgot password?")}
           </Link>
         </div>
 
@@ -115,22 +120,26 @@ export default function LoginForm() {
           disabled={isLoading}
           className="flex w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 py-4 font-semibold text-white transition hover:from-violet-500 hover:to-purple-500 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isLoading ? "Logging in..." : "Log In"}
+          {isLoading
+            ? t("auth.login.submitting", "Logging in...")
+            : t("auth.login.submit", "Log In")}
           {!isLoading && <ArrowRight className="size-5" />}
         </button>
 
         <p className="text-center text-sm text-slate-400">
-          Don&apos;t have an account?{" "}
+          {t("auth.login.noAccount", "Don't have an account?")}{" "}
           <Link href="/register" className="font-medium text-violet-400">
-            Sign up
+            {t("auth.login.signUp", "Sign up")}
           </Link>
         </p>
 
         <div className="flex items-center justify-center gap-2 pt-4 text-center text-sm text-slate-500">
           <ShieldCheck className="size-4 shrink-0" />
           <span>
-            Your data is{" "}
-            <span className="text-violet-400">secure and encrypted</span>
+            {t("auth.dataPrefix", "Your data is")}{" "}
+            <span className="text-violet-400">
+              {t("auth.dataSecure", "secure and encrypted")}
+            </span>
           </span>
         </div>
       </form>

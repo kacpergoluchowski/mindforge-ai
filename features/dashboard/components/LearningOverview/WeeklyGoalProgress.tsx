@@ -1,3 +1,5 @@
+import TranslatedText from "@/components/shared/TranslatedText";
+
 type WeeklyGoalProgressProps = {
   currentLessons: number;
   goalLessons: number;
@@ -16,10 +18,19 @@ export default function WeeklyGoalProgress({
     <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-white">Weekly Goal</h3>
+          <h3 className="text-sm font-semibold text-white">
+            <TranslatedText
+              translationKey="dashboard.weeklyGoal"
+              fallback="Weekly Goal"
+            />
+          </h3>
 
           <p className="text-sm text-slate-400">
-            {currentLessons} / {goalLessons} lessons completed
+            <TranslatedText
+              translationKey="dashboard.lessonsCompleted"
+              fallback="{current} / {goal} lessons completed"
+              values={{ current: currentLessons, goal: goalLessons }}
+            />
           </p>
         </div>
 

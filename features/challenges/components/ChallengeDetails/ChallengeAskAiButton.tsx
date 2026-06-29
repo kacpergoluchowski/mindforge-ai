@@ -3,7 +3,10 @@
 import { useFormStatus } from "react-dom";
 import { Bot, Loader2 } from "lucide-react";
 
+import { useI18n } from "@/lib/i18n/I18nProvider";
+
 export default function ChallengeAskAiButton() {
+  const { t } = useI18n();
   const { pending } = useFormStatus();
 
   return (
@@ -17,7 +20,9 @@ export default function ChallengeAskAiButton() {
       ) : (
         <Bot className="size-4" />
       )}
-      {pending ? "Opening AI Mentor..." : "Ask AI"}
+      {pending
+        ? t("challenges.openingAiMentor", "Opening AI Mentor...")
+        : t("challenges.askAi", "Ask AI")}
     </button>
   );
 }

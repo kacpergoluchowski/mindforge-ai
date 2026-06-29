@@ -13,6 +13,7 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import { submitLessonQuiz } from "../../actions/courseActions";
 import type { CourseLesson } from "../../types/courses.types";
 import { passingQuizScore, quizQuestionCount } from "../../utils/lessonQuiz";
@@ -42,6 +43,7 @@ export default function CourseLessonQuizModal({
   nextLessonTitle,
   nextLessonSlug,
 }: CourseLessonQuizModalProps) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<QuizResult | null>(null);
@@ -49,6 +51,12 @@ export default function CourseLessonQuizModal({
 
   const answeredQuestions = Object.keys(selectedAnswers).length;
   const allAnswered = answeredQuestions === quizQuestionCount;
+  const quizDisabledReason = disabledReason
+    ? disabledReason
+    : t(
+        "courses.lesson.completePracticeFirst",
+        "Complete the practice task first."
+      );
   const score = useMemo(() => {
     return lesson.quizQuestions.reduce((total, question) => {
       return selectedAnswers[question.id] === question.correctOptionId
@@ -126,15 +134,17 @@ export default function CourseLessonQuizModal({
         type="button"
         onClick={openModal}
         disabled={disabled}
-        title={disabled ? disabledReason : undefined}
+        title={disabled ? quizDisabledReason : undefined}
         className="flex w-full items-center justify-center rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400"
       >
-        {disabled ? "Quiz locked" : "Take quiz"}
+        {disabled
+          ? t("courses.lesson.quizLocked", "Quiz locked")
+          : t("courses.lesson.takeQuiz", "Take quiz")}
       </button>
 
       {disabled ? (
         <p className="mt-2 text-center text-xs leading-5 text-slate-500">
-          {disabledReason}
+          {quizDisabledReason}
         </p>
       ) : null}
 
@@ -144,14 +154,18 @@ export default function CourseLessonQuizModal({
             <div className="flex items-start justify-between gap-3 border-b border-white/10 p-4 sm:gap-4 sm:p-5">
               <div className="min-w-0">
                 <p className="text-sm font-medium text-violet-300">
-                  Lesson Quiz
+                  {t("courses.lesson.lessonQuiz", "Lesson Quiz")}
                 </p>
                 <h2 className="mt-1 break-words text-lg font-semibold text-white sm:text-xl">
                   {lesson.title}
                 </h2>
                 <p className="mt-2 text-sm text-slate-400 break-words">
-                  Score at least {passingQuizScore}/{quizQuestionCount} to
-                  complete this lesson.
+                  {t(
+                    "courses.lesson.quizRequirement",
+                    "Score at least {score}/{total} to complete this lesson."
+                  )
+                    .replace("{score}", String(passingQuizScore))
+                    .replace("{total}", String(quizQuestionCount))}
                 </p>
               </div>
 
@@ -159,7 +173,7 @@ export default function CourseLessonQuizModal({
                 type="button"
                 onClick={closeModal}
                 className="rounded-xl border border-white/10 p-2 text-slate-400 transition hover:border-white/20 hover:text-white"
-                aria-label="Close quiz"
+                aria-label={t("courses.lesson.closeQuiz", "Close quiz")}
               >
                 <X className="size-5" />
               </button>
@@ -241,7 +255,7 @@ export default function CourseLessonQuizModal({
                           href={`/learn/courses/${courseSlug}/lessons/${nextLessonSlug}`}
                           className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
                         >
-                          Next Lesson
+                          {t("courses.lesson.nextLesson", "Next Lesson")}
                           <ArrowRight className="size-4" />
                         </Link>
                       ) : (
@@ -249,7 +263,7 @@ export default function CourseLessonQuizModal({
                           href={`/learn/courses/${courseSlug}`}
                           className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
                         >
-                          Back to course
+                          {t("courses.lesson.backToCourse", "Back to course")}
                           <ArrowRight className="size-4" />
                         </Link>
                       )
@@ -263,7 +277,9 @@ export default function CourseLessonQuizModal({
                         {isSaving ? (
                           <Loader2 className="size-4 animate-spin" />
                         ) : null}
-                        {nextLessonSlug ? "Claim XP" : "Complete course"}
+                        {nextLessonSlug
+                          ? t("courses.lesson.claimXp", "Claim XP")
+                          : t("courses.lesson.completeCourse", "Complete course")}
                       </button>
                     )
                   ) : result ? (
@@ -273,7 +289,7 @@ export default function CourseLessonQuizModal({
                       className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
                     >
                       <RotateCcw className="size-4" />
-                      Try again
+                      {t("courses.lesson.tryAgain", "Try again")}
                     </button>
                   ) : (
                     <button
@@ -282,7 +298,7 @@ export default function CourseLessonQuizModal({
                       disabled={!allAnswered}
                       className="rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      Check answers
+                      {t("courses.lesson.checkAnswers", "Check answers")}
                     </button>
                   )}
                 </div>
@@ -306,6 +322,8 @@ function QuizPassedSummary({
   score,
   xpReward,
 }: QuizPassedSummaryProps) {
+  const { t } = useI18n();
+
   return (
     <div className="mb-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-100">
       <div className="flex items-start gap-3">
@@ -314,25 +332,34 @@ function QuizPassedSummary({
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-base font-semibold text-white">Quiz passed</p>
+          <p className="text-base font-semibold text-white">
+            {t("courses.lesson.quizPassed", "Quiz passed")}
+          </p>
           <p className="mt-1 text-emerald-100/80">
-            Score: {score}/{quizQuestionCount}. Read this summary, claim your XP,
-            then choose when to continue.
+            {t(
+              "courses.lesson.quizPassedDescription",
+              "Score: {score}/{total}. Read this summary, claim your XP, then choose when to continue."
+            )
+              .replace("{score}", String(score))
+              .replace("{total}", String(quizQuestionCount))}
           </p>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <div className="rounded-xl border border-emerald-400/20 bg-slate-950/20 p-3">
               <div className="flex items-center gap-2 text-xs text-emerald-100/70">
                 <Trophy className="size-4" />
-                Reward
+                {t("courses.lesson.reward", "Reward")}
               </div>
               <p className="mt-1 font-semibold text-white">+{xpReward} XP</p>
             </div>
 
             <div className="rounded-xl border border-emerald-400/20 bg-slate-950/20 p-3">
-              <p className="text-xs text-emerald-100/70">Next</p>
+              <p className="text-xs text-emerald-100/70">
+                {t("common.next", "Next")}
+              </p>
               <p className="mt-1 line-clamp-2 font-semibold text-white">
-                {nextLessonTitle ?? "Course summary"}
+                {nextLessonTitle ??
+                  t("courses.lesson.courseSummary", "Course summary")}
               </p>
             </div>
           </div>
@@ -347,16 +374,24 @@ type QuizFailedSummaryProps = {
 };
 
 function QuizFailedSummary({ score }: QuizFailedSummaryProps) {
+  const { t } = useI18n();
+
   return (
     <div className="mb-4 rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-100">
       <div className="flex items-start gap-3">
         <XCircle className="mt-0.5 size-5 shrink-0" />
         <div>
-          <p className="font-semibold text-white">Quiz not passed</p>
+          <p className="font-semibold text-white">
+            {t("courses.lesson.quizNotPassed", "Quiz not passed")}
+          </p>
           <p className="mt-1">
-            Score: {score}/{quizQuestionCount}. You need at least{" "}
-            {passingQuizScore}/{quizQuestionCount}. Review the highlighted
-            answers and try again.
+            {t(
+              "courses.lesson.quizFailedDescription",
+              "Score: {score}/{total}. You need at least {passing}/{total}. Review the highlighted answers and try again."
+            )
+              .replace("{score}", String(score))
+              .replaceAll("{total}", String(quizQuestionCount))
+              .replace("{passing}", String(passingQuizScore))}
           </p>
         </div>
       </div>

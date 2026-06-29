@@ -16,6 +16,11 @@ import {
 import type { MobileSidebarProps } from "./types/layoutTypes.types";
 import { navSections } from "./data/layoutData";
 import LanguageSettingsModal from "@/features/settings/components/LanguageSettingsModal/LanguageSettingsModal";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import {
+  getNavigationLabelKey,
+  getNavigationSectionKey,
+} from "@/lib/i18n/navigation";
 
 
 export default function MobileSidebar({
@@ -24,6 +29,7 @@ export default function MobileSidebar({
   onClose,
 }: MobileSidebarProps) {
   const pathname = usePathname();
+  const { t } = useI18n();
 
   return (
     <>
@@ -76,13 +82,17 @@ export default function MobileSidebar({
           {navSections.map((section) => (
             <div key={section.title}>
               <p className="mb-3 px-2 text-xs font-medium uppercase tracking-[0.25em] text-slate-500">
-                {section.title}
+                {t(getNavigationSectionKey(section.title) ?? "", section.title)}
               </p>
 
               <div className="space-y-1">
                 {section.items.map(({ label, href, icon: Icon }) => {
                   const isActive = pathname === href;
                   const isSettingsItem = href === "/account/settings";
+                  const translatedLabel = t(
+                    getNavigationLabelKey(href) ?? "",
+                    label
+                  );
                   const className = clsx(
                     "flex w-full items-center gap-4 rounded-2xl px-4 py-3 text-left text-sm font-medium transition",
                     isActive
@@ -98,7 +108,7 @@ export default function MobileSidebar({
                         onOpen={onClose}
                       >
                         <Icon className="size-5" />
-                        {label}
+                        {translatedLabel}
                       </LanguageSettingsModal>
                     );
                   }
@@ -111,7 +121,7 @@ export default function MobileSidebar({
                       className={className}
                     >
                       <Icon className="size-5" />
-                      {label}
+                      {translatedLabel}
                     </Link>
                   );
                 })}
@@ -128,9 +138,14 @@ export default function MobileSidebar({
               </div>
 
               <div>
-                <h3 className="font-semibold text-white">Upgrade to Premium</h3>
+                <h3 className="font-semibold text-white">
+                  {t("billing.upgrade", "Upgrade to Premium")}
+                </h3>
                 <p className="mt-1 text-sm leading-6 text-slate-400">
-                  Unlock all features and boost your learning.
+                  {t(
+                    "billing.upgradeDescription",
+                    "Unlock all features and boost your learning."
+                  )}
                 </p>
               </div>
             </div>

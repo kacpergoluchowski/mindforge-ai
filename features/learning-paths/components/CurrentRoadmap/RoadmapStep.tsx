@@ -2,6 +2,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { ArrowRight, Check } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { RoadmapStep as RoadmapStepProps } from "../../types/learningPaths.types";
 
 type RoadmapStepStatus = RoadmapStepProps["status"];
@@ -9,24 +10,20 @@ type RoadmapStepStatus = RoadmapStepProps["status"];
 type RoadmapStepStyle = {
   badge: string;
   dot: string;
-  label: string;
 };
 
 const statusStyles: Record<RoadmapStepStatus, RoadmapStepStyle> = {
   completed: {
     dot: "bg-emerald-400 text-white",
     badge: "bg-emerald-500/10 text-emerald-400",
-    label: "Completed",
   },
   current: {
     dot: "bg-violet-500 text-white ring-4 ring-violet-500/20",
     badge: "bg-violet-500/10 text-violet-400",
-    label: "In Progress",
   },
   locked: {
     dot: "border-2 border-slate-500 bg-[#0b1220]",
     badge: "bg-slate-700/40 text-slate-400",
-    label: "Locked",
   },
 };
 
@@ -59,7 +56,12 @@ export default function RoadmapStep({
           {status === "current" && typeof courseProgress === "number" ? (
             <div className="mt-3 max-w-xs">
               <div className="mb-1 flex items-center justify-between gap-3 text-xs text-slate-400">
-                <span>Course progress</span>
+                <span>
+                  <TranslatedText
+                    fallback="Course progress"
+                    translationKey="learningPaths.courseProgress"
+                  />
+                </span>
                 <span>{courseProgress}%</span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
@@ -79,7 +81,7 @@ export default function RoadmapStep({
               styles.badge
             )}
           >
-            {styles.label}
+            <RoadmapStatusLabel status={status} />
           </span>
 
           {canOpenCourse ? (
@@ -87,13 +89,44 @@ export default function RoadmapStep({
               href={`/learn/courses/${courseSlug}`}
               className="inline-flex items-center gap-2 rounded-full bg-violet-500 px-3 py-1 text-xs font-semibold text-white transition hover:bg-violet-600"
             >
-              Open course
+              <TranslatedText
+                fallback="Open course"
+                translationKey="learningPaths.openCourse"
+              />
               <ArrowRight className="size-3.5" />
             </Link>
           ) : null}
         </div>
       </div>
     </li>
+  );
+}
+
+function RoadmapStatusLabel({ status }: { status: RoadmapStepStatus }) {
+  const labels: Record<
+    RoadmapStepStatus,
+    { fallback: string; translationKey: string }
+  > = {
+    completed: {
+      fallback: "Completed",
+      translationKey: "common.completed",
+    },
+    current: {
+      fallback: "In Progress",
+      translationKey: "common.inProgress",
+    },
+    locked: {
+      fallback: "Locked",
+      translationKey: "common.locked",
+    },
+  };
+  const label = labels[status];
+
+  return (
+    <TranslatedText
+      fallback={label.fallback}
+      translationKey={label.translationKey}
+    />
   );
 }
 

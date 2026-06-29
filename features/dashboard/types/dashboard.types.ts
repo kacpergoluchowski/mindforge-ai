@@ -1,9 +1,10 @@
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export type StatsCardItem = {
-  title: string;
-  value: string;
-  change: string;
+  title: ReactNode;
+  value: ReactNode;
+  change: ReactNode;
   icon: LucideIcon;
 };
 
@@ -41,6 +42,7 @@ export type RecommendedCourse = {
 
 export type ActivityItem = {
   id?: string;
+  type?: string;
   title: string;
   description?: string;
   time: string;

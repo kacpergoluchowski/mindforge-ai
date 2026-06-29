@@ -54,6 +54,7 @@ export const getActivityLogs = cache(async (): Promise<ActivityItem[]> => {
 function mapActivityLog(log: ActivityLogRow): ActivityItem {
   return {
     id: log.id,
+    type: log.type,
     title: log.title,
     description: log.description ?? undefined,
     time: formatRelativeTime(log.created_at),

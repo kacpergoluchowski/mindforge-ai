@@ -1,4 +1,5 @@
 import SectionHeader from "@/components/shared/SectionHeader";
+import TranslatedText from "@/components/shared/TranslatedText";
 import { Atom, Brain, Database, FileCode2, Server } from "lucide-react";
 
 import { getPublishedCourses } from "../../api/getCourses";
@@ -33,7 +34,17 @@ export default async function PopularCourses({ category }: PopularCoursesProps) 
 
   return (
     <section className="space-y-5">
-      <SectionHeader title="Popular Courses" buttonText="View All" />
+      <SectionHeader
+        title={
+          <TranslatedText
+            translationKey="courses.popularCourses"
+            fallback="Popular Courses"
+          />
+        }
+        buttonText={
+          <TranslatedText translationKey="common.viewAll" fallback="View All" />
+        }
+      />
 
       {visibleCourses.length ? (
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
@@ -43,7 +54,10 @@ export default async function PopularCourses({ category }: PopularCoursesProps) 
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-6 text-sm text-slate-400">
-          No courses in this category yet.
+          <TranslatedText
+            translationKey="courses.noCoursesInCategory"
+            fallback="No courses in this category yet."
+          />
         </div>
       )}
     </section>

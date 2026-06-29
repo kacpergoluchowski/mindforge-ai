@@ -1,4 +1,5 @@
 import SectionHeader from "@/components/shared/SectionHeader";
+import TranslatedText from "@/components/shared/TranslatedText";
 import { Atom, FileCode2, Triangle } from "lucide-react";
 
 import { getContinueLearningCourses } from "../../api/getCourses";
@@ -26,7 +27,17 @@ export default async function ContinueLearning() {
 
   return (
     <section className="space-y-5">
-      <SectionHeader title="Continue Learning" buttonText="View All" />
+      <SectionHeader
+        title={
+          <TranslatedText
+            translationKey="courses.continueLearning"
+            fallback="Continue Learning"
+          />
+        }
+        buttonText={
+          <TranslatedText translationKey="common.viewAll" fallback="View All" />
+        }
+      />
 
       {visibleCourses.length ? (
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-4">
@@ -36,7 +47,10 @@ export default async function ContinueLearning() {
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-6 text-sm text-slate-400">
-          No courses in progress.
+          <TranslatedText
+            translationKey="dashboard.noCoursesInProgress"
+            fallback="No courses in progress."
+          />
         </div>
       )}
     </section>

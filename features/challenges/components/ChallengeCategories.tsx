@@ -3,6 +3,7 @@
 import { useState } from "react";
 import clsx from "clsx";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { challengeCategories } from "../data/challengesData";
 
 type ChallengeCategory = (typeof challengeCategories)[number];
@@ -25,9 +26,29 @@ export default function ChallengeCategories() {
               : "border-white/10 bg-white/[0.02] text-slate-400 hover:bg-white/[0.05] hover:text-white"
           )}
         >
-          {category}
+          <ChallengeCategoryLabel category={category} />
         </button>
       ))}
     </section>
+  );
+}
+
+function ChallengeCategoryLabel({ category }: { category: ChallengeCategory }) {
+  const keys: Record<string, string> = {
+    "All Challenges": "challenges.categories.all",
+    AI: "challenges.categories.ai",
+    Algorithms: "challenges.categories.algorithms",
+    Backend: "challenges.categories.backend",
+    DevOps: "challenges.categories.devops",
+    Frontend: "challenges.categories.frontend",
+    Fullstack: "challenges.categories.fullstack",
+    "System Design": "challenges.categories.systemDesign",
+  };
+
+  return (
+    <TranslatedText
+      fallback={category}
+      translationKey={keys[category] ?? "challenges.categories.all"}
+    />
   );
 }

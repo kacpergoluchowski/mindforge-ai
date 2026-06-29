@@ -1,10 +1,21 @@
 import Link from "next/link";
 import clsx from "clsx";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { courseCategories } from "../data/coursesData";
 
 type CourseCategoriesProps = {
   activeCategory: string;
+};
+
+const categoryTranslationKeys: Record<string, string> = {
+  "AI & ML": "courses.categories.aiMl",
+  "All Courses": "courses.categories.all",
+  Backend: "courses.categories.backend",
+  Frontend: "courses.categories.frontend",
+  JavaScript: "courses.categories.javascript",
+  React: "courses.categories.react",
+  TypeScript: "courses.categories.typescript",
 };
 
 export default function CourseCategories({
@@ -30,7 +41,10 @@ export default function CourseCategories({
                 : "border-white/10 bg-white/[0.02] text-slate-400 hover:bg-white/[0.05] hover:text-white"
             )}
           >
-            {category}
+            <TranslatedText
+              translationKey={categoryTranslationKeys[category] ?? ""}
+              fallback={category}
+            />
           </Link>
         );
       })}

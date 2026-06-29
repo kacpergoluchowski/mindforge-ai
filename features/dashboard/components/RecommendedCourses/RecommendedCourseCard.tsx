@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Star } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { RecommendedCourse } from "../../types/dashboard.types";
 
 type RecommendedCourseCardProps = {
@@ -22,7 +23,7 @@ export default function RecommendedCourseCard({
         </h3>
 
         <p className="mt-2 text-xs text-slate-400">
-          {course.duration} / {course.level}
+          {course.duration} / <CourseLevelLabel level={course.level} />
         </p>
       </div>
 
@@ -44,5 +45,21 @@ export default function RecommendedCourseCard({
     <article className="relative min-h-36 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
       {content}
     </article>
+  );
+}
+
+function CourseLevelLabel({ level }: { level: string }) {
+  const levelKey = level.toLowerCase();
+  const translationKeys: Record<string, string> = {
+    advanced: "common.advanced",
+    beginner: "common.beginner",
+    intermediate: "common.intermediate",
+  };
+
+  return (
+    <TranslatedText
+      fallback={level}
+      translationKey={translationKeys[levelKey] ?? "courses.level"}
+    />
   );
 }

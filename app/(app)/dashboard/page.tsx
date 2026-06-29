@@ -1,4 +1,5 @@
 import PageHeader from "@/components/shared/PageHeader";
+import TranslatedText from "@/components/shared/TranslatedText";
 import ActivityFeed from "@/features/dashboard/components/ActivityFeed/ActivityFeed";
 import ContinueLearning from "@/features/dashboard/components/ContinueLearning/ContinueLearning";
 import LearningOverview from "@/features/dashboard/components/LearningOverview/LearningOverview";
@@ -23,10 +24,26 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-4">
       <PageHeader
-        title={`Good morning, ${firstName}!`}
-        subtitle="Ready to continue your learning journey?"
+        title={
+          <TranslatedText
+            fallback="Good morning, {name}!"
+            translationKey="dashboard.title"
+            values={{ name: firstName }}
+          />
+        }
+        subtitle={
+          <TranslatedText
+            fallback="Ready to continue your learning journey?"
+            translationKey="dashboard.subtitle"
+          />
+        }
         action={{
-          label: "Chat with AI Mentor",
+          label: (
+            <TranslatedText
+              fallback="Chat with AI Mentor"
+              translationKey="dashboard.chatWithAiMentor"
+            />
+          ),
           icon: Bot,
           rightIcon: ChevronDown,
         }}

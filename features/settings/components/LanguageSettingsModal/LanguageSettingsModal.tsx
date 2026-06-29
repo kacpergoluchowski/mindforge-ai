@@ -11,6 +11,7 @@ import {
   Moon,
   X,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 type LanguageSettingsModalProps = {
   buttonClassName: string;
@@ -19,10 +20,9 @@ type LanguageSettingsModalProps = {
 };
 
 type LanguageOption = {
-  code: string;
+  code: "en" | "pl";
   description: string;
   label: string;
-  status: "active" | "available";
 };
 
 const languageOptions = [
@@ -30,33 +30,24 @@ const languageOptions = [
     code: "en",
     description: "Use English across the application interface.",
     label: "English",
-    status: "active",
   },
   {
     code: "pl",
     description: "Use Polish across the application interface.",
     label: "Polski",
-    status: "available",
   },
 ] satisfies LanguageOption[];
-
-const statusLabels: Record<LanguageOption["status"], string> = {
-  active: "Current",
-  available: "Available",
-};
 
 const aiLanguageOptions = [
   {
     code: "en",
     label: "English",
-    status: "active",
   },
   {
     code: "pl",
     label: "Polski",
-    status: "available",
   },
-] satisfies Pick<LanguageOption, "code" | "label" | "status">[];
+] satisfies Pick<LanguageOption, "code" | "label">[];
 
 export default function LanguageSettingsModal({
   buttonClassName,
@@ -64,6 +55,7 @@ export default function LanguageSettingsModal({
   onOpen,
 }: LanguageSettingsModalProps) {
   const [open, setOpen] = useState(false);
+  const { locale, setLocale, t } = useI18n();
 
   function openModal() {
     onOpen?.();
@@ -88,10 +80,13 @@ export default function LanguageSettingsModal({
 
                     <div>
                       <h2 className="text-xl font-semibold text-white">
-                        Preferences
+                        {t("settings.title", "Preferences")}
                       </h2>
                       <p className="mt-1 text-sm leading-6 text-slate-400">
-                        Adjust how MindForge AI should feel for your account.
+                        {t(
+                          "settings.interfaceLanguageDescription",
+                          "Adjust how MindForge AI should feel for your account."
+                        )}
                       </p>
                     </div>
                   </div>
@@ -100,7 +95,7 @@ export default function LanguageSettingsModal({
                     type="button"
                     onClick={() => setOpen(false)}
                     className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 text-slate-400 transition hover:border-white/20 hover:text-white"
-                    aria-label="Close settings"
+                    aria-label={t("common.close", "Close settings")}
                   >
                     <X className="size-5" />
                   </button>
@@ -109,8 +104,11 @@ export default function LanguageSettingsModal({
                 <div className="max-h-[calc(90vh-156px)] space-y-5 overflow-y-auto p-6">
                   <PreferenceSection
                     icon={Languages}
-                    title="Interface language"
-                    description="Choose the language used across the app interface."
+                    title={t("settings.interfaceLanguage", "Interface language")}
+                    description={t(
+                      "settings.interfaceLanguageDescription",
+                      "Choose the language used across the app interface."
+                    )}
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
                       {languageOptions.map((language) => (
@@ -118,7 +116,13 @@ export default function LanguageSettingsModal({
                           key={language.code}
                           description={language.description}
                           label={language.label}
-                          status={language.status}
+                          active={locale === language.code}
+                          statusLabel={
+                            locale === language.code
+                              ? t("settings.active", "Current")
+                              : t("settings.available", "Available")
+                          }
+                          onClick={() => setLocale(language.code)}
                         />
                       ))}
                     </div>
@@ -126,15 +130,24 @@ export default function LanguageSettingsModal({
 
                   <PreferenceSection
                     icon={Bot}
-                    title="AI response language"
-                    description="Choose the preferred language for future AI Mentor answers."
+                    title={t("settings.aiResponseLanguage", "AI response language")}
+                    description={t(
+                      "settings.aiResponseLanguageDescription",
+                      "Choose the preferred language for future AI Mentor answers."
+                    )}
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
                       {aiLanguageOptions.map((language) => (
                         <PreferenceOption
                           key={language.code}
                           label={language.label}
-                          status={language.status}
+                          active={locale === language.code}
+                          statusLabel={
+                            locale === language.code
+                              ? t("settings.active", "Current")
+                              : t("settings.available", "Available")
+                          }
+                          onClick={() => setLocale(language.code)}
                         />
                       ))}
                     </div>
@@ -148,7 +161,8 @@ export default function LanguageSettingsModal({
                     <PreferenceOption
                       description="Dark mode keeps dashboards, lessons and coding workflows comfortable."
                       label="Dark"
-                      status="active"
+                      active
+                      statusLabel={t("settings.active", "Current")}
                     />
                   </PreferenceSection>
 
@@ -160,7 +174,8 @@ export default function LanguageSettingsModal({
                     <PreferenceOption
                       description="Course reminders, streak updates and AI summaries are coming soon."
                       label="Coming soon"
-                      status="available"
+                      active={false}
+                      statusLabel={t("settings.comingSoon", "Available")}
                     />
                   </PreferenceSection>
                 </div>
@@ -171,7 +186,7 @@ export default function LanguageSettingsModal({
                     onClick={() => setOpen(false)}
                     className="rounded-xl bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
                   >
-                    Save changes
+                    {t("common.save", "Save changes")}
                   </button>
                 </div>
               </div>
@@ -216,24 +231,27 @@ function PreferenceSection({
 }
 
 type PreferenceOptionProps = {
+  active: boolean;
   description?: string;
   label: string;
-  status: LanguageOption["status"];
+  onClick?: () => void;
+  statusLabel: string;
 };
 
 function PreferenceOption({
+  active,
   description,
   label,
-  status,
+  onClick,
+  statusLabel,
 }: PreferenceOptionProps) {
-  const isActive = status === "active";
-
   return (
     <button
       type="button"
+      onClick={onClick}
       className={clsx(
         "flex min-h-24 w-full items-start justify-between gap-4 rounded-2xl border p-4 text-left transition",
-        isActive
+        active
           ? "border-violet-400/40 bg-violet-500/10"
           : "border-white/10 bg-slate-950/30 hover:border-white/20"
       )}
@@ -244,12 +262,12 @@ function PreferenceOption({
           <span
             className={clsx(
               "rounded-full px-2.5 py-1 text-xs font-medium",
-              isActive
+              active
                 ? "bg-violet-500/15 text-violet-300"
                 : "bg-white/5 text-slate-400"
             )}
           >
-            {statusLabels[status]}
+            {statusLabel}
           </span>
         </div>
 
@@ -263,7 +281,7 @@ function PreferenceOption({
       <span
         className={clsx(
           "flex size-6 shrink-0 items-center justify-center rounded-full border",
-          isActive
+          active
             ? "border-violet-400 bg-violet-500 text-white"
             : "border-white/10 text-transparent"
         )}

@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Check, Flame } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { challengeStreak } from "../../data/challengesData";
 
 type StreakDay = (typeof challengeStreak.days)[number];
@@ -9,7 +10,10 @@ export default function ChallengeStreak() {
   return (
     <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5">
       <h2 className="mb-5 text-xl font-semibold text-white">
-        Challenge Streak
+        <TranslatedText
+          fallback="Challenge Streak"
+          translationKey="challenges.challengeStreak"
+        />
       </h2>
 
       <StreakSummary currentStreak={challengeStreak.currentStreak} />
@@ -40,10 +44,17 @@ function StreakSummary({ currentStreak }: StreakSummaryProps) {
             {currentStreak}
           </span>
 
-          <span className="mb-1 text-slate-400">days</span>
+          <span className="mb-1 text-slate-400">
+            <TranslatedText fallback="days" translationKey="challenges.days" />
+          </span>
         </div>
 
-        <p className="text-sm text-slate-400">Keep solving every day!</p>
+        <p className="text-sm text-slate-400">
+          <TranslatedText
+            fallback="Keep solving every day!"
+            translationKey="challenges.keepSolving"
+          />
+        </p>
       </div>
     </div>
   );
@@ -56,7 +67,9 @@ type StreakDayItemProps = {
 function StreakDayItem({ day }: StreakDayItemProps) {
   return (
     <div className="text-center">
-      <p className="mb-2 text-xs text-slate-500">{day.day}</p>
+      <p className="mb-2 text-xs text-slate-500">
+        <WeekdayLabel day={day.day} />
+      </p>
 
       <div
         className={clsx(
@@ -70,4 +83,18 @@ function StreakDayItem({ day }: StreakDayItemProps) {
       </div>
     </div>
   );
+}
+
+function WeekdayLabel({ day }: { day: string }) {
+  const keys: Record<string, string> = {
+    Fri: "common.weekdays.fri",
+    Mon: "common.weekdays.mon",
+    Sat: "common.weekdays.sat",
+    Sun: "common.weekdays.sun",
+    Thu: "common.weekdays.thu",
+    Tue: "common.weekdays.tue",
+    Wed: "common.weekdays.wed",
+  };
+
+  return <TranslatedText fallback={day} translationKey={keys[day] ?? ""} />;
 }

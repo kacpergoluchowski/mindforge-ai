@@ -1,5 +1,6 @@
 import clsx from "clsx";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { weeklyLeaderboard } from "../../data/challengesData";
 import type { CurrentProfile } from "@/features/profile/types/profile.types";
 import {
@@ -38,7 +39,7 @@ export default function WeeklyLeaderboard({ profile }: WeeklyLeaderboardProps) {
           ? {
               ...user,
               name: getFirstName(profile.fullName),
-              points: `${profile.xp.toLocaleString()} pts`,
+              points: profile.xp.toLocaleString(),
               avatar: getInitials(profile.fullName).slice(0, 1),
             }
           : user
@@ -51,13 +52,18 @@ export default function WeeklyLeaderboard({ profile }: WeeklyLeaderboardProps) {
   return (
     <section className="h-min rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">Weekly Leaderboard</h2>
+        <h2 className="text-xl font-semibold text-white">
+          <TranslatedText
+            fallback="Weekly Leaderboard"
+            translationKey="challenges.weeklyLeaderboard"
+          />
+        </h2>
 
         <button
           type="button"
           className="text-sm text-slate-300 transition hover:text-white"
         >
-          View all
+          <TranslatedText fallback="View all" translationKey="common.viewAll" />
         </button>
       </div>
 
@@ -90,7 +96,9 @@ function TopUser({ user, size }: TopUserProps) {
       <LeaderboardAvatar user={user} size={size} />
 
       <p className="mt-3 text-sm font-medium text-white">{user.name}</p>
-      <p className="mt-1 text-xs text-slate-400">{user.points}</p>
+      <p className="mt-1 text-xs text-slate-400">
+        <LeaderboardPoints points={user.points} />
+      </p>
     </div>
   );
 }
@@ -149,7 +157,19 @@ function LeaderboardRow({ user }: LeaderboardRowProps) {
         <span className="text-sm font-medium text-white">{user.name}</span>
       </div>
 
-      <span className="text-sm text-slate-400">{user.points}</span>
+      <span className="text-sm text-slate-400">
+        <LeaderboardPoints points={user.points} />
+      </span>
     </div>
+  );
+}
+
+function LeaderboardPoints({ points }: { points: string }) {
+  return (
+    <TranslatedText
+      fallback="{points} pts"
+      translationKey="challenges.pointsShort"
+      values={{ points: points.replace(" pts", "") }}
+    />
   );
 }
