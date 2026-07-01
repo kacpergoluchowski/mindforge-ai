@@ -1,6 +1,13 @@
-import { Bell, Command, Search, Sparkles } from "lucide-react";
+import { Command, Search, Sparkles } from "lucide-react";
 
-export default function Header() {
+import NotificationsDropdown from "./NotificationsDropdown";
+import type { NotificationItem } from "@/features/notifications/types/notification.types";
+
+type HeaderProps = {
+  notifications: NotificationItem[];
+};
+
+export default function Header({ notifications }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 hidden h-20 items-center justify-between border-b border-white/10 px-8 backdrop-blur-xl lg:flex">
       <div className="relative w-full max-w-xl">
@@ -23,13 +30,7 @@ export default function Header() {
           <Sparkles className="size-5" />
         </button>
 
-        <button className="relative text-slate-300 transition hover:text-white">
-          <Bell className="size-5" />
-
-          <span className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-violet-500 text-xs font-semibold text-white">
-            3
-          </span>
-        </button>
+        <NotificationsDropdown notifications={notifications} />
       </div>
     </header>
   );

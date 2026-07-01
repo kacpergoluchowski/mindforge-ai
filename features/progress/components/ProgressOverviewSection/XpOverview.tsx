@@ -9,6 +9,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import type { XpOverviewItem } from "../../types/progress.types";
 
 type XpOverviewProps = {
@@ -24,18 +25,26 @@ export default function XpOverview({
   weekXp,
   xpOverview,
 }: XpOverviewProps) {
-  const chartData = xpOverview.length ? xpOverview : getEmptyWeekData();
+  const { t } = useI18n();
+  const chartData = (xpOverview.length ? xpOverview : getEmptyWeekData()).map(
+    (item) => ({
+      ...item,
+      day: translateWeekday(item.day, t),
+    })
+  );
 
   return (
     <article className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">XP Overview</h2>
+        <h2 className="text-xl font-semibold text-white">
+          {t("progress.xpOverview", "XP Overview")}
+        </h2>
 
         <button
           type="button"
           className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-slate-300"
         >
-          This Week
+          {t("dashboard.thisWeek", "This Week")}
         </button>
       </div>
 
@@ -105,7 +114,9 @@ export default function XpOverview({
 
         <div className="flex flex-col justify-center border-t border-white/10 pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
           <div>
-            <p className="text-sm text-slate-400">Total XP</p>
+            <p className="text-sm text-slate-400">
+              {t("progress.stats.totalXp", "Total XP")}
+            </p>
             <p className="mt-2 text-3xl font-bold text-violet-400">
               {totalXp.toLocaleString()}
             </p>
@@ -114,7 +125,9 @@ export default function XpOverview({
           <div className="my-6 h-px bg-white/10" />
 
           <div>
-            <p className="text-sm text-slate-400">This Week</p>
+            <p className="text-sm text-slate-400">
+              {t("dashboard.thisWeek", "This Week")}
+            </p>
             <p className="mt-2 text-2xl font-bold text-emerald-400">
               +{weekXp.toLocaleString()}
             </p>
@@ -123,7 +136,9 @@ export default function XpOverview({
           <div className="my-6 h-px bg-white/10" />
 
           <div>
-            <p className="text-sm text-slate-400">Daily Average</p>
+            <p className="text-sm text-slate-400">
+              {t("progress.dailyAverage", "Daily Average")}
+            </p>
             <p className="mt-2 text-2xl font-bold text-slate-200">
               {dailyAverageXp.toLocaleString()}
             </p>
@@ -139,4 +154,21 @@ function getEmptyWeekData(): XpOverviewItem[] {
     day,
     xp: 0,
   }));
+}
+
+function translateWeekday(
+  day: string,
+  translate: (key: string, fallback: string) => string
+) {
+  const keys: Record<string, string> = {
+    Fri: "common.weekdays.fri",
+    Mon: "common.weekdays.mon",
+    Sat: "common.weekdays.sat",
+    Sun: "common.weekdays.sun",
+    Thu: "common.weekdays.thu",
+    Tue: "common.weekdays.tue",
+    Wed: "common.weekdays.wed",
+  };
+
+  return keys[day] ? translate(keys[day], day) : day;
 }

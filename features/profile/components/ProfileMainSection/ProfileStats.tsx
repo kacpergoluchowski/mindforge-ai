@@ -1,6 +1,7 @@
 import { profileStats } from "../../data/profileData";
 import ProfileStatCard from "./ProfileStatCard";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { CurrentProfile } from "../../types/profile.types";
 
 type ProfileStatsProps = {
@@ -14,9 +15,45 @@ export default function ProfileStats({ profile }: ProfileStatsProps) {
     if (stat.subtitle === "Advanced Learner") {
       return {
         ...stat,
-        title: `Level ${profile.level}`,
-        subtitle: `${profile.xp.toLocaleString()} XP earned`,
+        title: (
+          <TranslatedText
+            fallback="Level {level}"
+            translationKey="profile.stats.level"
+            values={{ level: profile.level }}
+          />
+        ),
+        subtitle: (
+          <TranslatedText
+            fallback="{xp} XP earned"
+            translationKey="profile.stats.xpEarned"
+            values={{ xp: profile.xp.toLocaleString() }}
+          />
+        ),
         progress: xpProgress,
+      };
+    }
+
+    if (stat.subtitle === "Total Learning Time") {
+      return {
+        ...stat,
+        subtitle: (
+          <TranslatedText
+            fallback="Total Learning Time"
+            translationKey="profile.stats.totalLearningTime"
+          />
+        ),
+      };
+    }
+
+    if (stat.subtitle === "Courses Completed") {
+      return {
+        ...stat,
+        subtitle: (
+          <TranslatedText
+            fallback="Courses Completed"
+            translationKey="profile.stats.coursesCompleted"
+          />
+        ),
       };
     }
 
@@ -24,6 +61,12 @@ export default function ProfileStats({ profile }: ProfileStatsProps) {
       return {
         ...stat,
         title: String(profile.streakDays),
+        subtitle: (
+          <TranslatedText
+            fallback="Day Streak"
+            translationKey="profile.stats.dayStreak"
+          />
+        ),
       };
     }
 
@@ -32,8 +75,8 @@ export default function ProfileStats({ profile }: ProfileStatsProps) {
 
   return (
     <section className="grid gap-6 xl:grid-cols-4">
-      {stats.map((stat) => (
-        <ProfileStatCard key={stat.title} {...stat} />
+      {stats.map((stat, index) => (
+        <ProfileStatCard key={index} {...stat} />
       ))}
     </section>
   );

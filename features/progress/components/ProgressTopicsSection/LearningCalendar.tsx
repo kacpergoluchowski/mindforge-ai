@@ -1,15 +1,16 @@
 import clsx from "clsx";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { CalendarSummaryItem, LearningCalendarDay } from "../../types/progress.types";
 
 const weekDays = [
-  { id: "monday", label: "M" },
-  { id: "tuesday", label: "T" },
-  { id: "wednesday", label: "W" },
-  { id: "thursday", label: "T" },
-  { id: "friday", label: "F" },
-  { id: "saturday", label: "S" },
-  { id: "sunday", label: "S" },
+  { id: "monday", label: "M", translationKey: "progress.calendar.weekDays.monday" },
+  { id: "tuesday", label: "T", translationKey: "progress.calendar.weekDays.tuesday" },
+  { id: "wednesday", label: "W", translationKey: "progress.calendar.weekDays.wednesday" },
+  { id: "thursday", label: "T", translationKey: "progress.calendar.weekDays.thursday" },
+  { id: "friday", label: "F", translationKey: "progress.calendar.weekDays.friday" },
+  { id: "saturday", label: "S", translationKey: "progress.calendar.weekDays.saturday" },
+  { id: "sunday", label: "S", translationKey: "progress.calendar.weekDays.sunday" },
 ];
 
 const intensityStyles = {
@@ -42,11 +43,17 @@ export default function LearningCalendar({ days }: LearningCalendarProps) {
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">
-            Learning Calendar
+            <TranslatedText
+              fallback="Learning Calendar"
+              translationKey="progress.learningCalendar"
+            />
           </h2>
 
           <p className="mt-1 text-sm text-slate-400">
-            Your activity over the last 4 weeks.
+            <TranslatedText
+              fallback="Your activity over the last 4 weeks."
+              translationKey="progress.calendar.description"
+            />
           </p>
         </div>
 
@@ -54,7 +61,10 @@ export default function LearningCalendar({ days }: LearningCalendarProps) {
           type="button"
           className="shrink-0 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-slate-300"
         >
-          Last 28 days
+          <TranslatedText
+            fallback="Last 28 days"
+            translationKey="progress.calendar.last28Days"
+          />
         </button>
       </div>
 
@@ -62,7 +72,12 @@ export default function LearningCalendar({ days }: LearningCalendarProps) {
         <div>
           <div className="mb-4 grid grid-cols-7 gap-2 text-center text-xs text-slate-500">
             {weekDays.map((day) => (
-              <span key={day.id}>{day.label}</span>
+              <span key={day.id}>
+                <TranslatedText
+                  fallback={day.label}
+                  translationKey={day.translationKey}
+                />
+              </span>
             ))}
           </div>
 
@@ -80,21 +95,37 @@ export default function LearningCalendar({ days }: LearningCalendarProps) {
           </div>
 
           <div className="mt-5 flex items-center gap-2 text-xs text-slate-500">
-            <span>Less</span>
+            <span>
+              <TranslatedText fallback="Less" translationKey="progress.calendar.less" />
+            </span>
             <div className="size-3 rounded bg-emerald-900/40" />
             <div className="size-3 rounded bg-emerald-700/60" />
             <div className="size-3 rounded bg-emerald-600/80" />
             <div className="size-3 rounded bg-emerald-400" />
-            <span>More</span>
+            <span>
+              <TranslatedText fallback="More" translationKey="progress.calendar.more" />
+            </span>
           </div>
         </div>
 
         <div className="flex flex-col justify-center border-t border-white/10 pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
           {calendarSummary.map((item, index) => (
             <div key={item.id}>
-              <p className="text-sm text-slate-400">{item.label}</p>
+              <p className="text-sm text-slate-400">
+                <TranslatedText
+                  fallback={item.label}
+                  translationKey={getCalendarSummaryLabelKey(item.id)}
+                />
+              </p>
               <p className="mt-2 text-2xl font-bold text-white">
-                {item.value}
+                {item.id === 2 ? (
+                  <TranslatedText
+                    fallback={item.value}
+                    translationKey={getWeekdayTranslationKey(item.value)}
+                  />
+                ) : (
+                  item.value
+                )}
               </p>
 
               {index !== calendarSummary.length - 1 && (
@@ -106,6 +137,30 @@ export default function LearningCalendar({ days }: LearningCalendarProps) {
       </div>
     </section>
   );
+}
+
+function getCalendarSummaryLabelKey(id: number) {
+  const keys: Record<number, string> = {
+    1: "progress.calendar.activeDays",
+    2: "progress.calendar.bestDay",
+    3: "progress.calendar.avgActivity",
+  };
+
+  return keys[id] ?? "common.noData";
+}
+
+function getWeekdayTranslationKey(day: string) {
+  const keys: Record<string, string> = {
+    Fri: "common.weekdays.fri",
+    Mon: "common.weekdays.mon",
+    Sat: "common.weekdays.sat",
+    Sun: "common.weekdays.sun",
+    Thu: "common.weekdays.thu",
+    Tue: "common.weekdays.tue",
+    Wed: "common.weekdays.wed",
+  };
+
+  return keys[day] ?? "progress.calendar.unknownDay";
 }
 
 function getEmptyCalendarDays(): LearningCalendarDay[] {

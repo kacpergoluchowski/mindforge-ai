@@ -8,6 +8,8 @@ export type CodeReviewLanguage =
 
 export type CodeReviewMode = "single-file" | "project";
 
+export type CodeReviewLocale = "en" | "pl";
+
 export type CodeReviewResult = {
   mode: "single-file";
   score: number;

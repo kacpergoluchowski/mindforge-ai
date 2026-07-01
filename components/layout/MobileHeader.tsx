@@ -1,17 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Logo from "./Logo";
 import MobileSidebar from "./MobileSidebar";
+import NotificationsDropdown from "./NotificationsDropdown";
 
+import type { NotificationItem } from "@/features/notifications/types/notification.types";
 import type { CurrentProfile } from "@/features/profile/types/profile.types";
 
 type MobileHeaderProps = {
   profile: CurrentProfile;
+  notifications: NotificationItem[];
 };
 
-export default function MobileHeader({ profile }: MobileHeaderProps) {
+export default function MobileHeader({
+  profile,
+  notifications,
+}: MobileHeaderProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -27,13 +33,7 @@ export default function MobileHeader({ profile }: MobileHeaderProps) {
 
         <Logo />
 
-        <button className="relative flex size-9 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-white">
-          <Bell className="size-4" />
-
-          <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-violet-500 text-xs font-semibold text-white">
-            3
-          </span>
-        </button>
+        <NotificationsDropdown compact notifications={notifications} />
       </header>
 
       <MobileSidebar

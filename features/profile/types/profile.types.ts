@@ -1,10 +1,11 @@
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export type ProfileStatColor = "violet" | "emerald" | "blue" | "orange";
 
 export type ProfileStat = {
-  title: string;
-  subtitle: string;
+  title: ReactNode;
+  subtitle: ReactNode;
   icon: LucideIcon;
   progress: number;
   color: ProfileStatColor;

@@ -1,12 +1,13 @@
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export type ProgressStatColor = "violet" | "emerald" | "orange" | "blue";
 
 export type ProgressStat = {
   id: number;
-  title: string;
+  title: ReactNode;
   value: string;
-  subtitle: string;
+  subtitle: ReactNode;
   icon: LucideIcon;
   color: ProgressStatColor;
   progress?: number;

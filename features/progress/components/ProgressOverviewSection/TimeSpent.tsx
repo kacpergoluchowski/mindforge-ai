@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { Cell, Pie, PieChart } from "recharts";
 
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import type { TimeSpentColor, TimeSpentItem } from "../../types/progress.types";
 
 const chartColors: Record<TimeSpentColor, string> = {
@@ -24,16 +25,22 @@ type TimeSpentProps = {
 };
 
 export default function TimeSpent({ items }: TimeSpentProps) {
-  const chartData = items.length ? items : getEmptyCategoryData();
+  const { t } = useI18n();
+  const chartData = (items.length ? items : getEmptyCategoryData()).map((item) => ({
+    ...item,
+    label: translateCategoryLabel(item.label, t),
+  }));
 
   return (
     <article className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-white">Time Spent</h2>
+          <h2 className="text-xl font-semibold text-white">
+            {t("progress.timeSpent", "Time Spent")}
+          </h2>
 
           <p className="mt-1 text-sm text-emerald-400">
-            Based on started courses
+            {t("progress.basedOnStartedCourses", "Based on started courses")}
           </p>
         </div>
 
@@ -41,7 +48,7 @@ export default function TimeSpent({ items }: TimeSpentProps) {
           type="button"
           className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-slate-300"
         >
-          This Week
+          {t("dashboard.thisWeek", "This Week")}
         </button>
       </div>
 
@@ -65,7 +72,9 @@ export default function TimeSpent({ items }: TimeSpentProps) {
 
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-bold text-white">{items.length}</span>
-            <span className="mt-1 text-sm text-slate-400">Topics</span>
+            <span className="mt-1 text-sm text-slate-400">
+              {t("progress.topics", "Topics")}
+            </span>
           </div>
         </div>
 
@@ -106,4 +115,24 @@ function getEmptyCategoryData(): TimeSpentItem[] {
       color: "violet",
     },
   ];
+}
+
+function translateCategoryLabel(
+  label: string,
+  translate: (key: string, fallback: string) => string
+) {
+  const keys: Record<string, string> = {
+    "AI & ML": "dashboard.categories.aiMl",
+    "AI Mentor": "navigation.aiMentor",
+    Backend: "dashboard.categories.backend",
+    Challenges: "navigation.challenges",
+    Courses: "navigation.courses",
+    Database: "dashboard.categories.database",
+    Frontend: "dashboard.categories.frontend",
+    Fullstack: "dashboard.categories.fullstack",
+    "No courses": "progress.noCourses",
+    Reading: "progress.reading",
+  };
+
+  return keys[label] ? translate(keys[label], label) : label;
 }

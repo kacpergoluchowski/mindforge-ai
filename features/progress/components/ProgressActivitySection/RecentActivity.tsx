@@ -1,5 +1,6 @@
 import clsx from "clsx";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type {
   RecentActivityColor,
   RecentActivityItem,
@@ -34,10 +35,12 @@ function ActivityItem({
 
         <div className="min-w-0 flex-1">
           <h3 className="text-sm font-semibold leading-5 text-white">
-            {title}
+            {getActivityTitle(title)}
           </h3>
 
-          <p className="mt-1 text-xs text-slate-400">{description}</p>
+          <p className="mt-1 text-xs text-slate-400">
+            {getActivityDescription(description)}
+          </p>
 
           <span className="mt-2 inline-block text-xs font-semibold text-emerald-400 sm:hidden">
             {xp}
@@ -60,13 +63,18 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
   return (
     <section className="w-full rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 xl:p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">Recent Activity</h2>
+        <h2 className="text-xl font-semibold text-white">
+          <TranslatedText
+            fallback="Recent Activity"
+            translationKey="progress.recentActivity"
+          />
+        </h2>
 
         <button
           type="button"
           className="text-sm font-medium text-violet-400 transition hover:text-violet-300"
         >
-          View all
+          <TranslatedText fallback="View all" translationKey="common.viewAll" />
         </button>
       </div>
 
@@ -78,9 +86,135 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
-          No activity yet.
+          <TranslatedText
+            fallback="No activity yet."
+            translationKey="progress.noActivity"
+          />
         </div>
       )}
     </section>
   );
+}
+
+function getActivityTitle(title: string) {
+  const completedTitle = title.match(/^Completed "(.+)"$/)?.[1];
+
+  if (completedTitle) {
+    return (
+      <TranslatedText
+        fallback={title}
+        translationKey="progress.activity.completed"
+        values={{ title: completedTitle }}
+      />
+    );
+  }
+
+  const solvedTitle = title.match(/^Solved "(.+)" challenge$/)?.[1];
+
+  if (solvedTitle) {
+    return (
+      <TranslatedText
+        fallback={title}
+        translationKey="progress.activity.solvedChallenge"
+        values={{ title: solvedTitle }}
+      />
+    );
+  }
+
+  if (title === "AI Code Review completed") {
+    return (
+      <TranslatedText
+        fallback={title}
+        translationKey="progress.activity.codeReviewCompleted"
+      />
+    );
+  }
+
+  if (title.startsWith("Earned ")) {
+    return (
+      <TranslatedText fallback={title} translationKey="progress.activity.earnedXp" />
+    );
+  }
+
+  return title;
+}
+
+function getActivityDescription(description: string) {
+  const [type, time] = description.split(" / ");
+
+  if (!time) {
+    return translateActivityType(type);
+  }
+
+  return (
+    <>
+      {translateActivityType(type)} / {translateRelativeTime(time)}
+    </>
+  );
+}
+
+function translateActivityType(type: string) {
+  const keys: Record<string, string> = {
+    Activity: "progress.activity.activity",
+    "AI Mentor": "navigation.aiMentor",
+    Challenge: "navigation.challenges",
+    Course: "navigation.courses",
+    "Course added to Continue Learning": "progress.activity.courseAdded",
+    "Lesson completed": "progress.activity.lessonCompleted",
+    "for completing a lesson": "progress.activity.forCompletingLesson",
+  };
+
+  if (!keys[type]) {
+    return type;
+  }
+
+  return <TranslatedText fallback={type} translationKey={keys[type]} />;
+}
+
+function translateRelativeTime(time: string) {
+  if (time === "Just now") {
+    return <TranslatedText fallback={time} translationKey="progress.time.justNow" />;
+  }
+
+  if (time === "Yesterday") {
+    return <TranslatedText fallback={time} translationKey="progress.time.yesterday" />;
+  }
+
+  const minutes = time.match(/^(\d+)m ago$/)?.[1];
+
+  if (minutes) {
+    return (
+      <TranslatedText
+        fallback={time}
+        translationKey="progress.time.minutesAgo"
+        values={{ count: minutes }}
+      />
+    );
+  }
+
+  const hours = time.match(/^(\d+)h ago$/)?.[1];
+
+  if (hours) {
+    return (
+      <TranslatedText
+        fallback={time}
+        translationKey="progress.time.hoursAgo"
+        values={{ count: hours }}
+      />
+    );
+  }
+
+  const days = time.match(/^(\d+)d ago$/)?.[1];
+
+  if (days) {
+    return (
+      <TranslatedText
+        fallback={time}
+        translationKey="progress.time.daysAgo"
+        values={{ count: days }}
+      />
+    );
+  }
+
+  return time;
 }

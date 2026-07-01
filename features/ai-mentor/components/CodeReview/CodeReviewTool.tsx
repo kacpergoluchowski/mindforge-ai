@@ -39,7 +39,7 @@ const initialState: CodeReviewState = {};
 
 export default function CodeReviewTool() {
   const [state, formAction] = useActionState(reviewCodeAction, initialState);
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const result = state.result;
   const [mode, setMode] = useState<CodeReviewMode>("single-file");
   const activeResult = result?.mode === mode ? result : undefined;
@@ -138,6 +138,7 @@ export default function CodeReviewTool() {
             className="min-w-0 overflow-hidden rounded-3xl border border-white/10 bg-[#111a2d]/80"
           >
             <input type="hidden" name="mode" value={mode} />
+            <input type="hidden" name="locale" value={locale} />
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-slate-950/20 px-5 py-4">
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-300">

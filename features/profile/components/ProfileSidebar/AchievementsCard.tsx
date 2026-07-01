@@ -1,5 +1,7 @@
 import { Bot, CheckCircle2, Code2, Flame, Rocket, Trophy } from "lucide-react";
 
+import LocalizedDate from "@/components/shared/LocalizedDate";
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { CurrentProfileAchievement } from "../../types/profile.types";
 
 type AchievementsCardProps = {
@@ -20,13 +22,18 @@ export default function AchievementsCard({
   return (
     <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">Achievements</h2>
+        <h2 className="text-xl font-semibold text-white">
+          <TranslatedText
+            fallback="Achievements"
+            translationKey="profile.achievements"
+          />
+        </h2>
 
         <button
           type="button"
           className="text-sm text-violet-400 transition hover:text-violet-300"
         >
-          View all
+          <TranslatedText fallback="View all" translationKey="common.viewAll" />
         </button>
       </div>
 
@@ -54,7 +61,10 @@ export default function AchievementsCard({
                   </p>
                 )}
                 <p className="mt-2 text-xs text-slate-500">
-                  {new Date(achievement.unlockedAt).toLocaleDateString("en")}
+                  <LocalizedDate
+                    date={achievement.unlockedAt}
+                    options={{ day: "numeric", month: "short", year: "numeric" }}
+                  />
                 </p>
               </div>
 
@@ -65,7 +75,10 @@ export default function AchievementsCard({
 
         {achievements.length === 0 && (
           <p className="text-sm text-slate-400">
-            Complete learning goals to unlock achievements.
+            <TranslatedText
+              fallback="Complete learning goals to unlock achievements."
+              translationKey="profile.emptyAchievements"
+            />
           </p>
         )}
       </div>

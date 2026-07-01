@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import type {
   CodeReviewLanguage,
+  CodeReviewLocale,
   CodeReviewMode,
   CodeReviewState,
 } from "../types/code-review.types";
@@ -41,6 +42,7 @@ export async function reviewCodeAction(
   const mode = getCodeReviewMode(String(formData.get("mode") ?? ""));
   const code = String(formData.get("code") ?? "").trim();
   const language = getCodeReviewLanguage(String(formData.get("language") ?? ""));
+  const locale = getCodeReviewLocale(String(formData.get("locale") ?? ""));
 
   if (!code) {
     return {
@@ -66,10 +68,11 @@ export async function reviewCodeAction(
   try {
     const result =
       mode === "project"
-        ? await reviewProject({ project: code })
+        ? await reviewProject({ locale, project: code })
         : await reviewCode({
             code,
             language,
+            locale,
           });
 
     return {
@@ -90,4 +93,8 @@ function getCodeReviewLanguage(value: string): CodeReviewLanguage {
   return codeReviewLanguages.includes(value as CodeReviewLanguage)
     ? (value as CodeReviewLanguage)
     : "javascript";
+}
+
+function getCodeReviewLocale(value: string): CodeReviewLocale {
+  return value === "pl" ? "pl" : "en";
 }

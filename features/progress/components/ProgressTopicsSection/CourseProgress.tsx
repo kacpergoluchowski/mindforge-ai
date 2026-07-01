@@ -1,3 +1,4 @@
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { CourseProgressItem } from "../../types/progress.types";
 
 type CourseProgressProps = {
@@ -8,9 +9,17 @@ export default function CourseProgress({ courses }: CourseProgressProps) {
   return (
     <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-white">Course Progress</h2>
+        <h2 className="text-xl font-semibold text-white">
+          <TranslatedText
+            fallback="Course Progress"
+            translationKey="progress.courseProgress"
+          />
+        </h2>
         <p className="mt-1 text-sm text-slate-400">
-          Active courses connected with your lesson progress.
+          <TranslatedText
+            fallback="Active courses connected with your lesson progress."
+            translationKey="progress.courseProgressDescription"
+          />
         </p>
       </div>
 
@@ -25,18 +34,29 @@ export default function CourseProgress({ courses }: CourseProgressProps) {
                 <div>
                   <h3 className="font-semibold text-white">{course.title}</h3>
                   <p className="mt-1 text-sm text-slate-400">
-                    {course.category} / {course.lessons} lessons / {course.duration}
+                    {course.category} /{" "}
+                    <TranslatedText
+                      fallback="{count} lessons"
+                      translationKey="progress.lessonsCount"
+                      values={{ count: course.lessons }}
+                    />{" "}
+                    / {course.duration}
                   </p>
                 </div>
 
                 <span className="rounded-full bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
-                  {course.status}
+                  <TranslatedText
+                    fallback={course.status}
+                    translationKey={getCourseStatusTranslationKey(course.status)}
+                  />
                 </span>
               </div>
 
               <div className="mt-4">
                 <div className="mb-2 flex items-center justify-between text-sm">
-                  <span className="text-slate-400">Progress</span>
+                  <span className="text-slate-400">
+                    <TranslatedText fallback="Progress" translationKey="learningPaths.progress" />
+                  </span>
                   <span className="font-medium text-white">{course.progress}%</span>
                 </div>
 
@@ -52,9 +72,24 @@ export default function CourseProgress({ courses }: CourseProgressProps) {
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
-          Start a course to track progress here.
+          <TranslatedText
+            fallback="Start a course to track progress here."
+            translationKey="progress.emptyCourseProgress"
+          />
         </div>
       )}
     </section>
   );
+}
+
+function getCourseStatusTranslationKey(status: string) {
+  if (status === "Completed") {
+    return "common.completed";
+  }
+
+  if (status === "In Progress") {
+    return "common.inProgress";
+  }
+
+  return "progress.unknownStatus";
 }

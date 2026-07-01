@@ -2,6 +2,7 @@ import OpenAI from "openai";
 
 import type {
   CodeReviewLanguage,
+  CodeReviewLocale,
   CodeReviewResult,
   ProjectReviewResult,
 } from "../types/code-review.types";
@@ -15,9 +16,11 @@ const openai = new OpenAI({
 export async function reviewCode({
   code,
   language,
+  locale,
 }: {
   code: string;
   language: CodeReviewLanguage;
+  locale: CodeReviewLocale;
 }): Promise<CodeReviewResult> {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error("OpenAI API key is not configured.");
@@ -33,6 +36,7 @@ export async function reviewCode({
       "Score must be from 1 to 10.",
       "Keep issues and suggestions concise.",
       "Improved code should be a cleaned up version of the submitted code, not a different project.",
+      getResponseLanguageInstruction(locale),
     ].join(" "),
     input: [
       {
@@ -51,8 +55,10 @@ export async function reviewCode({
 }
 
 export async function reviewProject({
+  locale,
   project,
 }: {
+  locale: CodeReviewLocale;
   project: string;
 }): Promise<ProjectReviewResult> {
   if (!process.env.OPENAI_API_KEY) {
@@ -69,6 +75,7 @@ export async function reviewProject({
       "Score must be from 1 to 10.",
       "Keep all list items concise and practical.",
       "Do not rewrite the whole project. Return a review report only.",
+      getResponseLanguageInstruction(locale),
     ].join(" "),
     input: [
       {
@@ -83,6 +90,14 @@ export async function reviewProject({
   });
 
   return parseProjectReviewResult(response.output_text);
+}
+
+function getResponseLanguageInstruction(locale: CodeReviewLocale): string {
+  if (locale === "pl") {
+    return "Write all user-facing JSON values in Polish: summary, issues, suggestions, structure, codeQuality, risks, suggestedRefactor and nextSteps. Keep code identifiers unchanged.";
+  }
+
+  return "Write all user-facing JSON values in English.";
 }
 
 function parseCodeReviewResult(value: string): CodeReviewResult {

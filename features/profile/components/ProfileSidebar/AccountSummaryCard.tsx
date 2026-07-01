@@ -1,16 +1,25 @@
 import { CheckCircle2, Crown, ExternalLink } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { CurrentProfile } from "../../types/profile.types";
-import { formatPlan } from "../../utils/profileFormatters";
 
 type AccountSummaryCardProps = {
   profile: CurrentProfile;
 };
 
 const planFeatures = [
-  "Unlimited AI Mentoring",
-  "Advanced Code Reviews",
-  "Priority Support",
+  {
+    fallback: "Unlimited AI Mentoring",
+    translationKey: "profile.planFeatures.unlimitedAiMentoring",
+  },
+  {
+    fallback: "Advanced Code Reviews",
+    translationKey: "profile.planFeatures.advancedCodeReviews",
+  },
+  {
+    fallback: "Priority Support",
+    translationKey: "profile.planFeatures.prioritySupport",
+  },
 ];
 
 export default function AccountSummaryCard({
@@ -22,20 +31,34 @@ export default function AccountSummaryCard({
   return (
     <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
       <h2 className="mb-6 text-xl font-semibold text-white">
-        Account Summary
+        <TranslatedText
+          fallback="Account Summary"
+          translationKey="profile.accountSummary"
+        />
       </h2>
 
       <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-5">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm text-slate-400">Current Plan</p>
+            <p className="text-sm text-slate-400">
+              <TranslatedText
+                fallback="Current Plan"
+                translationKey="profile.currentPlan"
+              />
+            </p>
 
             <h3 className="mt-2 text-3xl font-bold text-white">
-              {formatPlan(profile.plan)}
+              <TranslatedText
+                fallback={formatPlanFallback(profile.plan)}
+                translationKey={getPlanTranslationKey(profile.plan)}
+              />
             </h3>
 
             <p className="mt-2 text-sm text-slate-400">
-              Manage your plan and account benefits
+              <TranslatedText
+                fallback="Manage your plan and account benefits"
+                translationKey="profile.managePlanDescription"
+              />
             </p>
           </div>
 
@@ -47,7 +70,11 @@ export default function AccountSummaryCard({
         <div className="mt-8">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm text-slate-400">
-              Level {profile.level}
+              <TranslatedText
+                fallback="Level {level}"
+                translationKey="profile.stats.level"
+                values={{ level: profile.level }}
+              />
             </span>
 
             <span className="text-sm text-slate-400">
@@ -65,9 +92,14 @@ export default function AccountSummaryCard({
 
         <div className="mt-8 space-y-4">
           {planFeatures.map((feature) => (
-            <div key={feature} className="flex items-center gap-3">
+            <div key={feature.translationKey} className="flex items-center gap-3">
               <CheckCircle2 className="size-5 shrink-0 text-emerald-500" />
-              <span className="text-slate-300">{feature}</span>
+              <span className="text-slate-300">
+                <TranslatedText
+                  fallback={feature.fallback}
+                  translationKey={feature.translationKey}
+                />
+              </span>
             </div>
           ))}
         </div>
@@ -84,10 +116,27 @@ export default function AccountSummaryCard({
           hover:bg-white/5
         "
       >
-        Manage Subscription
+        <TranslatedText
+          fallback="Manage Subscription"
+          translationKey="profile.manageSubscription"
+        />
 
         <ExternalLink className="size-4" />
       </button>
     </section>
   );
+}
+
+function getPlanTranslationKey(plan: string) {
+  const normalizedPlan = plan.toLowerCase();
+
+  if (normalizedPlan === "free") return "profile.plans.free";
+  if (normalizedPlan === "pro") return "profile.plans.pro";
+  if (normalizedPlan === "premium") return "profile.plans.premium";
+
+  return "profile.plans.default";
+}
+
+function formatPlanFallback(plan: string) {
+  return `${plan.charAt(0).toUpperCase()}${plan.slice(1)} Plan`;
 }

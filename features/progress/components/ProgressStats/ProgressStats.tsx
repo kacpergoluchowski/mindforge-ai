@@ -1,6 +1,7 @@
 import { progressStats } from "../../data/progressData";
 import ProgressStatCard from "./ProgressStatCard";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { CurrentProfile } from "@/features/profile/types/profile.types";
 import type { ProgressSummary } from "../../types/progress.types";
 
@@ -13,40 +14,77 @@ export default function ProgressStats({ profile, summary }: ProgressStatsProps) 
   const levelProgress =
     profile.xpGoal > 0 ? Math.min((profile.xp / profile.xpGoal) * 100, 100) : 0;
   const stats = progressStats.map((stat) => {
-    if (stat.title === "Total XP") {
+    if (stat.id === 1) {
       return {
         ...stat,
+        title: (
+          <TranslatedText
+            fallback="Total XP"
+            translationKey="progress.stats.totalXp"
+          />
+        ),
         value: profile.xp.toLocaleString(),
-        subtitle: `+${(summary?.thisWeekXp ?? 0).toLocaleString()} this week`,
+        subtitle: (
+          <TranslatedText
+            fallback="+{xp} this week"
+            translationKey="progress.stats.xpThisWeek"
+            values={{ xp: (summary?.thisWeekXp ?? 0).toLocaleString() }}
+          />
+        ),
       };
     }
 
-    if (stat.title === "Level") {
+    if (stat.id === 2) {
       return {
         ...stat,
+        title: (
+          <TranslatedText fallback="Level" translationKey="dashboard.stats.level" />
+        ),
         value: String(profile.level),
-        subtitle: `${Math.max(profile.xpGoal - profile.xp, 0).toLocaleString()} XP to next level`,
+        subtitle: (
+          <TranslatedText
+            fallback="{xp} XP to next level"
+            translationKey="progress.stats.xpToNextLevel"
+            values={{ xp: Math.max(profile.xpGoal - profile.xp, 0).toLocaleString() }}
+          />
+        ),
         progress: levelProgress,
       };
     }
 
-    if (stat.title === "Streak") {
+    if (stat.id === 3) {
       return {
         ...stat,
-        title: "Lessons",
+        title: (
+          <TranslatedText fallback="Lessons" translationKey="progress.stats.lessons" />
+        ),
         value: String(summary?.completedLessons ?? 0),
-        subtitle: "Completed lessons",
+        subtitle: (
+          <TranslatedText
+            fallback="Completed lessons"
+            translationKey="progress.stats.completedLessons"
+          />
+        ),
       };
     }
 
-    if (stat.title === "Rank") {
+    if (stat.id === 4) {
       return {
         ...stat,
-        title: "Courses",
+        title: (
+          <TranslatedText fallback="Courses" translationKey="progress.stats.courses" />
+        ),
         value: String(summary?.completedCourses ?? 0),
-        subtitle: `${summary?.startedCourses ?? 0} started / ${
-          summary?.completedLessons ?? 0
-        } lessons done`,
+        subtitle: (
+          <TranslatedText
+            fallback="{started} started / {lessons} lessons done"
+            translationKey="progress.stats.coursesSummary"
+            values={{
+              started: summary?.startedCourses ?? 0,
+              lessons: summary?.completedLessons ?? 0,
+            }}
+          />
+        ),
       };
     }
 

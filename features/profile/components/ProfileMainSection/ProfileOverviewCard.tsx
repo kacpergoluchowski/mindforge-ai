@@ -5,12 +5,10 @@ import {
   User,
 } from "lucide-react";
 
+import LocalizedDate from "@/components/shared/LocalizedDate";
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { CurrentProfile } from "../../types/profile.types";
-import {
-  formatJoinedDate,
-  formatPlan,
-  getInitials,
-} from "../../utils/profileFormatters";
+import { getInitials } from "../../utils/profileFormatters";
 
 type ProfileOverviewCardProps = {
   profile: CurrentProfile;
@@ -22,7 +20,10 @@ export default function ProfileOverviewCard({
   return (
     <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
       <h2 className="mb-6 text-xl font-semibold text-white">
-        Profile Overview
+        <TranslatedText
+          fallback="Profile Overview"
+          translationKey="profile.overview"
+        />
       </h2>
 
       <div className="flex flex-col gap-6 lg:flex-row">
@@ -43,29 +44,51 @@ export default function ProfileOverviewCard({
             </h3>
 
             <span className="w-fit rounded-xl bg-violet-500/15 px-3 py-1 text-sm font-medium text-violet-300">
-              {formatPlan(profile.plan)}
+              <TranslatedText
+                fallback={formatPlanFallback(profile.plan)}
+                translationKey={getPlanTranslationKey(profile.plan)}
+              />
             </span>
           </div>
 
           <p className="mt-2 text-lg text-slate-400">
-            {profile.role ?? "Software Engineer"}
+            {profile.role ?? (
+              <TranslatedText
+                fallback="Software Engineer"
+                translationKey="profile.defaultRole"
+              />
+            )}
           </p>
 
           <div className="mt-5 flex flex-wrap gap-6 text-sm text-slate-400">
             <div className="flex items-center gap-2">
               <MapPin className="size-4" />
-              {profile.location ?? "Location not set"}
+              {profile.location ?? (
+                <TranslatedText
+                  fallback="Location not set"
+                  translationKey="profile.locationNotSet"
+                />
+              )}
             </div>
 
             <div className="flex items-center gap-2">
               <Calendar className="size-4" />
-              Joined {formatJoinedDate(profile.createdAt)}
+              <TranslatedText fallback="Joined" translationKey="profile.joined" />{" "}
+              <LocalizedDate
+                date={profile.createdAt}
+                options={{ month: "long", year: "numeric" }}
+              />
             </div>
           </div>
 
           <p className="mt-6 max-w-2xl leading-7 text-slate-300">
             {profile.bio ??
-              "Add a short bio to tell the community about your learning goals."}
+              (
+                <TranslatedText
+                  fallback="Add a short bio to tell the community about your learning goals."
+                  translationKey="profile.emptyBio"
+                />
+              )}
           </p>
 
           <button
@@ -80,10 +103,24 @@ export default function ProfileOverviewCard({
             "
           >
             <Pencil className="size-4" />
-            Edit Profile
+            <TranslatedText fallback="Edit Profile" translationKey="profile.editProfile" />
           </button>
         </div>
       </div>
     </section>
   );
+}
+
+function getPlanTranslationKey(plan: string) {
+  const normalizedPlan = plan.toLowerCase();
+
+  if (normalizedPlan === "free") return "profile.plans.free";
+  if (normalizedPlan === "pro") return "profile.plans.pro";
+  if (normalizedPlan === "premium") return "profile.plans.premium";
+
+  return "profile.plans.default";
+}
+
+function formatPlanFallback(plan: string) {
+  return `${plan.charAt(0).toUpperCase()}${plan.slice(1)} Plan`;
 }

@@ -1,5 +1,6 @@
 import { Atom, Code2, Database, FileCode2, Layers3, Plus } from "lucide-react";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { CurrentProfileSkill } from "../../types/profile.types";
 
 type SkillsAndTechStackProps = {
@@ -21,14 +22,20 @@ export default function SkillsAndTechStack({
     <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-semibold text-white">
-          Skills & Tech Stack
+          <TranslatedText
+            fallback="Skills & Tech Stack"
+            translationKey="profile.skillsTechStack"
+          />
         </h2>
 
         <button
           type="button"
           className="text-sm text-violet-400 transition hover:text-violet-300"
         >
-          Manage Skills
+          <TranslatedText
+            fallback="Manage Skills"
+            translationKey="profile.manageSkills"
+          />
         </button>
       </div>
 
@@ -61,7 +68,12 @@ export default function SkillsAndTechStack({
         })}
 
         {skills.length === 0 && (
-          <p className="text-sm text-slate-400">No skills added yet.</p>
+          <p className="text-sm text-slate-400">
+            <TranslatedText
+              fallback="No skills added yet."
+              translationKey="profile.noSkills"
+            />
+          </p>
         )}
 
         <button
@@ -77,7 +89,7 @@ export default function SkillsAndTechStack({
           "
         >
           <Plus className="size-4" />
-          Add Skill
+          <TranslatedText fallback="Add Skill" translationKey="profile.addSkill" />
         </button>
       </div>
     </section>
