@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -5,6 +6,7 @@ type PageHeaderProps = {
   title: ReactNode;
   subtitle: ReactNode;
   action?: {
+    href?: string;
     label: ReactNode;
     icon?: LucideIcon;
     rightIcon?: LucideIcon;
@@ -28,7 +30,26 @@ export default function PageHeader({ title, subtitle, action }: PageHeaderProps)
         </p>
       </div>
 
-      {action && (
+      {action?.href ? (
+        <Link
+          href={action.href}
+          className="
+            flex items-center justify-center gap-3
+            rounded-2xl
+            bg-violet-500
+            px-6 py-3 lg:py-4
+            font-medium text-white
+            transition
+            hover:bg-violet-600
+          "
+        >
+          {Icon && <Icon className="size-5" />}
+
+          <span>{action.label}</span>
+
+          {RightIcon && <RightIcon className="size-4" />}
+        </Link>
+      ) : action ? (
         <button
           type="button"
           onClick={action.onClick}
@@ -48,7 +69,7 @@ export default function PageHeader({ title, subtitle, action }: PageHeaderProps)
 
           {RightIcon && <RightIcon className="size-4" />}
         </button>
-      )}
+      ) : null}
     </section>
   );
 }

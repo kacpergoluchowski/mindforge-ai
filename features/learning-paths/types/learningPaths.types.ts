@@ -51,3 +51,36 @@ export type LearningPathDetails = {
   started: boolean;
   steps: RoadmapStep[];
 };
+
+export type RoadmapSuggestion = {
+  id: string;
+  title: string;
+  description: string;
+  level: string;
+  focus: string;
+};
+
+export type RoadmapSuggestionState = {
+  error?: string;
+  normalizedGoal?: string;
+  suggestions?: RoadmapSuggestion[];
+};
+
+export type GeneratedRoadmapPreview = {
+  title: string;
+  description: string;
+  level: string;
+  estimatedWeeks: string;
+  milestones: string[];
+  modules: {
+    title: string;
+    description: string;
+    topics: string[];
+  }[];
+};
+
+export type RoadmapPreviewState = {
+  error?: string;
+  preview?: GeneratedRoadmapPreview;
+  suggestionId?: string;
+};

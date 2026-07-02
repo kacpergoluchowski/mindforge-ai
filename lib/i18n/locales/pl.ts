@@ -358,6 +358,23 @@ export const pl = {
     openCourse: "Otwórz kurs",
     stepNumber: "Krok {number}",
     current: "Aktualny",
+    generate: {
+      badge: "Generator roadmap AI",
+      findSuggestions: "Znajdź sugestie",
+      findingSuggestions: "Szukam sugestii...",
+      generateAgain: "Wygeneruj ponownie",
+      generatePreview: "Wygeneruj podgląd",
+      generatingPreview: "Generuję podgląd...",
+      goal: "Cel",
+      previewTitle: "Podgląd roadmapy",
+      saveRoadmap: "Zapisz roadmapę",
+      selectedSuggestion: "Wybrana ścieżka",
+      submit: "Wygeneruj roadmapę",
+      suggestionsTitle: "Wybierz najlepsze dopasowanie",
+      subtitle:
+        "Wybierz cel. AI użyje go do stworzenia personalizowanej roadmapy.",
+      title: "Wygeneruj swoją roadmapę nauki",
+    },
   },
 
   challenges: {
