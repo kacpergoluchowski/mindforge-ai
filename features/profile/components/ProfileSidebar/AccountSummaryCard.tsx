@@ -1,6 +1,7 @@
 import { CheckCircle2, Crown, ExternalLink } from "lucide-react";
 
 import TranslatedText from "@/components/shared/TranslatedText";
+import { getLevelingProgress, XP_PER_LEVEL } from "@/lib/learning/leveling";
 import type { CurrentProfile } from "../../types/profile.types";
 
 type AccountSummaryCardProps = {
@@ -25,8 +26,7 @@ const planFeatures = [
 export default function AccountSummaryCard({
   profile,
 }: AccountSummaryCardProps) {
-  const xpProgress =
-    profile.xpGoal > 0 ? Math.min((profile.xp / profile.xpGoal) * 100, 100) : 0;
+  const leveling = getLevelingProgress(profile.xp);
 
   return (
     <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
@@ -78,14 +78,15 @@ export default function AccountSummaryCard({
             </span>
 
             <span className="text-sm text-slate-400">
-              {profile.xp.toLocaleString()} / {profile.xpGoal.toLocaleString()} XP
+              {leveling.xpInCurrentLevel.toLocaleString()} /{" "}
+              {XP_PER_LEVEL.toLocaleString()} XP
             </span>
           </div>
 
           <div className="h-2 overflow-hidden rounded-full bg-slate-800">
             <div
               className="h-full rounded-full bg-violet-500"
-              style={{ width: `${xpProgress}%` }}
+              style={{ width: `${leveling.progressPercent}%` }}
             />
           </div>
         </div>

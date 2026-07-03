@@ -2,6 +2,7 @@ import { profileStats } from "../../data/profileData";
 import ProfileStatCard from "./ProfileStatCard";
 
 import TranslatedText from "@/components/shared/TranslatedText";
+import { getLevelingProgress } from "@/lib/learning/leveling";
 import type { CurrentProfile } from "../../types/profile.types";
 
 type ProfileStatsProps = {
@@ -9,8 +10,7 @@ type ProfileStatsProps = {
 };
 
 export default function ProfileStats({ profile }: ProfileStatsProps) {
-  const xpProgress =
-    profile.xpGoal > 0 ? Math.min((profile.xp / profile.xpGoal) * 100, 100) : 0;
+  const leveling = getLevelingProgress(profile.xp);
   const stats = profileStats.map((stat) => {
     if (stat.subtitle === "Advanced Learner") {
       return {
@@ -29,7 +29,7 @@ export default function ProfileStats({ profile }: ProfileStatsProps) {
             values={{ xp: profile.xp.toLocaleString() }}
           />
         ),
-        progress: xpProgress,
+        progress: leveling.progressPercent,
       };
     }
 

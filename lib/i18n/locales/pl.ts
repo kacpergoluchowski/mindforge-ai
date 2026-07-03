@@ -217,6 +217,18 @@ export const pl = {
     instructor: "MindForge AI",
     noCourses: "Brak kursów do wyświetlenia.",
     noCoursesInCategory: "Brak kursów w tej kategorii.",
+    generate: {
+      badge: "Generator kursów AI",
+      generating: "Generowanie kursu...",
+      goal: "Cel kursu",
+      outputDescription:
+        "Pełny kurs z 5-7 modułami, lekcjami, zadaniami praktycznymi, quizami, XP i normalnym postępem kursu.",
+      outputTitle: "Co zostanie utworzone",
+      submit: "Wygeneruj kurs",
+      subtitle:
+        "Wpisz cel. AI utworzy kompletny kurs z modułami, lekcjami, praktyką i quizami.",
+      title: "Wygeneruj nowy kurs",
+    },
     aiBanner: {
       action: "Odkryj z AI",
       badge: "Nowość",
@@ -356,6 +368,8 @@ export const pl = {
     notStarted: "Nierozpoczęta",
     noSteps: "Ta ścieżka nie ma jeszcze kroków.",
     openCourse: "Otwórz kurs",
+    generateCourse: "Wygeneruj kurs",
+    generatingCourse: "Generowanie kursu...",
     stepNumber: "Krok {number}",
     current: "Aktualny",
     generate: {

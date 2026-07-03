@@ -25,3 +25,19 @@ export type MobileSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
 };
+
+export type GlobalSearchItemType =
+  | "page"
+  | "course"
+  | "learningPath"
+  | "challenge"
+  | "setting";
+
+export type GlobalSearchItem = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  type: GlobalSearchItemType;
+  keywords: string[];
+};

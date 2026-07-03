@@ -3,10 +3,13 @@ import clsx from "clsx";
 import { ArrowRight, Check, Lock, Play } from "lucide-react";
 
 import TranslatedText from "@/components/shared/TranslatedText";
+import { generateCourseForRoadmapStep } from "../../actions/roadmapCourseActions";
 import type { RoadmapStep } from "../../types/learningPaths.types";
+import GenerateStepCourseButton from "./GenerateStepCourseButton";
 
 type LearningPathTreeStepProps = {
   index: number;
+  pathSlug: string;
   step: RoadmapStep;
 };
 
@@ -39,11 +42,13 @@ type StepStyle = {
 
 export default function LearningPathTreeStep({
   index,
+  pathSlug,
   step,
 }: LearningPathTreeStepProps) {
   const styles = statusStyles[step.status];
   const isRight = index % 2 === 1;
   const canOpenCourse = step.status !== "locked" && step.courseSlug;
+  const canGenerateCourse = step.status === "current" && !step.courseSlug;
 
   return (
     <li
@@ -98,6 +103,14 @@ export default function LearningPathTreeStep({
               />
               <ArrowRight className="size-4" />
             </Link>
+          ) : null}
+
+          {canGenerateCourse ? (
+            <form action={generateCourseForRoadmapStep} className="shrink-0">
+              <input type="hidden" name="stepId" value={String(step.id)} />
+              <input type="hidden" name="pathSlug" value={pathSlug} />
+              <GenerateStepCourseButton />
+            </form>
           ) : null}
         </div>
 

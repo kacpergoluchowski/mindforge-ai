@@ -1,23 +1,18 @@
 import Logo from "@/components/layout/Logo";
 import Link from "next/link";
 
-const navigationItems = [
-  { label: "Features", href: "#features" },
-  { label: "Courses", href: "#courses" },
-  { label: "AI Mentor", href: "#mentor" },
-  { label: "Pricing", href: "#pricing" },
-];
+import { landingNavigationItems } from "../../data/landingPageData";
 
 export default function LandingHeader() {
   return (
-    <header className="relative z-50">
-      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 py-8">
+    <header className="sticky top-0 z-50 border-b border-white/5 bg-[#020617]/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="w-[130px] sm:w-auto [&_img]:w-full">
           <Logo />
         </Link>
 
-        <nav className="hidden items-center gap-10 lg:flex">
-          {navigationItems.map((item) => (
+        <nav className="hidden items-center gap-8 lg:flex">
+          {landingNavigationItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
@@ -38,16 +33,7 @@ export default function LandingHeader() {
 
           <Link
             href="/register"
-            className="
-                rounded-xl
-                border border-violet-400/30
-                bg-violet-500/10
-                px-3 py-2.5 sm:px-5
-                text-sm font-semibold text-violet-200
-                transition
-                hover:bg-violet-500/20
-                hover:text-white
-              "
+            className="rounded-xl border border-violet-400/40 bg-violet-500 px-3 py-2.5 text-sm font-semibold text-white shadow-[0_0_24px_rgba(139,92,246,0.45)] transition hover:bg-violet-400 sm:px-5"
           >
             <span className="sm:hidden">Start Free</span>
             <span className="hidden sm:inline">Start Learning Free</span>

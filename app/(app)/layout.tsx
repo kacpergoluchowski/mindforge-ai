@@ -2,6 +2,7 @@ import Header from "@/components/layout/Header";
 import MobileHeader from "@/components/layout/MobileHeader";
 import MobileNavbar from "@/components/layout/MobileNavbar";
 import Sidebar from "@/components/layout/Sidebar";
+import { getGlobalSearchItems } from "@/components/layout/api/getGlobalSearchItems";
 import { getNotifications } from "@/features/notifications/api/getNotifications";
 import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
 import { redirect } from "next/navigation";
@@ -11,9 +12,10 @@ type AppShellProps = {
 };
 
 export default async function AppShell({ children }: AppShellProps) {
-  const [profile, notifications] = await Promise.all([
+  const [profile, notifications, searchItems] = await Promise.all([
     getCurrentProfile(),
     getNotifications(),
+    getGlobalSearchItems(),
   ]);
 
   if (!profile) redirect("/login");
@@ -23,8 +25,12 @@ export default async function AppShell({ children }: AppShellProps) {
       <Sidebar profile={profile} />
 
       <div className="min-h-screen lg:ml-72">
-        <MobileHeader profile={profile} notifications={notifications} />
-        <Header notifications={notifications} />
+        <MobileHeader
+          profile={profile}
+          searchItems={searchItems}
+          notifications={notifications}
+        />
+        <Header searchItems={searchItems} notifications={notifications} />
 
         <main className="p-5 lg:px-8 lg:pb-0">
           {children}

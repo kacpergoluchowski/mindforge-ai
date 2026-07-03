@@ -84,3 +84,38 @@ export type RoadmapPreviewState = {
   preview?: GeneratedRoadmapPreview;
   suggestionId?: string;
 };
+
+export type GeneratedRoadmapCourse = {
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  level: string;
+  durationMinutes: number;
+  xpReward: number;
+  modules: {
+    title: string;
+    description: string;
+    lessons: {
+      title: string;
+      slug: string;
+      type: "lesson" | "exercise" | "project";
+      summary: string;
+      content: string;
+      objective: string;
+      checklist: string[];
+      durationMinutes: number;
+      xpReward: number;
+      quizQuestions: {
+        id: string;
+        question: string;
+        options: {
+          id: string;
+          text: string;
+        }[];
+        correctOptionId: string;
+        explanation?: string;
+      }[];
+    }[];
+  }[];
+};

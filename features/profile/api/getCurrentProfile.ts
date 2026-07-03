@@ -1,5 +1,6 @@
 import { cache } from "react";
 
+import { getLevelingProgress } from "@/lib/learning/leveling";
 import { createClient } from "@/lib/supabase/server";
 
 import type { User } from "@supabase/supabase-js";
@@ -83,6 +84,7 @@ function normalizeProfile(user: User, row: ProfileRow | null): CurrentProfile {
     lastLearningDate: row?.last_learning_date ?? null,
     streakDays: row?.streak_days ?? 0,
   });
+  const leveling = getLevelingProgress(row?.xp ?? 0);
 
   return {
     id: user.id,
@@ -94,9 +96,9 @@ function normalizeProfile(user: User, row: ProfileRow | null): CurrentProfile {
     location: row?.location ?? null,
     bio: row?.bio ?? null,
     avatarUrl: row?.avatar_url ?? metadata.avatar_url ?? null,
-    level: row?.level ?? 1,
-    xp: row?.xp ?? 0,
-    xpGoal: row?.xp_goal ?? 1000,
+    level: leveling.level,
+    xp: leveling.totalXp,
+    xpGoal: leveling.nextLevelXp,
     streakDays,
     plan: row?.plan ?? "free",
     createdAt: row?.created_at ?? user.created_at,

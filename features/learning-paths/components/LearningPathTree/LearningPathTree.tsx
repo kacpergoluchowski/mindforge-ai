@@ -114,6 +114,7 @@ export default function LearningPathTree({ path }: LearningPathTreeProps) {
               <LearningPathTreeStep
                 key={step.id}
                 index={index}
+                pathSlug={path.slug}
                 step={step}
               />
             ))}

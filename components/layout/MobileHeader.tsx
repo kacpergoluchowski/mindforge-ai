@@ -2,20 +2,24 @@
 
 import { useState } from "react";
 import { Menu } from "lucide-react";
+import GlobalSearch from "./GlobalSearch";
 import Logo from "./Logo";
 import MobileSidebar from "./MobileSidebar";
 import NotificationsDropdown from "./NotificationsDropdown";
 
+import type { GlobalSearchItem } from "./types/layoutTypes.types";
 import type { NotificationItem } from "@/features/notifications/types/notification.types";
 import type { CurrentProfile } from "@/features/profile/types/profile.types";
 
 type MobileHeaderProps = {
   profile: CurrentProfile;
+  searchItems: GlobalSearchItem[];
   notifications: NotificationItem[];
 };
 
 export default function MobileHeader({
   profile,
+  searchItems,
   notifications,
 }: MobileHeaderProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,7 +37,10 @@ export default function MobileHeader({
 
         <Logo />
 
-        <NotificationsDropdown compact notifications={notifications} />
+        <div className="flex items-center gap-2">
+          <GlobalSearch compact items={searchItems} />
+          <NotificationsDropdown compact notifications={notifications} />
+        </div>
       </header>
 
       <MobileSidebar

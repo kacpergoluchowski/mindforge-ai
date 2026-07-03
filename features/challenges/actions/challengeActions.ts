@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { generateAiMentorResponse } from "@/features/ai-mentor/api/generateAiMentorResponse";
+import { getNextLevelingProgress } from "@/lib/learning/leveling";
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_CHALLENGE_SOLUTION_LENGTH = 16000;
@@ -294,6 +295,10 @@ export async function completeChallenge(formData: FormData) {
     .select("xp, streak_days, last_learning_date")
     .eq("id", user.id)
     .maybeSingle();
+  const leveling = getNextLevelingProgress(
+    profile?.xp ?? 0,
+    challenge.xp_reward
+  );
   const streak = getNextLearningStreak({
     lastLearningDate: profile?.last_learning_date ?? null,
     streakDays: profile?.streak_days ?? 0,
@@ -302,7 +307,9 @@ export async function completeChallenge(formData: FormData) {
   await supabase
     .from("profiles")
     .update({
-      xp: (profile?.xp ?? 0) + challenge.xp_reward,
+      xp: leveling.totalXp,
+      level: leveling.level,
+      xp_goal: leveling.nextLevelXp,
       streak_days: streak.days,
       last_learning_date: streak.date,
       updated_at: now,

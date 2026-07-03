@@ -1,3 +1,4 @@
+import { getLevelingProgress } from "@/lib/learning/leveling";
 import { createClient } from "@/lib/supabase/server";
 
 type ProfileSkillRelation = {
@@ -348,14 +349,16 @@ function getProfileContext(profile: ProfileRow | null): string {
   const skills = (profile.profile_skills ?? [])
     .map((item) => getRelation(item.skills)?.name)
     .filter(Boolean);
+  const leveling = getLevelingProgress(profile.xp ?? 0);
 
   return [
     "Profile:",
     `Name: ${profile.full_name ?? profile.username ?? "unknown"}`,
     `Role: ${profile.role ?? "not set"}`,
     `Plan: ${profile.plan ?? "free"}`,
-    `Level: ${profile.level ?? 1}`,
-    `XP: ${profile.xp ?? 0}/${profile.xp_goal ?? 1000}`,
+    `Level: ${leveling.level}`,
+    `XP: ${leveling.totalXp}/${leveling.nextLevelXp}`,
+    `XP to next level: ${leveling.xpToNextLevel}`,
     `Current streak: ${getCurrentStreakDays(profile)} days`,
     `Last learning date: ${profile.last_learning_date ?? "none"}`,
     `Skills: ${skills.length ? skills.join(", ") : "none added yet"}`,
