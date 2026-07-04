@@ -11,7 +11,7 @@ export default function RegisterIntro() {
   return (
     <div>
       <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300">
-        <Sparkles className="size-4" />
+        <Sparkles aria-hidden="true" className="size-4" />
         {t("auth.badge", "AI-Powered Learning Platform")}
       </div>
 
@@ -31,7 +31,7 @@ export default function RegisterIntro() {
 
       <RegisterFeatures />
       <div className="mt-8 flex items-center gap-3 text-sm text-slate-400">
-        <ShieldCheck className="size-4 text-violet-300" />
+        <ShieldCheck aria-hidden="true" className="size-4 text-violet-300" />
         <span>
           {t("auth.dataPrefix", "Your data is")}
           <span className="text-violet-300">

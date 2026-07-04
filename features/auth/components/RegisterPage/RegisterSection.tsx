@@ -7,7 +7,9 @@ export default function RegisterSection() {
       <div className="hidden lg:block">
         <RegisterIntro />
       </div>
-      <RegisterForm />
+      <div className="w-full lg:pt-4">
+        <RegisterForm />
+      </div>
     </section>
   );
 }

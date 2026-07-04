@@ -1,21 +1,29 @@
 import { testimonials } from "../../data/landingPageData";
+import AnimatedSection from "./AnimatedSection";
 import LandingSectionHeader from "./LandingSectionHeader";
 
+// Social proof buduje zaufanie przed sekcją cenową.
+// Każda opinia jest <article>, bo jest samodzielnym fragmentem treści.
 export default function TestimonialsSection() {
   return (
-    <section className="px-6 py-12 lg:py-20">
+    <section aria-labelledby="testimonials-title" className="px-6 py-12 lg:py-20">
       <div className="mx-auto max-w-7xl">
-        <LandingSectionHeader
-          align="center"
-          eyebrow="Loved by developers"
-          title="See what our learners say"
-        />
+        <AnimatedSection>
+          <LandingSectionHeader
+            align="center"
+            eyebrow="Loved by developers"
+            title="See what our learners say"
+            titleId="testimonials-title"
+          />
+        </AnimatedSection>
 
         <div className="mt-8 grid gap-6 md:grid-cols-3 lg:mt-12">
-          {testimonials.map((testimonial) => (
-            <article
+          {testimonials.map((testimonial, index) => (
+            <AnimatedSection
+              as="article"
               key={testimonial.name}
               className="rounded-3xl border border-white/10 bg-[#0d1424] p-7"
+              delay={index * 0.08}
             >
               <p className="text-4xl font-bold text-violet-400">&ldquo;</p>
               <p className="mt-4 min-h-28 text-sm leading-7 text-slate-300">
@@ -31,7 +39,7 @@ export default function TestimonialsSection() {
                   <p className="text-sm text-slate-500">{testimonial.role}</p>
                 </div>
               </div>
-            </article>
+            </AnimatedSection>
           ))}
         </div>
       </div>

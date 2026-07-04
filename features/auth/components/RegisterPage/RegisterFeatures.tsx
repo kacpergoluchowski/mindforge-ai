@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Rocket,
-  TrendingUp,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { Rocket, TrendingUp, Trophy, Users } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 
 const features = [
@@ -53,15 +48,8 @@ export default function RegisterFeatures() {
 
         return (
           <div key={feature.title} className="flex items-center gap-4">
-            <div
-              className="
-                flex size-14 shrink-0 items-center justify-center
-                rounded-lg
-                border border-white/10
-                bg-white/[0.03]
-              "
-            >
-              <Icon className="size-6 text-fuchsia-400" />
+            <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+              <Icon aria-hidden="true" className="size-6 text-violet-300" />
             </div>
 
             <div>

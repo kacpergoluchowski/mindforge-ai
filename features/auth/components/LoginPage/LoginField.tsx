@@ -1,4 +1,7 @@
-import { EyeOff } from "lucide-react";
+"use client";
+
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 import type { LucideIcon } from "lucide-react";
 
@@ -19,27 +22,46 @@ export default function LoginField({
   icon: Icon,
   autoComplete,
 }: LoginFieldProps) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const isPassword = type === "password";
+  const inputType = isPassword && isPasswordVisible ? "text" : type;
+
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-sm text-white">
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-white">
         {label}
       </label>
 
       <div className="relative">
-        <Icon className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-500" />
+        <Icon
+          aria-hidden="true"
+          className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-500"
+        />
 
         <input
           id={id}
           name={id}
-          type={type}
+          type={inputType}
           required
           autoComplete={autoComplete}
           placeholder={placeholder}
-          className="h-16 w-full rounded-lg border border-slate-700/70 bg-slate-950/25 pl-12 pr-12 text-white outline-none transition placeholder:text-slate-500 focus:border-violet-400 focus:ring-2 focus:ring-violet-500/10"
+          className="h-14 w-full rounded-2xl border border-slate-700/70 bg-slate-950/35 pl-12 pr-12 text-white outline-none transition placeholder:text-slate-500 hover:border-slate-600 focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
         />
 
-        {type === "password" && (
-          <EyeOff className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-slate-500" />
+        {isPassword && (
+          <button
+            type="button"
+            title={isPasswordVisible ? "Hide password" : "Show password"}
+            aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+            onClick={() => setIsPasswordVisible((visible) => !visible)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-md text-slate-500 transition hover:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30"
+          >
+            {isPasswordVisible ? (
+              <EyeOff aria-hidden="true" className="size-5" />
+            ) : (
+              <Eye aria-hidden="true" className="size-5" />
+            )}
+          </button>
         )}
       </div>
     </div>

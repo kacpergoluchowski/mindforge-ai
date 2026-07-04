@@ -41,8 +41,8 @@ export default function LoginFeatures() {
     <div className="mt-8 flex flex-col gap-4">
       {features.map(({ title, titleKey, description, descriptionKey, icon: Icon }) => (
         <div key={title} className="flex items-center gap-4">
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03]">
-            <Icon className="size-6 text-fuchsia-400" />
+          <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+            <Icon aria-hidden="true" className="size-6 text-violet-300" />
           </div>
 
           <div>

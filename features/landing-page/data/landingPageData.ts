@@ -15,6 +15,8 @@ import {
 
 import type { LucideIcon } from "lucide-react";
 
+// Dane landing page są trzymane poza komponentami.
+// Dzięki temu komponenty odpowiadają za wygląd, a teksty/listy można edytować w jednym miejscu.
 export type LandingIconItem = {
   description: string;
   icon: LucideIcon;
@@ -35,6 +37,7 @@ export type LandingPricingPlan = {
   price: string;
 };
 
+// Nawigacja używa anchorów do sekcji landing page.
 export const landingNavigationItems = [
   { label: "Features", href: "#features" },
   { label: "Courses", href: "#courses" },
@@ -45,6 +48,7 @@ export const landingNavigationItems = [
 
 export const heroSocialProofAvatars = ["KG", "AI", "JS", "TS"];
 
+// Pozycje ikon są klasami Tailwinda, bo to element czysto wizualny hero.
 export const heroFloatingIcons = [
   { className: "left-4 top-24", icon: Code2 },
   { className: "right-8 top-20", icon: GraduationCap },
@@ -142,10 +146,29 @@ export const courses: LandingCourse[] = [
   },
 ];
 
+// Demo AI korzysta z krótkich gotowych promptów, żeby landing nie zależał od API.
 export const mentorPrompts = [
   "Explain CSS Grid in simple words",
   "Review my React component",
   "Help me plan frontend roadmap",
+];
+
+export const aiMentorDemoMessages = [
+  {
+    question: "How do closures work?",
+    answer:
+      "A closure is when a function remembers variables from the place where it was created, even after that outer function has finished running.",
+  },
+  {
+    question: "Why is my React state not updating immediately?",
+    answer:
+      "React batches state updates. Treat state as a snapshot and use the updater function when the next value depends on the previous one.",
+  },
+  {
+    question: "How should I start learning frontend?",
+    answer:
+      "Start with semantic HTML and CSS layouts, then learn JavaScript fundamentals before moving into React and real projects.",
+  },
 ];
 
 export const testimonials = [
@@ -211,6 +234,7 @@ export const pricingPlans: LandingPricingPlan[] = [
   },
 ];
 
+// Footer korzysta z jednej struktury danych, żeby łatwo dodać lub usunąć grupy linków.
 export const footerGroups = [
   {
     title: "Platform",

@@ -4,12 +4,16 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 type LandingCtaLinkProps = {
+  // ariaLabel przydaje się, gdy tekst CTA jest krótki albo marketingowy.
+  ariaLabel?: string;
   children: ReactNode;
   href: string;
   variant?: "primary" | "secondary";
 };
 
+// Jeden komponent CTA zapobiega rozjazdom w stylach głównych przycisków landing page.
 export default function LandingCtaLink({
+  ariaLabel,
   children,
   href,
   variant = "primary",
@@ -22,10 +26,11 @@ export default function LandingCtaLink({
   return (
     <Link
       href={href}
+      aria-label={ariaLabel}
       className={`inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold transition ${className}`}
     >
       {children}
-      <ArrowRight className="size-4" />
+      <ArrowRight aria-hidden="true" className="size-4" />
     </Link>
   );
 }

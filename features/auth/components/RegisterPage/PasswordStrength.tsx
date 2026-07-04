@@ -47,7 +47,14 @@ export default function PasswordStrength({ password }: PasswordStrengthProps) {
         <span>{label}</span>
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
+      <div
+        aria-label={`${t("auth.register.passwordStrength", "Password strength")}: ${label}`}
+        aria-valuemax={segmentCount}
+        aria-valuemin={1}
+        aria-valuenow={score}
+        className="grid grid-cols-7 gap-1"
+        role="meter"
+      >
         {Array.from({ length: segmentCount }, (_, index) => (
           <span
             key={index}

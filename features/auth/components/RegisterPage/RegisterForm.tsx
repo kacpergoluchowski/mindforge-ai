@@ -1,6 +1,15 @@
 "use client";
 
-import { AtSign, Lock, Mail, ShieldCheck, User } from "lucide-react";
+import {
+  AlertCircle,
+  AtSign,
+  CheckCircle2,
+  Loader2,
+  Lock,
+  Mail,
+  ShieldCheck,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -141,7 +150,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="rounded-lg border border-violet-400/45 bg-[linear-gradient(180deg,rgba(35,25,68,0.72),rgba(5,12,25,0.88)_24%)] p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8 lg:p-10">
+    <div className="rounded-[2rem] border border-violet-400/35 bg-[linear-gradient(180deg,rgba(35,25,68,0.72),rgba(5,12,25,0.9)_24%)] p-6 shadow-[0_0_80px_rgba(15,23,42,0.65)] backdrop-blur-xl sm:p-8 lg:p-10">
       <div className="lg:hidden">
         <RegisterIntro />
       </div>
@@ -151,7 +160,10 @@ export default function RegisterForm() {
           {t("auth.register.formTitle", "Create your account")}
         </h2>
         <p className="mt-2 text-slate-400">
-          {t("auth.register.formSubtitle", "Fill in the details below to get started")}
+          {t(
+            "auth.register.formSubtitle",
+            "Fill in the details below to get started"
+          )}
         </p>
       </div>
 
@@ -238,47 +250,69 @@ export default function RegisterForm() {
             name="terms"
             type="checkbox"
             required
-            className="mt-1 size-4 shrink-0 accent-violet-500"
+            className="mt-1 size-4 shrink-0 rounded border-slate-700 bg-slate-950 accent-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/30"
           />
           <span>
             {t("auth.register.termsPrefix", "I agree to the")}{" "}
-            <Link href="/terms" className="text-violet-400 hover:text-violet-300">
+            <Link
+              href="/terms"
+              className="text-violet-400 transition hover:text-violet-300"
+            >
               {t("auth.register.termsOfService", "Terms of Service")}
             </Link>{" "}
             {t("auth.register.termsAnd", "and")}{" "}
             <Link
               href="/privacy"
-              className="text-violet-400 hover:text-violet-300"
+              className="text-violet-400 transition hover:text-violet-300"
             >
               {t("auth.register.privacyPolicy", "Privacy Policy")}
             </Link>
           </span>
         </label>
 
-        {error && (
-          <p role="alert" className="text-sm text-red-400">
+        {error ? (
+          <p
+            role="alert"
+            className="flex items-start gap-3 rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-sm leading-6 text-red-200"
+          >
+            <AlertCircle
+              aria-hidden="true"
+              className="mt-0.5 size-4 shrink-0 text-red-300"
+            />
             {error}
           </p>
-        )}
+        ) : null}
 
-        {successMessage && (
-          <p aria-live="polite" className="text-sm text-emerald-400">
+        {successMessage ? (
+          <p
+            aria-live="polite"
+            className="flex items-start gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm leading-6 text-emerald-200"
+          >
+            <CheckCircle2
+              aria-hidden="true"
+              className="mt-0.5 size-4 shrink-0 text-emerald-300"
+            />
             {successMessage}
           </p>
-        )}
+        ) : null}
 
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 py-4 font-semibold text-white transition hover:from-violet-500 hover:to-purple-500 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-3 rounded-2xl bg-violet-500 py-4 font-semibold text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] transition hover:bg-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-400/40 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isLoading
-            ? t("auth.register.submitting", "Creating account...")
-            : t("auth.register.submit", "Create Account")}
+          {isLoading ? (
+            <>
+              <Loader2 aria-hidden="true" className="size-5 animate-spin" />
+              {t("auth.register.submitting", "Creating account...")}
+            </>
+          ) : (
+            t("auth.register.submit", "Create Account")
+          )}
         </button>
 
         <div className="flex items-center justify-center gap-2 text-center text-sm text-slate-500">
-          <ShieldCheck className="size-4 shrink-0" />
+          <ShieldCheck aria-hidden="true" className="size-4 shrink-0" />
           {t(
             "auth.register.dataNotice",
             "We'll never share your information with anyone."
@@ -287,7 +321,10 @@ export default function RegisterForm() {
 
         <p className="pt-2 text-center text-sm text-slate-400 sm:hidden">
           {t("auth.register.hasAccount", "Already have an account?")}{" "}
-          <Link href="/login" className="font-medium text-violet-400">
+          <Link
+            href="/login"
+            className="font-medium text-violet-400 transition hover:text-violet-300"
+          >
             {t("auth.register.login", "Log In")}
           </Link>
         </p>

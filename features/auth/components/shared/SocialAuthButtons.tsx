@@ -14,22 +14,29 @@ type SocialAuthButtonsProps = {
 const providers: Array<{
   name: string;
   provider: Provider;
+  scopes: string;
   mark: string;
   markClassName: string;
 }> = [
   {
     name: "GitHub",
     provider: "github",
+    scopes: "read:user user:email",
     mark: "GH",
     markClassName: "text-white",
   },
   {
     name: "Google",
     provider: "google",
+    scopes: "email profile",
     mark: "G",
     markClassName: "text-blue-400",
   },
 ];
+
+function getOAuthRedirectUrl() {
+  return `${window.location.origin}/auth/callback?next=/dashboard`;
+}
 
 export default function SocialAuthButtons({
   onError,
@@ -37,33 +44,64 @@ export default function SocialAuthButtons({
   const { t } = useI18n();
   const [loadingProvider, setLoadingProvider] = useState<Provider | null>(null);
 
-  const handleOAuth = async (provider: Provider) => {
+  const handleOAuth = async (provider: Provider, scopes: string) => {
     setLoadingProvider(provider);
     onError?.("");
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
-      },
-    });
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: getOAuthRedirectUrl(),
+          scopes,
+          skipBrowserRedirect: true,
+          queryParams:
+            provider === "google"
+              ? {
+                  access_type: "offline",
+                  prompt: "select_account",
+                }
+              : undefined,
+        },
+      });
 
-    if (error) {
-      onError?.(error.message);
+      if (error) {
+        onError?.(error.message);
+        setLoadingProvider(null);
+        return;
+      }
+
+      if (!data.url) {
+        onError?.(
+          t(
+            "auth.oauth.missingUrl",
+            "Could not start OAuth login. Please try again."
+          )
+        );
+        setLoadingProvider(null);
+        return;
+      }
+
+      window.location.assign(data.url);
+    } catch {
+      onError?.(
+        t("auth.oauth.error", "Could not start OAuth login. Please try again.")
+      );
       setLoadingProvider(null);
     }
   };
 
   return (
     <div className="mt-6 grid gap-3 md:grid-cols-2">
-      {providers.map(({ name, provider, mark, markClassName }) => (
+      {providers.map(({ name, provider, scopes, mark, markClassName }) => (
         <button
           key={provider}
           type="button"
           disabled={loadingProvider !== null}
-          onClick={() => handleOAuth(provider)}
-          className="flex items-center justify-center gap-3 rounded-lg border border-slate-700/70 bg-slate-950/30 px-5 py-3.5 text-white transition hover:border-violet-400/50 hover:bg-violet-500/5 disabled:cursor-not-allowed disabled:opacity-60"
+          aria-busy={loadingProvider === provider}
+          onClick={() => handleOAuth(provider, scopes)}
+          className="flex items-center justify-center gap-3 rounded-2xl border border-slate-700/70 bg-slate-950/35 px-5 py-3.5 text-white transition hover:border-violet-400/50 hover:bg-violet-500/10 focus:outline-none focus:ring-2 focus:ring-violet-500/25 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <span className={`text-sm font-bold ${markClassName}`}>{mark}</span>
           {loadingProvider === provider

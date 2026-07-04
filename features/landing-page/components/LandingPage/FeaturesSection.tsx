@@ -6,25 +6,37 @@ import {
   platformFeatures,
   platformStats,
 } from "../../data/landingPageData";
+import AnimatedSection from "./AnimatedSection";
 import LandingCtaLink from "./LandingCtaLink";
 import LandingSectionHeader from "./LandingSectionHeader";
 
+// Sekcja pokazuje główną wartość produktu i wizualny preview dashboardu.
+// Preview jest zbudowane w HTML/CSS, więc wygląda jak produkt bez ciężkiego screenshota.
 export default function FeaturesSection() {
   return (
-    <section id="features" className="px-6 py-12 lg:py-20">
+    <section
+      id="features"
+      aria-labelledby="features-title"
+      className="px-6 py-12 lg:py-20"
+    >
       <div className="mx-auto max-w-7xl">
         <div className="grid items-center gap-12 lg:grid-cols-[0.72fr_1.28fr]">
-          <div>
+          <AnimatedSection>
             <LandingSectionHeader
               eyebrow="All-in-one platform"
               title="Everything you need to become a better developer"
+              titleId="features-title"
               subtitle="MindForge AI combines courses, AI assistance and hands-on practice in one focused learning workspace."
             />
 
+            {/* Lista korzyści jest prawdziwym <ul>, bo to realna lista informacji dla użytkownika. */}
             <ul className="mt-8 space-y-4">
               {platformFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-3 text-sm text-slate-300">
-                  <CheckCircle2 className="size-5 text-violet-400" />
+                  <CheckCircle2
+                    aria-hidden="true"
+                    className="size-5 text-violet-400"
+                  />
                   {feature}
                 </li>
               ))}
@@ -35,13 +47,20 @@ export default function FeaturesSection() {
                 Explore Features
               </LandingCtaLink>
             </div>
-          </div>
+          </AnimatedSection>
 
-          <div className="rounded-[2rem] border border-white/10 bg-[#0d1424] p-3 shadow-[0_0_80px_rgba(15,23,42,0.75)]">
+          <AnimatedSection
+            className="rounded-[2rem] border border-white/10 bg-[#0d1424] p-3 shadow-[0_0_80px_rgba(15,23,42,0.75)]"
+            delay={0.12}
+          >
+            {/* Ten blok jest statyczną makietą produktu, nie jest podpięty pod dane użytkownika. */}
             <div className="grid min-h-[430px] overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#070d19] lg:grid-cols-[180px_1fr]">
               <aside className="hidden border-r border-white/10 bg-white/[0.02] p-5 lg:block">
                 <div className="mb-8 flex items-center gap-2 text-sm font-semibold text-white">
-                  <ShieldCheck className="size-5 text-violet-400" />
+                  <ShieldCheck
+                    aria-hidden="true"
+                    className="size-5 text-violet-400"
+                  />
                   MindForge AI
                 </div>
 
@@ -118,18 +137,19 @@ export default function FeaturesSection() {
                 </div>
               </div>
             </div>
-          </div>
+          </AnimatedSection>
         </div>
 
         <div className="mt-8 grid overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] md:grid-cols-4 lg:mt-12">
-          {platformStats.map((stat) => (
-            <div
+          {platformStats.map((stat, index) => (
+            <AnimatedSection
               key={stat.label}
               className="border-white/10 p-6 text-center md:border-r md:last:border-r-0"
+              delay={index * 0.05}
             >
               <p className="text-3xl font-bold text-violet-300">{stat.value}</p>
               <p className="mt-2 text-sm text-slate-400">{stat.label}</p>
-            </div>
+            </AnimatedSection>
           ))}
         </div>
       </div>
@@ -150,6 +170,7 @@ function CourseProgress({ progress, title }: CourseProgressProps) {
         <p className="text-sm text-violet-300">{progress}</p>
       </div>
       <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+        {/* Szerokość paska jest przekazywana jako wartość tekstowa, np. "67%". */}
         <div
           className="h-full rounded-full bg-violet-500"
           style={{ width: progress }}
