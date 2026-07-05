@@ -7,7 +7,7 @@ type CourseProgressProps = {
 
 export default function CourseProgress({ courses }: CourseProgressProps) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
+    <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-white">
           <TranslatedText
@@ -28,11 +28,13 @@ export default function CourseProgress({ courses }: CourseProgressProps) {
           {courses.map((course) => (
             <article
               key={course.id}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+              className="border-b border-white/10 pb-4 last:border-b-0 last:pb-0"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <h3 className="font-semibold text-white">{course.title}</h3>
+                <div className="min-w-0">
+                  <h3 className="line-clamp-2 font-semibold text-white">
+                    {course.title}
+                  </h3>
                   <p className="mt-1 text-sm text-slate-400">
                     {course.category} /{" "}
                     <TranslatedText
@@ -44,7 +46,7 @@ export default function CourseProgress({ courses }: CourseProgressProps) {
                   </p>
                 </div>
 
-                <span className="rounded-full bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
+                <span className="shrink-0 rounded-full bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
                   <TranslatedText
                     fallback={course.status}
                     translationKey={getCourseStatusTranslationKey(course.status)}
@@ -60,7 +62,14 @@ export default function CourseProgress({ courses }: CourseProgressProps) {
                   <span className="font-medium text-white">{course.progress}%</span>
                 </div>
 
-                <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+                <div
+                  aria-label={`${course.progress}%`}
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={course.progress}
+                  className="h-2 overflow-hidden rounded-full bg-slate-800"
+                  role="progressbar"
+                >
                   <div
                     className="h-full rounded-full bg-violet-500"
                     style={{ width: `${course.progress}%` }}
@@ -71,7 +80,7 @@ export default function CourseProgress({ courses }: CourseProgressProps) {
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+        <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
           <TranslatedText
             fallback="Start a course to track progress here."
             translationKey="progress.emptyCourseProgress"

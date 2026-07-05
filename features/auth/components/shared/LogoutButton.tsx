@@ -35,7 +35,7 @@ export default function LogoutButton({ compact = false }: LogoutButtonProps) {
           : "flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 font-medium text-red-400 transition hover:bg-red-500/10 disabled:opacity-60"
       }
     >
-      <LogOut className="size-5" />
+      <LogOut aria-hidden="true" className="size-5" />
       {!compact && (isLoading ? "Logging out..." : "Log out")}
     </button>
   );

@@ -1,9 +1,10 @@
 import TranslatedText from "@/components/shared/TranslatedText";
-import { statsData } from "../../data/dashboardData";
 import StatsCard from "./StatsCard";
+import { statsConfig } from "./statsConfig";
 
 import type { CurrentProfile } from "@/features/profile/types/profile.types";
 import type { ProgressSummary } from "@/features/progress/types/progress.types";
+import type { StatsCardItem } from "../../types/dashboard.types";
 
 type StatsGridProps = {
   profile: CurrentProfile | null;
@@ -11,8 +12,26 @@ type StatsGridProps = {
 };
 
 export default function StatsGrid({ profile, summary }: StatsGridProps) {
-  const stats = statsData.map((stat) => {
-    if (stat.title === "Total Learning Time") {
+  const stats = statsConfig.map((stat) =>
+    mapDashboardStat({ profile, stat, summary })
+  );
+
+  return (
+    <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      {stats.map((stat) => (
+        <StatsCard key={stat.id} stat={stat} />
+      ))}
+    </section>
+  );
+}
+
+function mapDashboardStat({
+  profile,
+  stat,
+  summary,
+}: StatsGridProps & { stat: StatsCardItem }): StatsCardItem {
+  switch (stat.id) {
+    case "completedLessons":
       return {
         ...stat,
         title: (
@@ -30,9 +49,7 @@ export default function StatsGrid({ profile, summary }: StatsGridProps) {
           />
         ),
       };
-    }
-
-    if (stat.title === "Courses Completed") {
+    case "completedCourses":
       return {
         ...stat,
         title: (
@@ -50,9 +67,7 @@ export default function StatsGrid({ profile, summary }: StatsGridProps) {
           />
         ),
       };
-    }
-
-    if (stat.title === "Current Streak") {
+    case "currentStreak":
       return {
         ...stat,
         title: (
@@ -75,9 +90,7 @@ export default function StatsGrid({ profile, summary }: StatsGridProps) {
           />
         ),
       };
-    }
-
-    if (stat.title === "XP Earned") {
+    case "xpEarned":
       return {
         ...stat,
         title: (
@@ -95,16 +108,5 @@ export default function StatsGrid({ profile, summary }: StatsGridProps) {
           />
         ),
       };
-    }
-
-    return stat;
-  });
-
-  return (
-    <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-      {stats.map((stat, index) => (
-        <StatsCard key={index} stat={stat} />
-      ))}
-    </section>
-  );
+  }
 }

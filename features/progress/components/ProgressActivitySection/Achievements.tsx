@@ -22,14 +22,14 @@ function AchievementCard({
   color,
 }: AchievementCardProps) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+    <article className="rounded-2xl bg-white/[0.03] p-4">
       <div
         className={clsx(
-          "mb-8 flex size-16 items-center justify-center rounded-2xl shadow-2xl",
+          "mb-5 flex size-12 items-center justify-center rounded-2xl shadow-2xl",
           colorStyles[color]
         )}
       >
-        <Icon className="size-8" />
+        <Icon aria-hidden="true" className="size-6" />
       </div>
 
       <h3 className="font-semibold text-white">{getAchievementTitle(title)}</h3>
@@ -47,31 +47,24 @@ type AchievementsProps = {
 
 export default function Achievements({ achievements }: AchievementsProps) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
+      <div className="mb-6">
         <h2 className="text-xl font-semibold text-white">
           <TranslatedText
             fallback="Achievements"
             translationKey="progress.achievements"
           />
         </h2>
-
-        <button
-          type="button"
-          className="text-sm font-medium text-violet-400 transition hover:text-violet-300"
-        >
-          <TranslatedText fallback="View all" translationKey="common.viewAll" />
-        </button>
       </div>
 
       {achievements.length ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {achievements.map((achievement) => (
             <AchievementCard key={achievement.id} {...achievement} />
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+        <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
           <TranslatedText
             fallback="No achievements unlocked yet."
             translationKey="progress.noAchievements"

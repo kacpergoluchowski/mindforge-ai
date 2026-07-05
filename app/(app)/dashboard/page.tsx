@@ -11,7 +11,7 @@ import { getFirstName } from "@/features/profile/utils/profileFormatters";
 import { Bot, ChevronDown } from "lucide-react";
 
 export const metadata = {
-  title: "Dashboard",
+  title: "MindForge | Dashboard",
 };
 
 export default async function DashboardPage() {
@@ -22,7 +22,7 @@ export default async function DashboardPage() {
   const firstName = profile ? getFirstName(profile.fullName) : "there";
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:space-y-5">
       <PageHeader
         title={
           <TranslatedText
@@ -38,6 +38,7 @@ export default async function DashboardPage() {
           />
         }
         action={{
+          href: "/ai-mentor/chat",
           label: (
             <TranslatedText
               fallback="Chat with AI Mentor"
@@ -49,19 +50,19 @@ export default async function DashboardPage() {
         }}
       />
       <StatsGrid profile={profile} summary={progressSummary} />
-      <div className="grid gap-4 semiXl:grid-cols-5">
-        <div className="h-full semiXl:col-span-3">
+      <div className="grid gap-4 xl:grid-cols-5">
+        <div className="min-w-0 xl:col-span-3">
           <LearningOverview summary={progressSummary} />
         </div>
-        <div className="h-full semiXl:col-span-2">
+        <div className="min-w-0 xl:col-span-2">
           <ContinueLearning />
         </div>
       </div>
-      <div className="grid gap-4 semiXl:grid-cols-5">
-        <div className="semiXl:col-span-3">
+      <div className="grid gap-4 xl:grid-cols-5">
+        <div className="min-w-0 xl:col-span-3">
           <RecommendedCourses />
         </div>
-        <div className="semiXl:col-span-2">
+        <div className="min-w-0 xl:col-span-2">
           <ActivityFeed />
         </div>
       </div>

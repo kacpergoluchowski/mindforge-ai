@@ -20,14 +20,14 @@ function InsightItem({
   color,
 }: LearningInsightItem) {
   return (
-    <div className="flex gap-4 rounded-2xl bg-white/[0.03] p-4">
+    <div className="flex gap-4 border-b border-white/10 pb-4 last:border-b-0 last:pb-0">
       <div
         className={clsx(
           "flex size-11 shrink-0 items-center justify-center rounded-xl",
           colorStyles[color]
         )}
       >
-        <Icon className="size-5" />
+        <Icon aria-hidden="true" className="size-5" />
       </div>
 
       <div>
@@ -51,7 +51,7 @@ type LearningInsightsProps = {
 
 export default function LearningInsights({ insights }: LearningInsightsProps) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
+    <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-white">
           <TranslatedText
@@ -75,7 +75,7 @@ export default function LearningInsights({ insights }: LearningInsightsProps) {
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+        <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
           <TranslatedText
             fallback="Complete lessons to generate learning insights."
             translationKey="progress.emptyLearningInsights"

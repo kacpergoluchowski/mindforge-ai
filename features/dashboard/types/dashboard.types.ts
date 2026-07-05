@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 export type StatsCardItem = {
+  id: "completedLessons" | "completedCourses" | "currentStreak" | "xpEarned";
   title: ReactNode;
   value: ReactNode;
   change: ReactNode;

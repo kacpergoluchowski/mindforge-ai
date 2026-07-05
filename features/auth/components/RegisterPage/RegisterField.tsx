@@ -13,8 +13,10 @@ type RegisterFieldProps = {
   placeholder: string;
   icon: LucideIcon;
   autoComplete: string;
+  maxLength?: number;
   minLength?: number;
   onValueChange?: (value: string) => void;
+  pattern?: string;
 };
 
 export default function RegisterField({
@@ -25,8 +27,10 @@ export default function RegisterField({
   placeholder,
   icon: Icon,
   autoComplete,
+  maxLength,
   minLength,
   onValueChange,
+  pattern,
 }: RegisterFieldProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const isPassword = type === "password";
@@ -34,7 +38,7 @@ export default function RegisterField({
 
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-sm text-white">
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-white">
         {label}
       </label>
 
@@ -49,11 +53,13 @@ export default function RegisterField({
           name={name}
           type={inputType}
           required
+          maxLength={maxLength}
           minLength={minLength}
+          pattern={pattern}
           autoComplete={autoComplete}
           onInput={(event) => onValueChange?.(event.currentTarget.value)}
           placeholder={placeholder}
-          className="h-14 w-full rounded-2xl border border-slate-700/70 bg-slate-950/35 pl-12 pr-12 text-white outline-none transition placeholder:text-slate-500 hover:border-slate-600 focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
+          className="h-12 w-full rounded-2xl border border-slate-700/70 bg-slate-950/35 pl-11 pr-11 text-white outline-none transition placeholder:text-slate-500 hover:border-slate-600 focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
         />
 
         {isPassword && (

@@ -19,8 +19,8 @@ export default function PageHeader({ title, subtitle, action }: PageHeaderProps)
   const RightIcon = action?.rightIcon;
 
   return (
-    <section className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <div>
+    <section className="flex min-w-0 flex-col gap-4 sm:gap-5 lg:flex-row lg:items-center lg:justify-between">
+      <div className="min-w-0">
         <h1 className="text-xl font-bold tracking-tight text-white lg:text-3xl xl:text-4xl">
           {title}
         </h1>
@@ -34,40 +34,42 @@ export default function PageHeader({ title, subtitle, action }: PageHeaderProps)
         <Link
           href={action.href}
           className="
-            flex items-center justify-center gap-3
+            flex w-full items-center justify-center gap-3
             rounded-2xl
             bg-violet-500
             px-6 py-3 lg:py-4
             font-medium text-white
             transition
             hover:bg-violet-600
+            sm:w-fit
           "
         >
-          {Icon && <Icon className="size-5" />}
+          {Icon && <Icon aria-hidden="true" className="size-5" />}
 
-          <span>{action.label}</span>
+          <span className="truncate">{action.label}</span>
 
-          {RightIcon && <RightIcon className="size-4" />}
+          {RightIcon && <RightIcon aria-hidden="true" className="size-4" />}
         </Link>
       ) : action ? (
         <button
           type="button"
           onClick={action.onClick}
           className="
-            flex items-center justify-center gap-3
+            flex w-full items-center justify-center gap-3
             rounded-2xl
             bg-violet-500
             px-6 py-3 lg:py-4
             font-medium text-white
             transition
             hover:bg-violet-600
+            sm:w-fit
           "
         >
-          {Icon && <Icon className="size-5" />}
+          {Icon && <Icon aria-hidden="true" className="size-5" />}
 
-          <span>{action.label}</span>
+          <span className="truncate">{action.label}</span>
 
-          {RightIcon && <RightIcon className="size-4" />}
+          {RightIcon && <RightIcon aria-hidden="true" className="size-4" />}
         </button>
       ) : null}
     </section>

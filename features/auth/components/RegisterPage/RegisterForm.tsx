@@ -33,11 +33,13 @@ type RegisterFormValues = {
   termsAccepted: boolean;
 };
 
+const usernamePattern = /^[a-zA-Z0-9_]{3,24}$/;
+
 function getFormValues(formData: FormData): RegisterFormValues {
   return {
     fullName: String(formData.get("fullName") ?? "").trim(),
-    username: String(formData.get("username") ?? "").trim(),
-    email: String(formData.get("email") ?? "").trim(),
+    username: String(formData.get("username") ?? "").trim().toLowerCase(),
+    email: String(formData.get("email") ?? "").trim().toLowerCase(),
     password: String(formData.get("password") ?? ""),
     confirmPassword: String(formData.get("confirmPassword") ?? ""),
     termsAccepted: formData.get("terms") === "on",
@@ -60,6 +62,13 @@ function validateForm(
 
   if (values.password !== values.confirmPassword) {
     return t("auth.register.errors.passwordMismatch", "Passwords do not match.");
+  }
+
+  if (!usernamePattern.test(values.username)) {
+    return t(
+      "auth.register.errors.username",
+      "Username must be 3-24 characters and can only contain letters, numbers and underscores."
+    );
   }
 
   if (values.password.length < 8) {
@@ -150,16 +159,16 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="rounded-[2rem] border border-violet-400/35 bg-[linear-gradient(180deg,rgba(35,25,68,0.72),rgba(5,12,25,0.9)_24%)] p-6 shadow-[0_0_80px_rgba(15,23,42,0.65)] backdrop-blur-xl sm:p-8 lg:p-10">
+    <div className="rounded-[1.5rem] border border-violet-400/35 bg-[linear-gradient(180deg,rgba(35,25,68,0.72),rgba(5,12,25,0.9)_24%)] p-5 shadow-[0_0_80px_rgba(15,23,42,0.65)] backdrop-blur-xl sm:p-6 lg:p-7">
       <div className="lg:hidden">
-        <RegisterIntro />
+        <RegisterIntro compact />
       </div>
 
       <div className="hidden lg:block">
-        <h2 className="text-3xl font-bold text-white">
+        <h2 className="text-2xl font-bold text-white">
           {t("auth.register.formTitle", "Create your account")}
         </h2>
-        <p className="mt-2 text-slate-400">
+        <p className="mt-1.5 text-sm text-slate-400">
           {t(
             "auth.register.formSubtitle",
             "Fill in the details below to get started"
@@ -167,16 +176,16 @@ export default function RegisterForm() {
         </p>
       </div>
 
-      <SocialAuthButtons onError={setError} />
+      <SocialAuthButtons disabled={isLoading} onError={setError} />
 
-      <div className="my-6 flex items-center gap-4">
+      <div className="my-4 flex items-center gap-4">
         <div className="h-px flex-1 bg-slate-700/70" />
         <span className="text-sm text-slate-500">{t("common.or", "or")}</span>
         <div className="h-px flex-1 bg-slate-700/70" />
       </div>
 
-      <form onSubmit={handleRegister} className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2">
+      <form onSubmit={handleRegister} className="space-y-3.5">
+        <div className="grid gap-3.5 md:grid-cols-2">
           <RegisterField
             id="fullName"
             name="fullName"
@@ -200,6 +209,9 @@ export default function RegisterForm() {
             )}
             icon={AtSign}
             autoComplete="username"
+            maxLength={24}
+            minLength={3}
+            pattern="[a-zA-Z0-9_]+"
           />
         </div>
 
@@ -216,7 +228,7 @@ export default function RegisterForm() {
           autoComplete="email"
         />
 
-        <div className="grid gap-4 min-[440px]:grid-cols-2">
+        <div className="grid gap-3.5 min-[440px]:grid-cols-2">
           <RegisterField
             id="password"
             name="password"
@@ -245,7 +257,7 @@ export default function RegisterForm() {
 
         <PasswordStrength password={passwordValue} />
 
-        <label className="flex items-start gap-3 text-sm leading-6 text-slate-400">
+        <label className="flex items-start gap-3 text-sm leading-5 text-slate-400">
           <input
             name="terms"
             type="checkbox"
@@ -273,7 +285,7 @@ export default function RegisterForm() {
         {error ? (
           <p
             role="alert"
-            className="flex items-start gap-3 rounded-2xl border border-red-400/20 bg-red-500/10 p-4 text-sm leading-6 text-red-200"
+            className="flex items-start gap-3 rounded-2xl border border-red-400/20 bg-red-500/10 p-3 text-sm leading-5 text-red-200"
           >
             <AlertCircle
               aria-hidden="true"
@@ -286,7 +298,7 @@ export default function RegisterForm() {
         {successMessage ? (
           <p
             aria-live="polite"
-            className="flex items-start gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm leading-6 text-emerald-200"
+            className="flex items-start gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-sm leading-5 text-emerald-200"
           >
             <CheckCircle2
               aria-hidden="true"
@@ -299,7 +311,7 @@ export default function RegisterForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="flex w-full items-center justify-center gap-3 rounded-2xl bg-violet-500 py-4 font-semibold text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] transition hover:bg-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-400/40 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-3 rounded-2xl bg-violet-500 py-3.5 font-semibold text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] transition hover:bg-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-400/40 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isLoading ? (
             <>
@@ -311,7 +323,7 @@ export default function RegisterForm() {
           )}
         </button>
 
-        <div className="flex items-center justify-center gap-2 text-center text-sm text-slate-500">
+        <div className="flex items-center justify-center gap-2 text-center text-xs text-slate-500">
           <ShieldCheck aria-hidden="true" className="size-4 shrink-0" />
           {t(
             "auth.register.dataNotice",
@@ -319,7 +331,7 @@ export default function RegisterForm() {
           )}
         </div>
 
-        <p className="pt-2 text-center text-sm text-slate-400 sm:hidden">
+        <p className="text-center text-sm text-slate-400 sm:hidden">
           {t("auth.register.hasAccount", "Already have an account?")}{" "}
           <Link
             href="/login"

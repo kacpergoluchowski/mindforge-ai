@@ -42,7 +42,7 @@ export default function PasswordStrength({ password }: PasswordStrengthProps) {
 
   return (
     <div>
-      <div className="mb-2 flex justify-between text-sm text-slate-500">
+      <div className="mb-1.5 flex justify-between text-xs text-slate-500">
         <span>{t("auth.register.passwordStrength", "Password strength")}</span>
         <span>{label}</span>
       </div>
@@ -59,7 +59,7 @@ export default function PasswordStrength({ password }: PasswordStrengthProps) {
           <span
             key={index}
             className={clsx(
-              "h-1.5 rounded-full",
+              "h-1 rounded-full",
               index < score ? activeStyle : "bg-slate-700"
             )}
           />

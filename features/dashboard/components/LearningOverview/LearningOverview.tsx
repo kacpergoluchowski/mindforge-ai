@@ -20,8 +20,8 @@ export default function LearningOverview({ summary }: LearningOverviewProps) {
   const categories = mapLearningCategories(summary);
 
   return (
-    <section className="h-full w-full rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-4">
-      <div className="mb-6 flex items-center justify-between">
+    <section className="h-full w-full rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 lg:p-6">
+      <div className="mb-5 flex items-center justify-between gap-3">
         <h2 className="text-lg font-semibold text-white">
           <TranslatedText
             translationKey="dashboard.learningOverview"
@@ -29,15 +29,14 @@ export default function LearningOverview({ summary }: LearningOverviewProps) {
           />
         </h2>
 
-        <button
-          type="button"
-          className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-300"
+        <span
+          className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-300"
         >
           <TranslatedText translationKey="dashboard.thisWeek" fallback="This Week" />
-        </button>
+        </span>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+      <div className="grid gap-5 lg:grid-cols-[220px_1fr] lg:items-center 2xl:grid-cols-[260px_1fr]">
         <LearningDonutChart
           categories={categories}
           totalLabel={`${summary?.thisWeekXp ?? 0} XP`}
@@ -70,10 +69,16 @@ export default function LearningOverview({ summary }: LearningOverviewProps) {
 function mapLearningCategories(
   summary: ProgressSummary | null
 ): LearningCategory[] {
-  return (summary?.categoryBreakdown ?? []).map((category, index) => ({
-    label: category.label,
-    time: String(category.value),
-    percentage: category.value,
-    color: categoryColors[index % categoryColors.length],
-  }));
+  return (summary?.categoryBreakdown ?? [])
+    .slice(0, categoryColors.length)
+    .map((category, index) => {
+      const percentage = Math.min(Math.max(category.value, 0), 100);
+
+      return {
+        label: category.label,
+        time: String(percentage),
+        percentage,
+        color: categoryColors[index % categoryColors.length],
+      };
+    });
 }

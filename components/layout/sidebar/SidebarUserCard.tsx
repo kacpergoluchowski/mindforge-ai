@@ -11,7 +11,7 @@ type SidebarUserCardProps = {
 
 export default function SidebarUserCard({ profile }: SidebarUserCardProps) {
   return (
-    <div className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4">
+    <div className="mt-6 shrink-0 rounded-3xl border border-white/10 bg-white/[0.04] p-4">
       <div className="flex items-center gap-3">
         <div className="flex size-11 items-center justify-center rounded-full bg-violet-500 text-sm font-semibold text-white">
           {getInitials(profile.fullName)}
@@ -22,7 +22,7 @@ export default function SidebarUserCard({ profile }: SidebarUserCardProps) {
             {profile.fullName}
           </p>
 
-          <p className="text-xs text-slate-400">
+          <p className="truncate text-xs text-slate-400">
             {formatPlan(profile.plan)}
           </p>
         </div>

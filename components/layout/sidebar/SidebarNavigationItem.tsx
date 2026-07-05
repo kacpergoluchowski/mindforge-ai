@@ -17,10 +17,10 @@ export default function SidebarNavigationItem({
   const isSettingsItem = item.href === "/account/settings";
   const label = t(getNavigationLabelKey(item.href) ?? "", item.label);
 
-  const isActive = pathname === item.href;
+  const isActive = isNavigationItemActive(pathname, item.href);
   const className = cn(
-    "flex w-full items-center gap-3 rounded-xl px-4 py-2 text-left text-sm font-medium text-slate-400 transition",
-    "hover:bg-white/5 hover:text-white",
+    "flex w-full items-center gap-3 rounded-2xl px-4 py-2.5 text-left text-sm font-medium text-slate-400 transition",
+    "hover:bg-white/[0.05] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/70",
     isActive &&
       "bg-violet-500/15 text-white shadow-[inset_0_0_0_1px_rgba(139,92,246,0.18)]",
   );
@@ -33,8 +33,8 @@ export default function SidebarNavigationItem({
     return (
       <li>
         <LanguageSettingsModal buttonClassName={className}>
-          <Icon className={iconClassName} />
-          <span>{label}</span>
+          <Icon aria-hidden="true" className={iconClassName} />
+          <span className="truncate">{label}</span>
         </LanguageSettingsModal>
       </li>
     );
@@ -44,12 +44,25 @@ export default function SidebarNavigationItem({
     <li>
       <Link
         href={item.href}
+        aria-current={isActive ? "page" : undefined}
         className={className}
       >
-        <Icon className={iconClassName} />
+        <Icon aria-hidden="true" className={iconClassName} />
 
-        <span>{label}</span>
+        <span className="truncate">{label}</span>
       </Link>
     </li>
   );
+}
+
+function isNavigationItemActive(pathname: string, href: string) {
+  if (pathname === href) {
+    return true;
+  }
+
+  if (href === "/dashboard") {
+    return false;
+  }
+
+  return pathname.startsWith(`${href}/`);
 }

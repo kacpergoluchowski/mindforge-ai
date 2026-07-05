@@ -52,25 +52,36 @@ export default function ProgressStatCard({
     progress === undefined ? undefined : Math.min(Math.max(progress, 0), 100);
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-[#111a2d]/80 px-6 py-4">
-      <div
-        className={clsx(
-          "mb-3 flex size-12 items-center justify-center rounded-2xl",
-          styles.background
-        )}
-      >
-        <Icon className={clsx("size-5", styles.icon)} />
+    <article className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 transition-colors hover:border-white/15 sm:p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div
+          className={clsx(
+            "flex size-11 shrink-0 items-center justify-center rounded-2xl",
+            styles.background
+          )}
+        >
+          <Icon aria-hidden="true" className={clsx("size-5", styles.icon)} />
+        </div>
+
+        <p className="min-w-0 truncate text-sm text-slate-400">{title}</p>
       </div>
 
-      <p className="text-sm text-slate-400">{title}</p>
-
-      <h3 className="mt-3 text-4xl font-bold text-white">{value}</h3>
+      <p className="mt-5 truncate text-3xl font-bold leading-tight text-white">
+        {value}
+      </p>
 
       <p className={clsx("mt-2 text-sm", styles.subtitle)}>{subtitle}</p>
 
       {normalizedProgress !== undefined && (
         <div className="mt-5">
-          <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+          <div
+            aria-label={`${Math.round(normalizedProgress)}%`}
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={Math.round(normalizedProgress)}
+            className="h-2 overflow-hidden rounded-full bg-slate-800"
+            role="progressbar"
+          >
             <div
               className="h-full rounded-full bg-emerald-500"
               style={{ width: `${normalizedProgress}%` }}

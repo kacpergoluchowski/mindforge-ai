@@ -23,13 +23,16 @@ export default function LearningCategoryItem({
   const categoryKey = getCategoryTranslationKey(category.label);
 
   return (
-    <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 items-center gap-3">
         <span
-          className={clsx("size-3 rounded-full", colorClasses[category.color])}
+          className={clsx(
+            "size-3 shrink-0 rounded-full",
+            colorClasses[category.color]
+          )}
         />
 
-        <span className="text-sm font-medium text-white">
+        <span className="min-w-0 truncate text-sm font-medium text-white">
           {categoryKey ? (
             <TranslatedText
               fallback={category.label}
@@ -41,7 +44,7 @@ export default function LearningCategoryItem({
         </span>
       </div>
 
-      <div className="flex items-center gap-6 text-sm">
+      <div className="flex items-center justify-between gap-4 text-sm sm:justify-end sm:gap-6">
         <span className="text-slate-300">
           <TranslatedText
             fallback="{value}% focus"
@@ -60,6 +63,7 @@ export default function LearningCategoryItem({
 function getCategoryTranslationKey(label: string) {
   const categoryKeys: Record<string, string> = {
     "AI & ML": "dashboard.categories.aiMl",
+    "AI / ML": "dashboard.categories.aiMl",
     Backend: "dashboard.categories.backend",
     Database: "dashboard.categories.database",
     Development: "dashboard.categories.development",

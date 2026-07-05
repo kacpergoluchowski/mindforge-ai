@@ -8,12 +8,12 @@ type ProgressGoalSectionProps = {
 
 export default function ProgressGoalSection({ summary }: ProgressGoalSectionProps) {
   return (
-    <section className="grid gap-5 pb-28 xl:grid-cols-[0.9fr_1.4fr] xl:pb-8">
+    <aside className="min-w-0 space-y-5 2xl:sticky 2xl:top-24 2xl:self-start">
       <WeeklyGoal
         completedLessons={summary?.thisWeekLessons ?? 0}
         target={summary?.weeklyLessonGoal ?? 5}
       />
       <LearningInsights insights={summary?.insights ?? []} />
-    </section>
+    </aside>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { Cell, Pie, PieChart } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import type { TimeSpentColor, TimeSpentItem } from "../../types/progress.types";
@@ -32,8 +32,8 @@ export default function TimeSpent({ items }: TimeSpentProps) {
   }));
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <article className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
+      <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">
             {t("progress.timeSpent", "Time Spent")}
@@ -44,31 +44,32 @@ export default function TimeSpent({ items }: TimeSpentProps) {
           </p>
         </div>
 
-        <button
-          type="button"
+        <span
           className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-slate-300"
         >
           {t("dashboard.thisWeek", "This Week")}
-        </button>
+        </span>
       </div>
 
-      <div className="grid items-center gap-6 xl:grid-cols-[1fr_1fr]">
+      <div className="grid items-center gap-6 sm:grid-cols-[0.9fr_1.1fr] xl:grid-cols-1">
         <div className="relative flex h-[230px] items-center justify-center overflow-hidden">
-          <PieChart width={230} height={230}>
-            <Pie
-              data={chartData}
-              dataKey="value"
-              nameKey="label"
-              innerRadius={65}
-              outerRadius={92}
-              paddingAngle={4}
-              stroke="none"
-            >
-              {chartData.map((item) => (
-                <Cell key={item.id} fill={chartColors[item.color]} />
-              ))}
-            </Pie>
-          </PieChart>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData}
+                dataKey="value"
+                nameKey="label"
+                innerRadius={64}
+                outerRadius={92}
+                paddingAngle={4}
+                stroke="none"
+              >
+                {chartData.map((item) => (
+                  <Cell key={item.id} fill={chartColors[item.color]} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
 
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-bold text-white">{items.length}</span>
@@ -78,7 +79,7 @@ export default function TimeSpent({ items }: TimeSpentProps) {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {chartData.map((item) => (
             <div
               key={item.id}

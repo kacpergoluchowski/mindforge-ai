@@ -13,12 +13,12 @@ export default function RecommendedCourseCard({
 }: RecommendedCourseCardProps) {
   const content = (
     <>
-      <span className="rounded-lg bg-white/10 px-2 py-1 text-xs text-white">
+      <span className="inline-flex max-w-full rounded-lg bg-white/10 px-2 py-1 text-xs text-white">
         {course.category}
       </span>
 
-      <div className="mt-8">
-        <h3 className="max-w-40 text-sm font-semibold leading-snug text-white">
+      <div className="mt-5">
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-white">
           {course.title}
         </h3>
 
@@ -28,7 +28,7 @@ export default function RecommendedCourseCard({
       </div>
 
       <div className="absolute bottom-4 right-4 flex items-center gap-1 text-xs text-yellow-400">
-        <Star className="size-3 fill-current" />
+        <Star aria-hidden="true" className="size-3 fill-current" />
         <span>{course.rating}</span>
       </div>
     </>
@@ -37,12 +37,12 @@ export default function RecommendedCourseCard({
   return course.slug ? (
     <Link
       href={`/learn/courses/${course.slug}`}
-      className="relative block min-h-36 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:border-white/20"
+      className="relative block min-h-[9rem] rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/70"
     >
       {content}
     </Link>
   ) : (
-    <article className="relative min-h-36 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+    <article className="relative min-h-[9rem] rounded-2xl border border-white/10 bg-white/[0.04] p-4">
       {content}
     </article>
   );

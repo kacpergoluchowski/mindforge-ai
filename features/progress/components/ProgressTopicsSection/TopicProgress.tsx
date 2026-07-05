@@ -31,7 +31,7 @@ function TopicProgressItem({
           iconStyles[color]
         )}
       >
-        <Icon className="size-5" />
+        <Icon aria-hidden="true" className="size-5" />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -40,7 +40,14 @@ function TopicProgressItem({
           <p className="text-sm text-slate-300">{normalizedProgress}%</p>
         </div>
 
-        <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+        <div
+          aria-label={`${normalizedProgress}%`}
+          aria-valuemax={100}
+          aria-valuemin={0}
+          aria-valuenow={normalizedProgress}
+          className="h-2 overflow-hidden rounded-full bg-slate-800"
+          role="progressbar"
+        >
           <div
             className="h-full rounded-full bg-violet-500"
             style={{ width: `${normalizedProgress}%` }}
@@ -57,21 +64,14 @@ type TopicProgressProps = {
 
 export default function TopicProgress({ topics }: TopicProgressProps) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
+      <div className="mb-6">
         <h2 className="text-xl font-semibold text-white">
           <TranslatedText
             fallback="Topic Progress"
             translationKey="progress.topicsProgress"
           />
         </h2>
-
-        <button
-          type="button"
-          className="text-sm font-medium text-violet-400 transition hover:text-violet-300"
-        >
-          <TranslatedText fallback="View all" translationKey="common.viewAll" />
-        </button>
       </div>
 
       <div className="space-y-5">
@@ -80,7 +80,7 @@ export default function TopicProgress({ topics }: TopicProgressProps) {
             <TopicProgressItem key={topic.id} {...topic} />
           ))
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+        <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
             <TranslatedText
               fallback="Start a course to see topic progress."
               translationKey="progress.emptyTopicProgress"

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import {
@@ -76,13 +77,13 @@ export default function NotificationsDropdown({
         aria-label={t("notifications.open", "Open notifications")}
         onClick={() => setIsOpen((currentValue) => !currentValue)}
         className={clsx(
-          "relative flex items-center justify-center text-slate-300 transition hover:text-white",
+          "relative flex items-center justify-center text-slate-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/70",
           compact
-            ? "size-9 rounded-2xl border border-white/10 bg-white/[0.04] text-white"
-            : "size-9"
+            ? "size-10 rounded-2xl border border-white/10 bg-white/[0.04] text-white hover:border-white/20"
+            : "size-9 rounded-2xl hover:bg-white/[0.04]"
         )}
       >
-        <Bell className={compact ? "size-4" : "size-5"} />
+        <Bell aria-hidden="true" className={compact ? "size-4" : "size-5"} />
 
         {unreadCount > 0 && (
           <span
@@ -122,9 +123,9 @@ export default function NotificationsDropdown({
               type="button"
               aria-label={t("common.close", "Close")}
               onClick={() => setIsOpen(false)}
-              className="flex size-8 items-center justify-center rounded-xl border border-white/10 text-slate-400 transition hover:text-white"
+              className="flex size-8 items-center justify-center rounded-xl border border-white/10 text-slate-400 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/70"
             >
-              <X className="size-4" />
+              <X aria-hidden="true" className="size-4" />
             </button>
           </div>
 
@@ -148,7 +149,7 @@ export default function NotificationsDropdown({
                     className="flex w-full gap-3 rounded-2xl p-3 text-left transition hover:bg-white/[0.04]"
                   >
                     <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-300">
-                      <Icon className="size-5" />
+                      <Icon aria-hidden="true" className="size-5" />
                     </div>
 
                     <div className="min-w-0 flex-1">
@@ -177,7 +178,7 @@ export default function NotificationsDropdown({
             ) : (
               <div className="p-6 text-center">
                 <div className="mx-auto mb-3 flex size-11 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-300">
-                  <Bell className="size-5" />
+                  <Bell aria-hidden="true" className="size-5" />
                 </div>
                 <p className="text-sm font-semibold text-white">
                   {t("notifications.emptyTitle", "No notifications")}
@@ -196,18 +197,20 @@ export default function NotificationsDropdown({
             <button
               type="button"
               onClick={markAllAsRead}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-slate-300 transition hover:text-white"
+              disabled={!unreadCount}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-slate-300 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <CheckCircle2 className="size-4" />
+              <CheckCircle2 aria-hidden="true" className="size-4" />
               {t("notifications.markAllRead", "Mark all as read")}
             </button>
 
-            <button
-              type="button"
-              className="rounded-xl px-3 py-2 text-xs font-semibold text-violet-300 transition hover:text-violet-200"
+            <Link
+              href="/learn/progress"
+              onClick={() => setIsOpen(false)}
+              className="rounded-xl px-3 py-2 text-xs font-semibold text-violet-300 transition hover:text-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/70"
             >
               {t("notifications.viewAll", "View all")}
-            </button>
+            </Link>
           </div>
         </div>
       )}

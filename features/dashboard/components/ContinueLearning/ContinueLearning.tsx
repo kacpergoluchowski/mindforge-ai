@@ -1,4 +1,5 @@
 import { Atom, FileCode2, Hexagon } from "lucide-react";
+import Link from "next/link";
 
 import TranslatedText from "@/components/shared/TranslatedText";
 import { getContinueLearningCourses } from "@/features/courses/api/getCourses";
@@ -18,8 +19,8 @@ export default async function ContinueLearning() {
   const visibleCourses: DashboardCourse[] = courses.map(mapDashboardCourse);
 
   return (
-    <section className="flex h-full w-full flex-col rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <section className="flex h-full min-h-[260px] w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 lg:p-6">
+      <div className="mb-5 flex items-center justify-between gap-4">
         <h2 className="text-lg font-semibold text-white">
           <TranslatedText
             translationKey="dashboard.continueLearning"
@@ -27,26 +28,28 @@ export default async function ContinueLearning() {
           />
         </h2>
 
-        <button
-          type="button"
-          className="text-sm text-slate-400 transition hover:text-white"
+        <Link
+          href="/learn/courses"
+          className="shrink-0 text-sm text-slate-400 transition hover:text-white"
         >
           <TranslatedText translationKey="common.viewAll" fallback="View all" />
-        </button>
+        </Link>
       </div>
 
       {visibleCourses.length ? (
-        <div className="flex-1 space-y-4 overflow-y-auto pr-1">
+        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1 sm:space-y-4">
           {visibleCourses.map((course) => (
             <ContinueLearningItem key={course.id ?? course.title} course={course} />
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
-          <TranslatedText
-            translationKey="dashboard.noCoursesInProgress"
-            fallback="No courses in progress."
-          />
+        <div className="flex flex-1 items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+          <p>
+            <TranslatedText
+              translationKey="dashboard.noCoursesInProgress"
+              fallback="No courses in progress."
+            />
+          </p>
         </div>
       )}
     </section>

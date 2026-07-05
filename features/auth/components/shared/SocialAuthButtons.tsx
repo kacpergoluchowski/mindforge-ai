@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Provider } from "@supabase/supabase-js";
 
 type SocialAuthButtonsProps = {
+  disabled?: boolean;
   onError?: (message: string) => void;
 };
 
@@ -39,6 +40,7 @@ function getOAuthRedirectUrl() {
 }
 
 export default function SocialAuthButtons({
+  disabled = false,
   onError,
 }: SocialAuthButtonsProps) {
   const { t } = useI18n();
@@ -93,15 +95,15 @@ export default function SocialAuthButtons({
   };
 
   return (
-    <div className="mt-6 grid gap-3 md:grid-cols-2">
+    <div className="mt-5 grid gap-3 md:grid-cols-2">
       {providers.map(({ name, provider, scopes, mark, markClassName }) => (
         <button
           key={provider}
           type="button"
-          disabled={loadingProvider !== null}
+          disabled={disabled || loadingProvider !== null}
           aria-busy={loadingProvider === provider}
           onClick={() => handleOAuth(provider, scopes)}
-          className="flex items-center justify-center gap-3 rounded-2xl border border-slate-700/70 bg-slate-950/35 px-5 py-3.5 text-white transition hover:border-violet-400/50 hover:bg-violet-500/10 focus:outline-none focus:ring-2 focus:ring-violet-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center justify-center gap-3 rounded-2xl border border-slate-700/70 bg-slate-950/35 px-5 py-3 text-white transition hover:border-violet-400/50 hover:bg-violet-500/10 focus:outline-none focus:ring-2 focus:ring-violet-500/25 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <span className={`text-sm font-bold ${markClassName}`}>{mark}</span>
           {loadingProvider === provider

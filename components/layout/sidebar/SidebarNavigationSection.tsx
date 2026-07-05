@@ -16,9 +16,9 @@ export default function SidebarNavigationSection({
     : undefined;
 
   return (
-    <div className="space-y-2">
+    <section className="space-y-2">
       {title && (
-        <h2 className="px-4 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+        <h2 className="px-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
           {title}
         </h2>
       )}
@@ -31,6 +31,6 @@ export default function SidebarNavigationSection({
           />
         ))}
       </ul>
-    </div>
+    </section>
   );
 }

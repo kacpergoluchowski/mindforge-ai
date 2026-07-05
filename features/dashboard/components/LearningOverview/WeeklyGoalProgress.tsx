@@ -15,8 +15,8 @@ export default function WeeklyGoalProgress({
       : 0;
 
   return (
-    <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:mt-6 sm:p-5">
+      <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <h3 className="text-sm font-semibold text-white">
             <TranslatedText
@@ -39,7 +39,14 @@ export default function WeeklyGoalProgress({
         </span>
       </div>
 
-      <div className="h-3 overflow-hidden rounded-full bg-white/10">
+      <div
+        aria-label={`${Math.round(progress)}% weekly goal completed`}
+        aria-valuemax={100}
+        aria-valuemin={0}
+        aria-valuenow={Math.round(progress)}
+        className="h-3 overflow-hidden rounded-full bg-white/10"
+        role="progressbar"
+      >
         <div
           className="h-full rounded-full bg-violet-500 transition-all duration-500"
           style={{ width: `${progress}%` }}

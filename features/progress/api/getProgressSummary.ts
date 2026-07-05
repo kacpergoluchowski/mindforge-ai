@@ -93,12 +93,37 @@ const topicIcons = {
   "AI & ML": Atom,
   Backend: Code2,
   Database,
+  DevOps: ShieldCheck,
   Frontend: Code2,
   Fullstack: Layers3,
+  Other: BookOpen,
+  "System Design": Layers3,
 };
 
 const topicColors = ["blue", "sky", "green", "yellow"] as const;
 const categoryColors = ["violet", "emerald", "blue", "orange"] as const;
+
+const categoryAliases: Record<string, string[]> = {
+  Frontend: [
+    "frontend",
+    "front-end",
+    "frontend development",
+    "html",
+    "css",
+    "javascript",
+    "typescript",
+    "react",
+    "next",
+    "ui",
+    "web",
+  ],
+  Backend: ["backend", "back-end", "api", "node", "server"],
+  Database: ["database", "sql", "postgres", "postgresql", "supabase"],
+  "AI & ML": ["ai", "ml", "machine learning", "prompt", "llm"],
+  "System Design": ["system design", "architecture"],
+  DevOps: ["devops", "cloud", "deployment", "docker", "ci/cd", "cicd"],
+  Fullstack: ["fullstack", "full-stack"],
+};
 
 export const getProgressSummary = cache(
   async (): Promise<ProgressSummary | null> => {
@@ -284,17 +309,24 @@ function buildCategoryBreakdown(userCourses: UserCourseRow[]): TimeSpentItem[] {
       return;
     }
 
-    counts.set(course.category, (counts.get(course.category) ?? 0) + 1);
+    const category = normalizeCourseCategory(course.category);
+
+    counts.set(category, (counts.get(category) ?? 0) + 1);
   });
 
-  const total = Math.max(userCourses.length, 1);
+  const total = Math.max(
+    [...counts.values()].reduce((sum, count) => sum + count, 0),
+    1
+  );
 
-  return [...counts.entries()].map(([label, count], index) => ({
-    id: index + 1,
-    label,
-    value: Math.round((count / total) * 100),
-    color: categoryColors[index % categoryColors.length],
-  }));
+  return [...counts.entries()]
+    .sort((first, second) => second[1] - first[1])
+    .map(([label, count], index) => ({
+      id: index + 1,
+      label,
+      value: Math.round((count / total) * 100),
+      color: categoryColors[index % categoryColors.length],
+    }));
 }
 
 function buildTopicProgress(
@@ -311,15 +343,17 @@ function buildTopicProgress(
       return;
     }
 
-    coursesByCategory.set(course.category, [
-      ...(coursesByCategory.get(course.category) ?? []),
+    const category = normalizeCourseCategory(course.category);
+
+    coursesByCategory.set(category, [
+      ...(coursesByCategory.get(category) ?? []),
       courseRow,
     ]);
   });
 
   completedLessons.forEach((lesson) => {
     const course = getRelation(lesson.courses);
-    const category = course?.category;
+    const category = course ? normalizeCourseCategory(course.category) : null;
 
     if (!category) {
       return;
@@ -338,7 +372,7 @@ function buildTopicProgress(
       id: category,
       title: category,
       progress: lessons ? Math.round((completed / lessons) * 100) : 0,
-      icon: topicIcons[category as keyof typeof topicIcons] ?? BookOpen,
+      icon: topicIcons[category as keyof typeof topicIcons],
       color: topicColors[index % topicColors.length],
     };
   });
@@ -409,8 +443,9 @@ function getStrongestCategory(userCourses: UserCourseRow[]): string | null {
       return;
     }
 
-    const current = progressByCategory.get(course.category) ?? { total: 0, count: 0 };
-    progressByCategory.set(course.category, {
+    const category = normalizeCourseCategory(course.category);
+    const current = progressByCategory.get(category) ?? { total: 0, count: 0 };
+    progressByCategory.set(category, {
       total: current.total + courseRow.progress_percent,
       count: current.count + 1,
     });
@@ -421,6 +456,29 @@ function getStrongestCategory(userCourses: UserCourseRow[]): string | null {
       return second[1].total / second[1].count - first[1].total / first[1].count;
     })
     .at(0)?.[0] ?? null;
+}
+
+function normalizeCourseCategory(category: string): string {
+  const normalizedCategory = category.trim().toLowerCase();
+
+  for (const [label, aliases] of Object.entries(categoryAliases)) {
+    if (aliases.some((alias) => matchesCategoryAlias(normalizedCategory, alias))) {
+      return label;
+    }
+  }
+
+  return "Other";
+}
+
+function matchesCategoryAlias(category: string, alias: string): boolean {
+  if (alias.length > 3) {
+    return category.includes(alias);
+  }
+
+  const escapedAlias = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const aliasPattern = new RegExp(`(^|[^a-z0-9])${escapedAlias}([^a-z0-9]|$)`);
+
+  return aliasPattern.test(category);
 }
 
 function getLastSevenDays(): Date[] {

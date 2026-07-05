@@ -10,7 +10,7 @@ import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Progress",
+  title: "MindForge | Progress",
 };
 
 export default async function ProgressPage() {
@@ -22,7 +22,7 @@ export default async function ProgressPage() {
   if (!profile) redirect("/login");
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 pb-24 xl:pb-8">
       <PageHeader
         title={<TranslatedText translationKey="progress.title" fallback="Progress" />}
         subtitle={
@@ -33,10 +33,16 @@ export default async function ProgressPage() {
         }
       />
       <ProgressStats profile={profile} summary={progressSummary} />
-      <ProgressOverviewSection profile={profile} summary={progressSummary} />
-      <ProgressTopicsSection summary={progressSummary} />
-      <ProgressActivitySection summary={progressSummary} />
-      <ProgressGoalSection summary={progressSummary} />
+
+      <div className="grid gap-5 2xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.55fr)]">
+        <div className="min-w-0 space-y-5">
+          <ProgressOverviewSection profile={profile} summary={progressSummary} />
+          <ProgressTopicsSection summary={progressSummary} />
+          <ProgressActivitySection summary={progressSummary} />
+        </div>
+
+        <ProgressGoalSection summary={progressSummary} />
+      </div>
     </div>
   );
 }

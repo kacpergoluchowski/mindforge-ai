@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import type {
   GlobalSearchItem,
   GlobalSearchItemType,
@@ -44,6 +45,7 @@ const typeIcons: Record<GlobalSearchItemType, LucideIcon> = {
 };
 
 export default function GlobalSearch({ items, compact = false }: GlobalSearchProps) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -88,30 +90,37 @@ export default function GlobalSearch({ items, compact = false }: GlobalSearchPro
       <div ref={wrapperRef} className="relative">
         <button
           type="button"
+          aria-expanded={open}
           onClick={() => {
             setOpen(true);
             requestAnimationFrame(() => inputRef.current?.focus());
           }}
-          className="flex size-9 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-white"
-          aria-label="Open search"
+          className="flex size-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-white transition hover:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/70"
+          aria-label={t("search.open", "Open search")}
         >
-          <Search className="size-4" />
+          <Search aria-hidden="true" className="size-4" />
         </button>
 
         {open ? (
-          <div className="fixed inset-0 z-1000 bg-slate-950/80 p-4 backdrop-blur-sm lg:hidden">
-            <div className="mx-auto mt-16 w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-[#0d1424] shadow-2xl">
+          <div
+            aria-modal="true"
+            className="fixed inset-0 z-[1000] bg-slate-950/80 p-4 backdrop-blur-sm lg:hidden"
+            role="dialog"
+          >
+            <div className="mx-auto mt-14 w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-[#0d1424] shadow-2xl">
               <SearchInput
                 query={query}
                 refObject={inputRef}
                 setOpen={setOpen}
                 setQuery={setQuery}
+                t={t}
                 mobile
               />
               <SearchResults
                 query={query}
                 results={results}
                 onSelect={() => setOpen(false)}
+                t={t}
               />
             </div>
           </div>
@@ -127,6 +136,7 @@ export default function GlobalSearch({ items, compact = false }: GlobalSearchPro
         refObject={inputRef}
         setOpen={setOpen}
         setQuery={setQuery}
+        t={t}
       />
 
       {open ? (
@@ -135,6 +145,7 @@ export default function GlobalSearch({ items, compact = false }: GlobalSearchPro
             query={query}
             results={results}
             onSelect={() => setOpen(false)}
+            t={t}
           />
         </div>
       ) : null}
@@ -148,6 +159,7 @@ type SearchInputProps = {
   refObject: RefObject<HTMLInputElement | null>;
   setOpen: (open: boolean) => void;
   setQuery: (query: string) => void;
+  t: (key: string, fallback: string) => string;
 };
 
 function SearchInput({
@@ -156,18 +168,26 @@ function SearchInput({
   refObject,
   setOpen,
   setQuery,
+  t,
 }: SearchInputProps) {
   return (
     <div className={clsx("relative", mobile && "border-b border-white/10")}>
-      <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-500" />
+      <Search
+        aria-hidden="true"
+        className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-500"
+      />
 
       <input
         ref={refObject}
+        aria-label={t("search.label", "Search")}
         type="text"
         value={query}
         onFocus={() => setOpen(true)}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Search pages, courses, roadmaps..."
+        placeholder={t(
+          "search.placeholder",
+          "Search pages, courses, roadmaps..."
+        )}
         className={clsx(
           "h-11 w-full border-white/10 bg-white/[0.04] pl-12 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-violet-500/50 focus:bg-white/[0.06]",
           mobile ? "rounded-t-3xl pr-12" : "rounded-xl border pr-16"
@@ -179,12 +199,15 @@ function SearchInput({
           type="button"
           onClick={() => setOpen(false)}
           className="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-xl text-slate-400 transition hover:bg-white/5 hover:text-white"
-          aria-label="Close search"
+          aria-label={t("search.close", "Close search")}
         >
-          <X className="size-4" />
+          <X aria-hidden="true" className="size-4" />
         </button>
       ) : (
-        <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2 py-1 text-xs text-slate-500">
+        <div
+          aria-hidden="true"
+          className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2 py-1 text-xs text-slate-500"
+        >
           <Command className="size-3" />
           <span>K</span>
         </div>
@@ -197,9 +220,10 @@ type SearchResultsProps = {
   query: string;
   results: GlobalSearchItem[];
   onSelect: () => void;
+  t: (key: string, fallback: string) => string;
 };
 
-function SearchResults({ query, results, onSelect }: SearchResultsProps) {
+function SearchResults({ query, results, onSelect, t }: SearchResultsProps) {
   return (
     <div className="max-h-[420px] overflow-y-auto p-2">
       {results.length ? (
@@ -214,7 +238,7 @@ function SearchResults({ query, results, onSelect }: SearchResultsProps) {
         </div>
       ) : (
         <div className="p-5 text-sm text-slate-400">
-          No results for{" "}
+          {t("search.noResults", "No results for")}{" "}
           <span className="font-medium text-slate-200">
             &quot;{query}&quot;
           </span>
@@ -236,10 +260,10 @@ function SearchResultItem({ item, onSelect }: SearchResultItemProps) {
     <Link
       href={item.href}
       onClick={onSelect}
-      className="group flex min-w-0 items-start gap-3 rounded-xl p-3 transition hover:bg-white/[0.05]"
+      className="group flex min-w-0 items-start gap-3 rounded-xl p-3 transition hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/70"
     >
       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-300">
-        <Icon className="size-5" />
+        <Icon aria-hidden="true" className="size-5" />
       </div>
 
       <div className="min-w-0 flex-1">

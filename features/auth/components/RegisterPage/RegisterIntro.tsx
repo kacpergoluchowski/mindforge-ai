@@ -5,7 +5,11 @@ import { ShieldCheck, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import RegisterFeatures from "./RegisterFeatures";
 
-export default function RegisterIntro() {
+type RegisterIntroProps = {
+  compact?: boolean;
+};
+
+export default function RegisterIntro({ compact = false }: RegisterIntroProps) {
   const { t } = useI18n();
 
   return (
@@ -29,17 +33,21 @@ export default function RegisterIntro() {
         )}
       </p>
 
-      <RegisterFeatures />
-      <div className="mt-8 flex items-center gap-3 text-sm text-slate-400">
-        <ShieldCheck aria-hidden="true" className="size-4 text-violet-300" />
-        <span>
-          {t("auth.dataPrefix", "Your data is")}
-          <span className="text-violet-300">
-            {" "}
-            {t("auth.dataSecure", "secure and encrypted")}
-          </span>
-        </span>
-      </div>
+      {!compact ? (
+        <>
+          <RegisterFeatures />
+          <div className="mt-8 flex items-center gap-3 text-sm text-slate-400">
+            <ShieldCheck aria-hidden="true" className="size-4 text-violet-300" />
+            <span>
+              {t("auth.dataPrefix", "Your data is")}
+              <span className="text-violet-300">
+                {" "}
+                {t("auth.dataSecure", "secure and encrypted")}
+              </span>
+            </span>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }

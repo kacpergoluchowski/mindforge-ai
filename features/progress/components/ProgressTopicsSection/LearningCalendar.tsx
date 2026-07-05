@@ -39,7 +39,7 @@ export default function LearningCalendar({ days }: LearningCalendarProps) {
   const calendarSummary = getCalendarSummary(calendarDays);
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
+    <section className="h-full rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">
@@ -57,20 +57,19 @@ export default function LearningCalendar({ days }: LearningCalendarProps) {
           </p>
         </div>
 
-        <button
-          type="button"
+        <span
           className="shrink-0 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-slate-300"
         >
           <TranslatedText
             fallback="Last 28 days"
             translationKey="progress.calendar.last28Days"
           />
-        </button>
+        </span>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1fr_180px]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_180px]">
         <div>
-          <div className="mb-4 grid grid-cols-7 gap-2 text-center text-xs text-slate-500">
+          <div className="mb-4 grid grid-cols-7 gap-1.5 text-center text-xs text-slate-500 sm:gap-2">
             {weekDays.map((day) => (
               <span key={day.id}>
                 <TranslatedText
@@ -81,12 +80,12 @@ export default function LearningCalendar({ days }: LearningCalendarProps) {
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
             {calendarDays.map((day) => (
               <div
                 key={day.id}
                 className={clsx(
-                  "h-11 w-full rounded-md transition hover:ring-2 hover:ring-emerald-400/40",
+                  "aspect-square w-full rounded-md transition hover:ring-2 hover:ring-emerald-400/40",
                   intensityStyles[getIntensity(day.value)]
                 )}
                 title={`${day.day}: ${day.value}`}

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export type ProgressStatColor = "violet" | "emerald" | "orange" | "blue";
 
 export type ProgressStat = {
-  id: number;
+  id: "totalXp" | "level" | "lessons" | "courses";
   title: ReactNode;
   value: string;
   subtitle: ReactNode;

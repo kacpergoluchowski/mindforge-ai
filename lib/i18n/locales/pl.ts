@@ -905,6 +905,14 @@ export const pl = {
     },
   },
 
+  search: {
+    close: "Zamknij wyszukiwarkę",
+    label: "Szukaj",
+    noResults: "Brak wyników dla",
+    open: "Otwórz wyszukiwarkę",
+    placeholder: "Szukaj stron, kursów, roadmap...",
+  },
+
   activity: {
     lessonCompleted: "Ukończono „{title}”",
     lessonCompletedDescription: "Lekcja ukończona",

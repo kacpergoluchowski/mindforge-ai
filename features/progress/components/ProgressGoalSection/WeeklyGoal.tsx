@@ -12,14 +12,14 @@ export default function WeeklyGoal({ completedLessons, target }: WeeklyGoalProps
   const remaining = Math.max(target - completedLessons, 0);
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-6">
+    <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-semibold text-white">
           <TranslatedText fallback="Weekly Goal" translationKey="progress.weeklyGoal" />
         </h2>
 
         <div className="flex size-11 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400">
-          <Target className="size-5" />
+          <Target aria-hidden="true" className="size-5" />
         </div>
       </div>
 
@@ -48,7 +48,14 @@ export default function WeeklyGoal({ completedLessons, target }: WeeklyGoalProps
           </span>
         </div>
 
-        <div className="h-3 overflow-hidden rounded-full bg-slate-800">
+        <div
+          aria-label={`${Math.round(progress)}%`}
+          aria-valuemax={100}
+          aria-valuemin={0}
+          aria-valuenow={Math.round(progress)}
+          className="h-3 overflow-hidden rounded-full bg-slate-800"
+          role="progressbar"
+        >
           <div
             className="h-full rounded-full bg-violet-500"
             style={{ width: `${progress}%` }}

@@ -24,15 +24,15 @@ export default function ActivityFeedItem({ item }: ActivityFeedItemProps) {
   const time = getActivityTime(item.time);
 
   return (
-    <div className="flex items-start justify-between gap-4">
-      <div className="flex min-w-0 items-start gap-4">
+    <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.025] p-3 sm:flex-row sm:items-start sm:justify-between sm:gap-3 sm:border-0 sm:bg-transparent sm:p-0">
+      <div className="flex min-w-0 items-start gap-3 sm:gap-4">
         <div
           className={clsx(
             "flex size-10 shrink-0 items-center justify-center rounded-full ring-1",
             colorClasses[item.color]
           )}
         >
-          <Icon className="size-5" />
+          <Icon aria-hidden="true" className="size-5" />
         </div>
 
         <div className="min-w-0">
@@ -46,7 +46,9 @@ export default function ActivityFeedItem({ item }: ActivityFeedItemProps) {
         </div>
       </div>
 
-      <span className="shrink-0 text-sm text-slate-400">{time}</span>
+      <span className="pl-[3.25rem] text-xs text-slate-400 sm:shrink-0 sm:whitespace-nowrap sm:pl-0 sm:text-sm">
+        {time}
+      </span>
     </div>
   );
 }
