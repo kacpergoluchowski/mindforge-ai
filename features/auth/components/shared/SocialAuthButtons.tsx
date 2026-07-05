@@ -25,14 +25,7 @@ const providers: Array<{
     scopes: "read:user user:email",
     mark: "GH",
     markClassName: "text-white",
-  },
-  {
-    name: "Google",
-    provider: "google",
-    scopes: "email profile",
-    mark: "G",
-    markClassName: "text-blue-400",
-  },
+  }
 ];
 
 function getOAuthRedirectUrl() {
