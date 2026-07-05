@@ -2,7 +2,7 @@ import { getAiMentorData } from "@/features/ai-mentor/api/getAiMentorData";
 import AiMentorChat from "@/features/ai-mentor/components/AiMentorChat/AiMentorChat";
 
 export const metadata = {
-  title: "AI Mentor",
+  title: "MindForge | AI Mentor",
 };
 
 type AiMentorPageProps = {

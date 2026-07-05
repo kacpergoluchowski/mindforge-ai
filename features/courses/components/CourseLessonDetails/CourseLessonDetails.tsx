@@ -222,6 +222,7 @@ export default function CourseLessonDetails({
                   <CompletedBadge />
                 ) : (
                   <CourseLessonQuizModal
+                    key={lesson.id}
                     courseId={course.id}
                     courseSlug={course.slug}
                     lesson={lesson}

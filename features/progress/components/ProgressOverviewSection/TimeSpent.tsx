@@ -32,8 +32,8 @@ export default function TimeSpent({ items }: TimeSpentProps) {
   }));
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
-      <div className="mb-6 flex items-center justify-between gap-4">
+    <article className="flex h-full flex-col rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
+      <div className="mb-5 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-white">
             {t("progress.timeSpent", "Time Spent")}
@@ -51,16 +51,16 @@ export default function TimeSpent({ items }: TimeSpentProps) {
         </span>
       </div>
 
-      <div className="grid items-center gap-6 sm:grid-cols-[0.9fr_1.1fr] xl:grid-cols-1">
-        <div className="relative flex h-[230px] items-center justify-center overflow-hidden">
+      <div className="flex flex-1 flex-col justify-center gap-6">
+        <div className="relative mx-auto flex size-[190px] max-w-full items-center justify-center overflow-hidden sm:size-[210px] xl:size-[190px] 2xl:size-[210px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={chartData}
                 dataKey="value"
                 nameKey="label"
-                innerRadius={64}
-                outerRadius={92}
+                innerRadius="50%"
+                outerRadius="78%"
                 paddingAngle={4}
                 stroke="none"
               >
@@ -73,27 +73,29 @@ export default function TimeSpent({ items }: TimeSpentProps) {
 
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-bold text-white">{items.length}</span>
-            <span className="mt-1 text-sm text-slate-400">
+            <span className="mt-1 text-xs text-slate-400">
               {t("progress.topics", "Topics")}
             </span>
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="grid w-full gap-3 sm:grid-cols-2 xl:grid-cols-1">
           {chartData.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between gap-3"
+              className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex min-w-0 items-center gap-2">
                 <span
                   className={clsx(
-                    "size-2.5 rounded-full",
+                    "size-2.5 shrink-0 rounded-full",
                     badgeStyles[item.color]
                   )}
                 />
 
-                <span className="text-sm text-slate-300">{item.label}</span>
+                <span className="truncate text-sm font-medium text-slate-300">
+                  {item.label}
+                </span>
               </div>
 
               <span className="text-sm font-medium text-white">

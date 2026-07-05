@@ -27,6 +27,26 @@ export default function XpOverview({
   xpOverview,
 }: XpOverviewProps) {
   const { t } = useI18n();
+  const metricItems = [
+    {
+      id: "total-xp",
+      label: t("progress.stats.totalXp", "Total XP"),
+      value: totalXp.toLocaleString(),
+      valueClassName: "text-3xl text-violet-400",
+    },
+    {
+      id: "week-xp",
+      label: t("dashboard.thisWeek", "This Week"),
+      value: `+${weekXp.toLocaleString()}`,
+      valueClassName: "text-2xl text-emerald-400",
+    },
+    {
+      id: "daily-average",
+      label: t("progress.dailyAverage", "Daily Average"),
+      value: dailyAverageXp.toLocaleString(),
+      valueClassName: "text-2xl text-slate-200",
+    },
+  ];
   const chartData = (xpOverview.length ? xpOverview : getEmptyWeekData()).map(
     (item) => ({
       ...item,
@@ -35,7 +55,7 @@ export default function XpOverview({
   );
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
+    <article className="h-full rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5 lg:p-6">
       <div className="mb-6 flex items-center justify-between gap-4">
         <h2 className="text-xl font-semibold text-white">
           {t("progress.xpOverview", "XP Overview")}
@@ -115,36 +135,16 @@ export default function XpOverview({
         </div>
 
         <div className="flex flex-col justify-center border-t border-white/10 pt-5 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
-          <div>
-            <p className="text-sm text-slate-400">
-              {t("progress.stats.totalXp", "Total XP")}
-            </p>
-            <p className="mt-2 text-3xl font-bold text-violet-400">
-              {totalXp.toLocaleString()}
-            </p>
-          </div>
+          {metricItems.map((item, index) => (
+            <div key={item.id}>
+              <p className="text-sm text-slate-400">{item.label}</p>
+              <p className={`mt-2 font-bold ${item.valueClassName}`}>{item.value}</p>
 
-          <div className="my-6 h-px bg-white/10" />
-
-          <div>
-            <p className="text-sm text-slate-400">
-              {t("dashboard.thisWeek", "This Week")}
-            </p>
-            <p className="mt-2 text-2xl font-bold text-emerald-400">
-              +{weekXp.toLocaleString()}
-            </p>
-          </div>
-
-          <div className="my-6 h-px bg-white/10" />
-
-          <div>
-            <p className="text-sm text-slate-400">
-              {t("progress.dailyAverage", "Daily Average")}
-            </p>
-            <p className="mt-2 text-2xl font-bold text-slate-200">
-              {dailyAverageXp.toLocaleString()}
-            </p>
-          </div>
+              {index !== metricItems.length - 1 && (
+                <div className="my-6 h-px bg-white/10" />
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </article>

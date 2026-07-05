@@ -86,7 +86,8 @@ export const getAiMentorData = cache(
       .select("id, chat_id, role, content, created_at")
       .eq("profile_id", user.id)
       .eq("chat_id", selectedChat.id)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true });
 
     return {
       chats,

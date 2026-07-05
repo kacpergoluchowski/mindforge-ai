@@ -253,6 +253,7 @@ export default function CourseLessonQuizModal({
                       nextLessonSlug ? (
                         <Link
                           href={`/learn/courses/${courseSlug}/lessons/${nextLessonSlug}`}
+                          onClick={closeModal}
                           className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
                         >
                           {t("courses.lesson.nextLesson", "Next Lesson")}
@@ -261,6 +262,7 @@ export default function CourseLessonQuizModal({
                       ) : (
                         <Link
                           href={`/learn/courses/${courseSlug}`}
+                          onClick={closeModal}
                           className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 font-semibold text-white transition hover:bg-violet-600"
                         >
                           {t("courses.lesson.backToCourse", "Back to course")}

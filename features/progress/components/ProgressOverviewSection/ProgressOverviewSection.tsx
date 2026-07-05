@@ -15,7 +15,7 @@ export default function ProgressOverviewSection({
 }: ProgressOverviewSectionProps) {
   return (
     <section className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-      <div className="min-w-0">
+      <div className="h-full min-w-0">
         <XpOverview
           dailyAverageXp={summary?.dailyAverageXp ?? 0}
           totalXp={profile.xp}
@@ -23,7 +23,7 @@ export default function ProgressOverviewSection({
           xpOverview={summary?.xpOverview ?? []}
         />
       </div>
-      <div className="min-w-0">
+      <div className="h-full min-w-0">
         <TimeSpent items={summary?.categoryBreakdown ?? []} />
       </div>
     </section>

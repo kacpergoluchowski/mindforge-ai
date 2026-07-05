@@ -52,25 +52,37 @@ export default function ProgressStatCard({
     progress === undefined ? undefined : Math.min(Math.max(progress, 0), 100);
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 transition-colors hover:border-white/15 sm:p-5">
-      <div className="flex items-start justify-between gap-4">
+    <article className="min-w-0 rounded-3xl border border-white/10 bg-white/[0.035] p-4 transition-colors hover:border-white/15 sm:p-5">
+      <div className="flex min-w-0 items-center gap-3">
         <div
           className={clsx(
-            "flex size-11 shrink-0 items-center justify-center rounded-2xl",
+            "flex size-10 shrink-0 items-center justify-center rounded-2xl sm:size-11",
             styles.background
           )}
         >
-          <Icon aria-hidden="true" className={clsx("size-5", styles.icon)} />
+          <Icon
+            aria-hidden="true"
+            className={clsx("size-5", styles.icon)}
+          />
         </div>
 
-        <p className="min-w-0 truncate text-sm text-slate-400">{title}</p>
+        <p className="min-w-0 truncate text-sm text-slate-400">
+          {title}
+        </p>
       </div>
 
       <p className="mt-5 truncate text-3xl font-bold leading-tight text-white">
         {value}
       </p>
 
-      <p className={clsx("mt-2 text-sm", styles.subtitle)}>{subtitle}</p>
+      <p
+        className={clsx(
+          "mt-2 line-clamp-2 text-sm leading-snug",
+          styles.subtitle
+        )}
+      >
+        {subtitle}
+      </p>
 
       {normalizedProgress !== undefined && (
         <div className="mt-5">

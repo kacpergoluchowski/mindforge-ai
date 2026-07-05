@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import {
   ArrowLeft,
   Bot,
   Check,
+  Loader2,
   MessageSquare,
   MoreHorizontal,
   PanelLeft,
-  Paperclip,
   Pencil,
   Plus,
   Search,
@@ -43,9 +43,16 @@ export default function AiMentorChat({ data }: AiMentorChatProps) {
     OptimisticAiChatMessage[]
   >([]);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const visibleMessages = optimisticMessages.length
-    ? [...data.messages, ...optimisticMessages]
-    : data.messages;
+  const activeChatId = data.selectedChat?.id ?? "";
+  const visibleMessages = useMemo(() => {
+    const activeOptimisticMessages = optimisticMessages.filter((message) => {
+      return message.chatId === activeChatId;
+    });
+
+    return activeOptimisticMessages.length
+      ? [...data.messages, ...activeOptimisticMessages]
+      : data.messages;
+  }, [activeChatId, data.messages, optimisticMessages]);
   const chatType = data.selectedChat?.type ?? "general";
   const contextChatActive = chatType !== "general";
 
@@ -159,7 +166,7 @@ export default function AiMentorChat({ data }: AiMentorChatProps) {
         </div>
 
         <ChatComposer
-          chatId={data.selectedChat?.id ?? ""}
+          chatId={activeChatId}
           onRequestComplete={() => setOptimisticMessages([])}
           onOptimisticMessage={(message) => {
             const createdAt = new Date().toISOString();
@@ -233,15 +240,17 @@ function ChatSidebar({
           </div>
         </div>
 
-        <button
-          type="button"
-          title={onClose ? "Close sidebar" : "Toggle sidebar"}
-          aria-label={onClose ? "Close sidebar" : "Toggle sidebar"}
-          className="rounded-lg p-2 text-slate-400 transition hover:bg-white/[0.04] hover:text-white"
-          onClick={onClose}
-        >
-          {onClose ? <X className="size-4" /> : <PanelLeft className="size-4" />}
-        </button>
+        {onClose ? (
+          <button
+            type="button"
+            title="Close sidebar"
+            aria-label="Close sidebar"
+            className="rounded-lg p-2 text-slate-400 transition hover:bg-white/[0.04] hover:text-white"
+            onClick={onClose}
+          >
+            <X className="size-4" />
+          </button>
+        ) : null}
       </div>
 
       <Link
@@ -266,14 +275,15 @@ function ChatSidebar({
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
         <input
           type="text"
+          aria-label="Search chats"
           placeholder="Search chats..."
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value)}
-          className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] pl-10 pr-3 text-sm outline-none placeholder:text-slate-500"
+          className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] pl-10 pr-3 text-sm outline-none transition placeholder:text-slate-500 focus:border-violet-400/50 focus:ring-2 focus:ring-violet-500/20"
         />
       </div>
 
-      <nav className="mt-6 min-h-0 flex-1 overflow-hidden">
+      <nav className="mt-6 min-h-0 flex-1 overflow-y-auto pr-1">
         <ChatGroup
           activeChatId={activeChatId}
           chats={visibleChats}
@@ -436,7 +446,7 @@ type MessageListProps = {
 
 function MessageList({ messages }: MessageListProps) {
   return (
-    <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-end gap-8">
+    <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-end gap-7 sm:gap-8">
       {messages.map((message) =>
         message.role === "user" ? (
           <UserMessage key={message.id}>{message.content}</UserMessage>
@@ -480,7 +490,7 @@ type AssistantMessageProps = MessageProps & {
 function UserMessage({ children }: MessageProps) {
   return (
     <div className="flex justify-end">
-      <div className="max-w-[85%] rounded-3xl bg-violet-600 px-5 py-3 text-sm leading-6 text-white sm:max-w-xl">
+      <div className="max-w-[85%] overflow-hidden rounded-3xl bg-violet-600 px-5 py-3 text-sm leading-6 text-white shadow-lg shadow-violet-950/20 sm:max-w-xl">
         {children}
       </div>
     </div>
@@ -494,7 +504,7 @@ function AssistantMessage({ children, pending }: AssistantMessageProps) {
         <Bot className="size-5" />
       </div>
 
-      <div className="min-w-0 flex-1 whitespace-pre-wrap text-sm leading-7 text-slate-200">
+      <div className="min-w-0 flex-1 whitespace-pre-wrap break-words text-sm leading-7 text-slate-200">
         {pending ? <ThinkingMessage /> : children}
       </div>
     </div>
@@ -527,6 +537,7 @@ function ChatComposer({
 }: ChatComposerProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [errorMessage, setErrorMessage] = useState("");
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -539,6 +550,7 @@ function ChatComposer({
       return;
     }
 
+    setErrorMessage("");
     onOptimisticMessage(message);
     form.reset();
 
@@ -546,6 +558,8 @@ function ChatComposer({
       try {
         await sendAiMentorMessage(formData);
         router.refresh();
+      } catch {
+        setErrorMessage("Could not send your message. Please try again.");
       } finally {
         onRequestComplete();
       }
@@ -553,41 +567,53 @@ function ChatComposer({
   }
 
   return (
-    <div className="shrink-0 px-4 pb-4 sm:px-6 sm:pb-6">
+    <div className="shrink-0 border-t border-white/10 bg-[#080e18]/95 px-4 pb-4 pt-3 backdrop-blur sm:px-6 sm:pb-6">
       <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
         <input type="hidden" name="chatId" value={chatId} />
-        <div className="rounded-3xl border border-white/10 bg-[#111a2d] p-3 shadow-2xl shadow-slate-950/30">
+        <div className="rounded-3xl border border-white/10 bg-[#111a2d] p-3 shadow-2xl shadow-slate-950/30 transition focus-within:border-violet-400/40 focus-within:ring-2 focus-within:ring-violet-500/15">
           <textarea
             rows={2}
             name="message"
             aria-label="Message to AI Mentor"
+            maxLength={MAX_COMPOSER_MESSAGE_LENGTH}
             placeholder="Ask anything about programming, career or learning..."
             disabled={isPending}
-            className="min-h-14 w-full resize-none bg-transparent px-2 py-2 text-sm leading-6 text-white outline-none placeholder:text-slate-500"
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                event.currentTarget.form?.requestSubmit();
+              }
+            }}
+            className="max-h-40 min-h-14 w-full resize-none bg-transparent px-2 py-2 text-sm leading-6 text-white outline-none placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-70"
           />
 
           <div className="flex items-center justify-between gap-3">
-            <button
-              type="button"
-              title="Add attachment"
-              aria-label="Add attachment"
-              className="flex size-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-white/[0.04] hover:text-white"
-            >
-              <Paperclip className="size-5" />
-            </button>
+            <p className="px-2 text-xs text-slate-500">
+              Enter to send, Shift + Enter for a new line
+            </p>
 
             <button
               type="submit"
               title="Send message"
               aria-label="Send message"
               disabled={isPending}
-              className="flex size-11 items-center justify-center rounded-xl bg-violet-600 text-white transition hover:bg-violet-500"
+              className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-white transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <SendHorizonal className="size-5" />
+              {isPending ? (
+                <Loader2 className="size-5 animate-spin" />
+              ) : (
+                <SendHorizonal className="size-5" />
+              )}
             </button>
           </div>
         </div>
       </form>
+
+      {errorMessage ? (
+        <p className="mx-auto mt-2 max-w-3xl text-sm text-red-300">
+          {errorMessage}
+        </p>
+      ) : null}
 
       <p className="mt-2 text-center text-xs text-slate-500">
         AI can make mistakes. Always verify important information.
@@ -595,6 +621,8 @@ function ChatComposer({
     </div>
   );
 }
+
+const MAX_COMPOSER_MESSAGE_LENGTH = 3000;
 
 function getVisibleChats(chats: AiChat[], searchQuery: string): AiChat[] {
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();

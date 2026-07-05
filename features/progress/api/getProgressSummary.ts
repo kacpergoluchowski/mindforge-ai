@@ -14,6 +14,7 @@ import {
 
 import { createClient } from "@/lib/supabase/server";
 
+import type { LucideIcon } from "lucide-react";
 import type {
   AchievementItem,
   CourseProgressItem,
@@ -75,7 +76,17 @@ type UserAchievementRow = {
     | null;
 };
 
-const activityIcons = {
+type ActivityDaySummary = {
+  count: number;
+  xp: number;
+};
+
+type TopicSummary = {
+  completed: number;
+  lessons: number;
+};
+
+const activityIcons: Record<string, LucideIcon> = {
   achievement_unlocked: Trophy,
   course_started: BookOpen,
   lesson_completed: CheckCircle,
@@ -89,7 +100,7 @@ const activityColors: Record<string, RecentActivityItem["color"]> = {
   xp_earned: "yellow",
 };
 
-const topicIcons = {
+const topicIcons: Record<string, LucideIcon> = {
   "AI & ML": Atom,
   Backend: Code2,
   Database,
@@ -210,7 +221,8 @@ export const getProgressSummary = cache(
       return new Date(lesson.completed_at) >= getDateDaysAgo(6);
     }).length;
     const activityRange = (activityRangeResult.data ?? []) as ActivityLogRow[];
-    const xpOverview = buildXpOverview(activityRange);
+    const activityByDay = buildActivityByDay(activityRange);
+    const xpOverview = buildXpOverview(activityByDay);
     const thisWeekXp = xpOverview.reduce((total, day) => total + day.xp, 0);
 
     return {
@@ -225,7 +237,7 @@ export const getProgressSummary = cache(
       xpOverview,
       categoryBreakdown: buildCategoryBreakdown(userCourses),
       topicProgress: buildTopicProgress(userCourses, completedLessons),
-      learningCalendar: buildLearningCalendar(activityRange),
+      learningCalendar: buildLearningCalendar(activityByDay),
       achievements: ((achievementsResult.data ?? []) as UserAchievementRow[]).map(
         mapAchievement
       ),
@@ -246,7 +258,7 @@ function mapActivity(activity: ActivityLogRow): RecentActivityItem {
       activity.created_at
     )}`,
     xp: activity.metadata?.xp_reward ? `+${activity.metadata.xp_reward} XP` : "",
-    icon: activityIcons[activity.type as keyof typeof activityIcons] ?? BookOpen,
+    icon: activityIcons[activity.type] ?? BookOpen,
     color: activityColors[activity.type] ?? "violet",
   };
 }
@@ -284,19 +296,15 @@ function mapCourseProgress(courseRow: UserCourseRow): CourseProgressItem[] {
   ];
 }
 
-function buildXpOverview(activities: ActivityLogRow[]): XpOverviewItem[] {
+function buildXpOverview(
+  activityByDay: Map<string, ActivityDaySummary>
+): XpOverviewItem[] {
   const days = getLastSevenDays();
 
-  return days.map((date) => {
-    const xp = activities
-      .filter((activity) => isSameDay(activity.created_at, date))
-      .reduce((total, activity) => total + (activity.metadata?.xp_reward ?? 0), 0);
-
-    return {
-      day: date.toLocaleDateString("en-US", { weekday: "short" }),
-      xp,
-    };
-  });
+  return days.map((date) => ({
+    day: date.toLocaleDateString("en-US", { weekday: "short" }),
+    xp: activityByDay.get(getDateKey(date))?.xp ?? 0,
+  }));
 }
 
 function buildCategoryBreakdown(userCourses: UserCourseRow[]): TimeSpentItem[] {
@@ -333,8 +341,7 @@ function buildTopicProgress(
   userCourses: UserCourseRow[],
   completedLessons: LessonProgressRow[]
 ): TopicProgressItem[] {
-  const coursesByCategory = new Map<string, UserCourseRow[]>();
-  const completedByCategory = new Map<string, number>();
+  const summaryByCategory = new Map<string, TopicSummary>();
 
   userCourses.forEach((courseRow) => {
     const course = getRelation(courseRow.courses);
@@ -344,11 +351,12 @@ function buildTopicProgress(
     }
 
     const category = normalizeCourseCategory(course.category);
+    const summary = summaryByCategory.get(category) ?? { completed: 0, lessons: 0 };
 
-    coursesByCategory.set(category, [
-      ...(coursesByCategory.get(category) ?? []),
-      courseRow,
-    ]);
+    summaryByCategory.set(category, {
+      ...summary,
+      lessons: summary.lessons + course.lessons_count,
+    });
   });
 
   completedLessons.forEach((lesson) => {
@@ -359,39 +367,35 @@ function buildTopicProgress(
       return;
     }
 
-    completedByCategory.set(category, (completedByCategory.get(category) ?? 0) + 1);
+    const summary = summaryByCategory.get(category) ?? { completed: 0, lessons: 0 };
+
+    summaryByCategory.set(category, {
+      ...summary,
+      completed: summary.completed + 1,
+    });
   });
 
-  return [...coursesByCategory.entries()].map(([category, courses], index) => {
-    const lessons = courses.reduce((total, courseRow) => {
-      return total + (getRelation(courseRow.courses)?.lessons_count ?? 0);
-    }, 0);
-    const completed = completedByCategory.get(category) ?? 0;
-
-    return {
-      id: category,
-      title: category,
-      progress: lessons ? Math.round((completed / lessons) * 100) : 0,
-      icon: topicIcons[category as keyof typeof topicIcons],
-      color: topicColors[index % topicColors.length],
-    };
-  });
+  return [...summaryByCategory.entries()].map(([category, summary], index) => ({
+    id: category,
+    title: category,
+    progress: summary.lessons
+      ? Math.round((summary.completed / summary.lessons) * 100)
+      : 0,
+    icon: topicIcons[category] ?? BookOpen,
+    color: topicColors[index % topicColors.length],
+  }));
 }
 
-function buildLearningCalendar(activities: ActivityLogRow[]): LearningCalendarDay[] {
+function buildLearningCalendar(
+  activityByDay: Map<string, ActivityDaySummary>
+): LearningCalendarDay[] {
   const days = getLastTwentyEightDays();
 
-  return days.map((date) => {
-    const value = activities.filter((activity) =>
-      isSameDay(activity.created_at, date)
-    ).length;
-
-    return {
-      id: date.toISOString(),
-      day: date.toLocaleDateString("en-US", { weekday: "short" }),
-      value,
-    };
-  });
+  return days.map((date) => ({
+    id: date.toISOString(),
+    day: date.toLocaleDateString("en-US", { weekday: "short" }),
+    value: activityByDay.get(getDateKey(date))?.count ?? 0,
+  }));
 }
 
 function buildInsights(
@@ -497,14 +501,26 @@ function getDateDaysAgo(days: number): Date {
   return date;
 }
 
-function isSameDay(date: string, day: Date): boolean {
-  const activityDate = new Date(date);
+function buildActivityByDay(
+  activities: ActivityLogRow[]
+): Map<string, ActivityDaySummary> {
+  const activityByDay = new Map<string, ActivityDaySummary>();
 
-  return (
-    activityDate.getFullYear() === day.getFullYear() &&
-    activityDate.getMonth() === day.getMonth() &&
-    activityDate.getDate() === day.getDate()
-  );
+  activities.forEach((activity) => {
+    const key = getDateKey(new Date(activity.created_at));
+    const summary = activityByDay.get(key) ?? { count: 0, xp: 0 };
+
+    activityByDay.set(key, {
+      count: summary.count + 1,
+      xp: summary.xp + (activity.metadata?.xp_reward ?? 0),
+    });
+  });
+
+  return activityByDay;
+}
+
+function getDateKey(date: Date): string {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
 
 function getRelation<T>(relation: T | T[] | null) {

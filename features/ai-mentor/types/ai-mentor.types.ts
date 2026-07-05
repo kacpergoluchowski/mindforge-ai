@@ -1,9 +1,3 @@
-export type RecentConversation = {
-  id: number;
-  title: string;
-  time: string;
-};
-
 export type AiChatType = "general" | "lesson" | "challenge" | "roadmap";
 
 export type AiChat = {

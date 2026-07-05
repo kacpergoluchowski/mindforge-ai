@@ -354,6 +354,20 @@ export async function sendAiMentorMessage(formData: FormData) {
     mapAiChatMessage
   );
   const profile = profileData as ProfileRow | null;
+
+  const { error: userMessageError } = await supabase
+    .from("ai_chat_messages")
+    .insert({
+      chat_id: activeChatId,
+      profile_id: user.id,
+      role: "user",
+      content: message,
+    });
+
+  if (userMessageError) {
+    throw new Error("Could not save your message.");
+  }
+
   const assistantResponse = await getAiResponse({
     message,
     history,
@@ -361,20 +375,18 @@ export async function sendAiMentorMessage(formData: FormData) {
     learningContext,
   });
 
-  await supabase.from("ai_chat_messages").insert([
-    {
-      chat_id: activeChatId,
-      profile_id: user.id,
-      role: "user",
-      content: message,
-    },
-    {
+  const { error: assistantMessageError } = await supabase
+    .from("ai_chat_messages")
+    .insert({
       chat_id: activeChatId,
       profile_id: user.id,
       role: "assistant",
       content: assistantResponse,
-    },
-  ]);
+    });
+
+  if (assistantMessageError) {
+    throw new Error("Could not save AI response.");
+  }
 
   const nextTitle = shouldUseMessageAsTitle(chat.title)
     ? getChatTitle(message)

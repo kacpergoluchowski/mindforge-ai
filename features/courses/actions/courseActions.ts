@@ -272,7 +272,6 @@ export async function submitLessonQuiz(formData: FormData) {
   revalidatePath("/account/profile");
   revalidatePath("/learn/courses");
   revalidatePath(`/learn/courses/${courseSlug}`);
-  revalidatePath(`/learn/courses/${courseSlug}/lessons/${lessonSlug}`);
 
   return {
     passed: true,
