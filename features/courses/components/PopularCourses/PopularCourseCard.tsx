@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactNode } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import { startCourse } from "../../actions/courseActions";
 import type { PopularCourseCardProps } from "../../types/courses.types";
 
@@ -68,10 +70,10 @@ export default function PopularCourseCard({
   const StatusIcon = statusDetails.icon;
   const actionLessonSlug = nextLessonSlug ?? firstLessonSlug;
   const actionClassName =
-    "mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-violet-500 py-3 font-medium text-white transition hover:bg-violet-600";
+    "mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-600";
 
   return (
-    <article className="flex h-full flex-col rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-white/20 hover:bg-[#131f35]">
+    <article className="flex h-full min-w-0 flex-col rounded-2xl border border-white/10 bg-[#111a2d]/80 p-4 shadow-[0_18px_70px_rgba(0,0,0,0.14)] transition hover:border-white/20 hover:bg-[#131f35] sm:p-5">
       <div className="flex items-start justify-between gap-4">
         <CourseIcon icon={icon} className={styles.icon} />
         <span
@@ -81,11 +83,16 @@ export default function PopularCourseCard({
           )}
         >
           <StatusIcon className="size-3.5" />
-          {statusDetails.label}
+          <TranslatedText
+            fallback={statusDetails.fallback}
+            translationKey={statusDetails.translationKey}
+          />
         </span>
       </div>
 
-      <h3 className="text-lg font-semibold text-white">{title}</h3>
+      <h3 className="line-clamp-2 min-h-14 break-words text-lg font-semibold leading-7 text-white">
+        {title}
+      </h3>
 
       <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">
         {description}
@@ -102,14 +109,37 @@ export default function PopularCourseCard({
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <CourseInfo icon={Layers3} label="Modules" value={modulesCount || "-"} />
-        <CourseInfo icon={BookOpen} label="Lessons" value={lessons} />
-        <CourseInfo icon={Clock3} label="Duration" value={duration} />
-        <CourseInfo icon={Trophy} label="XP" value={xpReward} />
+        <CourseInfo
+          icon={Layers3}
+          label={
+            <TranslatedText
+              fallback="Modules"
+              translationKey="courses.details.modules"
+            />
+          }
+          value={modulesCount || "-"}
+        />
+        <CourseInfo
+          icon={BookOpen}
+          label={<TranslatedText fallback="Lessons" translationKey="courses.lessons" />}
+          value={lessons}
+        />
+        <CourseInfo
+          icon={Clock3}
+          label={<TranslatedText fallback="Duration" translationKey="courses.duration" />}
+          value={duration}
+        />
+        <CourseInfo
+          icon={Trophy}
+          label={<TranslatedText fallback="XP" translationKey="courses.xpReward" />}
+          value={xpReward}
+        />
       </div>
 
       <div className="mt-5 flex items-center justify-between">
-        <span className="text-sm text-slate-400">Level</span>
+        <span className="text-sm text-slate-400">
+          <TranslatedText fallback="Level" translationKey="courses.level" />
+        </span>
         <span
           className={clsx(
             "rounded-full px-3 py-1 text-xs font-medium",
@@ -124,7 +154,11 @@ export default function PopularCourseCard({
         <div className="mt-5">
           <div className="mb-2 flex items-center justify-between text-xs">
             <span className="font-medium text-slate-300">
-              {isCompleted ? "Completed" : "In progress"}
+              {isCompleted ? (
+                <TranslatedText fallback="Completed" translationKey="common.completed" />
+              ) : (
+                <TranslatedText fallback="In progress" translationKey="common.inProgress" />
+              )}
             </span>
             <span className="text-slate-400">{normalizedProgress}%</span>
           </div>
@@ -145,7 +179,7 @@ export default function PopularCourseCard({
           courseSlug={slug}
           lessonSlug={actionLessonSlug}
           className={actionClassName}
-          label={isStarted ? "Continue Course" : "Start Course"}
+          isStarted={isStarted}
         />
       ) : slug ? (
         <Link
@@ -155,12 +189,19 @@ export default function PopularCourseCard({
             isCompleted && "bg-emerald-500 hover:bg-emerald-600"
           )}
         >
-          {isCompleted ? "Completed" : "View Course"}
+          {isCompleted ? (
+            <TranslatedText fallback="Completed" translationKey="common.completed" />
+          ) : (
+            <TranslatedText fallback="View Course" translationKey="courses.viewCourse" />
+          )}
           <ArrowRight className="size-4" />
         </Link>
       ) : (
         <button type="button" className={actionClassName}>
-          Start Learning
+          <TranslatedText
+            fallback="Start Learning"
+            translationKey="courses.startLearning"
+          />
           <ArrowRight className="size-4" />
         </button>
       )}
@@ -173,7 +214,7 @@ type StartCourseFormProps = {
   courseSlug: string;
   lessonSlug: string;
   className: string;
-  label: string;
+  isStarted: boolean;
 };
 
 function StartCourseForm({
@@ -181,7 +222,7 @@ function StartCourseForm({
   courseSlug,
   lessonSlug,
   className,
-  label,
+  isStarted,
 }: StartCourseFormProps) {
   return (
     <form action={startCourse}>
@@ -189,7 +230,14 @@ function StartCourseForm({
       <input type="hidden" name="courseSlug" value={courseSlug} />
       <input type="hidden" name="lessonSlug" value={lessonSlug} />
       <button type="submit" className={className}>
-        {label}
+        {isStarted ? (
+          <TranslatedText
+            fallback="Continue Course"
+            translationKey="courses.continueCourse"
+          />
+        ) : (
+          <TranslatedText fallback="Start Course" translationKey="courses.startCourse" />
+        )}
         <ArrowRight className="size-4" />
       </button>
     </form>
@@ -216,7 +264,7 @@ function CourseIcon({ className, icon: Icon }: CourseIconProps) {
 
 type CourseInfoProps = {
   icon: PopularCourseCardProps["icon"];
-  label: string;
+  label: ReactNode;
   value: number | string;
 };
 
@@ -257,22 +305,25 @@ function getCourseStatusDetails(status?: string) {
   if (status === "completed") {
     return {
       className: "bg-emerald-500/10 text-emerald-300",
+      fallback: "Completed",
       icon: CheckCircle2,
-      label: "Completed",
+      translationKey: "common.completed",
     };
   }
 
   if (status) {
     return {
       className: "bg-violet-500/10 text-violet-300",
+      fallback: "In progress",
       icon: PlayCircle,
-      label: "In progress",
+      translationKey: "common.inProgress",
     };
   }
 
   return {
     className: "bg-slate-700/60 text-slate-300",
+    fallback: "Not started",
     icon: BookOpen,
-    label: "Not started",
+    translationKey: "courses.status.notStarted",
   };
 }

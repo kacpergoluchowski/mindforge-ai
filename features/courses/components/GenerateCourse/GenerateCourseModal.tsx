@@ -20,7 +20,7 @@ const initialState: GenerateCourseState = {};
 export default function GenerateCourseModal({ onClose }: GenerateCourseModalProps) {
   const { t } = useI18n();
   const [state, formAction] = useActionState(createAiCourse, initialState);
-  const [goal, setGoal] = useState("JavaScript Basics and ES6+");
+  const [goal, setGoal] = useState("");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
@@ -67,6 +67,9 @@ export default function GenerateCourseModal({ onClose }: GenerateCourseModalProp
                 value={goal}
                 onChange={(event) => setGoal(event.target.value)}
                 placeholder="JavaScript Basics and ES6+"
+                required
+                minLength={2}
+                maxLength={160}
                 className="w-full rounded-2xl border border-white/10 bg-[#080e18] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-violet-400/60 focus:bg-white/[0.03]"
               />
             </label>
@@ -83,7 +86,7 @@ export default function GenerateCourseModal({ onClose }: GenerateCourseModalProp
                   <p className="mt-1 text-sm leading-6 text-slate-400">
                     {t(
                       "courses.generate.outputDescription",
-                      "A full course with 5-7 modules, lessons, practice tasks, quizzes, XP and normal course progress."
+                      "A complete course with a dynamic number of modules, detailed lessons, code examples, practice tasks, quizzes, XP and normal course progress."
                     )}
                   </p>
                 </div>

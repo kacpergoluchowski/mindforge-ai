@@ -2,7 +2,6 @@ import SectionHeader from "@/components/shared/SectionHeader";
 import TranslatedText from "@/components/shared/TranslatedText";
 import { Atom, Brain, Database, FileCode2, Server } from "lucide-react";
 
-import { getPublishedCourses } from "../../api/getCourses";
 import PopularCourseCard from "./PopularCourseCard";
 import type {
   CourseListItem,
@@ -25,11 +24,10 @@ const colorMap: Record<string, PopularCourseCardProps["color"]> = {
 };
 
 type PopularCoursesProps = {
-  category: string;
+  courses: CourseListItem[];
 };
 
-export default async function PopularCourses({ category }: PopularCoursesProps) {
-  const courses = await getPublishedCourses(category, { excludeStarted: true });
+export default function PopularCourses({ courses }: PopularCoursesProps) {
   const visibleCourses = courses.map(mapCourseCard);
 
   return (
@@ -47,13 +45,13 @@ export default async function PopularCourses({ category }: PopularCoursesProps) 
       />
 
       {visibleCourses.length ? (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {visibleCourses.map((course) => (
             <PopularCourseCard key={course.id} {...course} />
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-6 text-sm text-slate-400">
+        <div className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 text-sm text-slate-400 sm:p-6">
           <TranslatedText
             translationKey="courses.noCoursesInCategory"
             fallback="No courses in this category yet."

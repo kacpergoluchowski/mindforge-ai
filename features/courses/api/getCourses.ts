@@ -87,7 +87,7 @@ type ContinueLearningRow = {
 export const getPublishedCourses = cache(
   async (
     category = "All Courses",
-    options: { excludeStarted?: boolean } = {}
+    options: { excludeStarted?: boolean; limit?: number } = {}
   ): Promise<CourseListItem[]> => {
   const supabase = await createClient();
   const {
@@ -126,6 +126,10 @@ export const getPublishedCourses = cache(
 
   if (category !== "All Courses") {
     query = query.eq("category", category);
+  }
+
+  if (options.limit) {
+    query = query.limit(options.limit);
   }
 
   const { data, error } = await query;
@@ -308,7 +312,8 @@ export const getContinueLearningCourses = cache(
       `
       )
       .eq("profile_id", user.id)
-      .order("updated_at", { ascending: false });
+      .order("updated_at", { ascending: false })
+      .limit(4);
 
     if (error || !data) {
       return [];

@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { BarChart3, Clock3 } from "lucide-react";
 import Link from "next/link";
 
+import TranslatedText from "@/components/shared/TranslatedText";
 import type { ContinueLearningCardProps } from "../../types/courses.types";
 
 type ContinueLearningColor = ContinueLearningCardProps["color"];
@@ -47,7 +48,7 @@ export default function ContinueLearningCard({
     <>
       <CourseVisual icon={icon} status={status} styles={styles} />
 
-      <div className="p-4">
+      <div className="flex flex-1 flex-col p-4">
         <h3 className="line-clamp-2 min-h-10 text-base font-semibold leading-5 text-white">
           {title}
         </h3>
@@ -56,7 +57,7 @@ export default function ContinueLearningCard({
 
         <CourseProgress progress={normalizedProgress} styles={styles} />
 
-        <div className="mt-5 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-auto flex items-center justify-between gap-3 pt-5 text-xs text-slate-400">
           <CourseMeta icon={Clock3} value={duration} />
           <CourseMeta icon={BarChart3} value={level} />
         </div>
@@ -67,12 +68,12 @@ export default function ContinueLearningCard({
   return slug ? (
     <Link
       href={`/learn/courses/${slug}`}
-      className="block overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 transition hover:border-white/20 hover:bg-[#131f35]"
+      className="flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 shadow-[0_18px_70px_rgba(0,0,0,0.14)] transition hover:border-white/20 hover:bg-[#131f35]"
     >
       {content}
     </Link>
   ) : (
-    <article className="overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 transition hover:border-white/20 hover:bg-[#131f35]">
+    <article className="flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 shadow-[0_18px_70px_rgba(0,0,0,0.14)] transition hover:border-white/20 hover:bg-[#131f35]">
       {content}
     </article>
   );
@@ -86,17 +87,17 @@ type CourseVisualProps = {
 
 function CourseVisual({ icon: Icon, status, styles }: CourseVisualProps) {
   return (
-    <div
-      className={clsx(
-        "relative flex h-36 items-center justify-center",
-        styles.glow
-      )}
-    >
-      <span className="absolute right-3 top-3 rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
-        {status}
+    <div className={clsx("relative flex h-32 items-center justify-center", styles.glow)}>
+      <span className="absolute right-3 top-3 max-w-[calc(100%-1.5rem)] truncate rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
+        {status || (
+          <TranslatedText
+            fallback="In progress"
+            translationKey="common.inProgress"
+          />
+        )}
       </span>
 
-      <Icon className={clsx("size-20", styles.icon)} />
+      <Icon className={clsx("size-16", styles.icon)} />
     </div>
   );
 }
@@ -128,9 +129,9 @@ type CourseMetaProps = {
 
 function CourseMeta({ icon: Icon, value }: CourseMetaProps) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex min-w-0 items-center gap-1.5">
       <Icon className="size-4" />
-      {value}
+      <span className="truncate">{value}</span>
     </div>
   );
 }

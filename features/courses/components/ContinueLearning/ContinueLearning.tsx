@@ -2,7 +2,6 @@ import SectionHeader from "@/components/shared/SectionHeader";
 import TranslatedText from "@/components/shared/TranslatedText";
 import { Atom, FileCode2, Triangle } from "lucide-react";
 
-import { getContinueLearningCourses } from "../../api/getCourses";
 import ContinueLearningCard from "./ContinueLearningCard";
 import type {
   ContinueLearningCardProps,
@@ -21,9 +20,16 @@ const colorMap: Record<string, ContinueLearningCardProps["color"]> = {
   violet: "violet",
 };
 
-export default async function ContinueLearning() {
-  const courses = await getContinueLearningCourses();
-  const visibleCourses = courses.map(mapContinueLearningCard);
+const VISIBLE_COURSES = 4;
+
+type ContinueLearningProps = {
+  courses: ContinueLearningCourse[];
+};
+
+export default function ContinueLearning({ courses }: ContinueLearningProps) {
+  const visibleCourses = courses
+    .slice(0, VISIBLE_COURSES)
+    .map(mapContinueLearningCard);
 
   return (
     <section className="space-y-5">
@@ -40,13 +46,13 @@ export default async function ContinueLearning() {
       />
 
       {visibleCourses.length ? (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-4">
           {visibleCourses.map((course) => (
             <ContinueLearningCard key={course.id} {...course} />
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-6 text-sm text-slate-400">
+        <div className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 text-sm text-slate-400 sm:p-6">
           <TranslatedText
             translationKey="dashboard.noCoursesInProgress"
             fallback="No courses in progress."

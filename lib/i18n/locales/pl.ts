@@ -222,7 +222,7 @@ export const pl = {
       generating: "Generowanie kursu...",
       goal: "Cel kursu",
       outputDescription:
-        "Pełny kurs z 5-7 modułami, lekcjami, zadaniami praktycznymi, quizami, XP i normalnym postępem kursu.",
+        "Pełny kurs z dynamiczną liczbą modułów, szczegółowymi lekcjami, przykładami kodu, zadaniami praktycznymi, quizami, XP i normalnym postępem kursu.",
       outputTitle: "Co zostanie utworzone",
       submit: "Wygeneruj kurs",
       subtitle:
@@ -232,10 +232,15 @@ export const pl = {
     aiBanner: {
       action: "Odkryj z AI",
       badge: "Nowość",
+      cardDescription:
+        "Generuj kursy, ucz się z quizami i wracaj do nauki od miejsca, w którym skończyłeś.",
+      cardTitle: "Adaptacyjne kursy",
       description:
         "Otrzymuj spersonalizowane rekomendacje kursów na podstawie celów nauki i postępów.",
       title: "Nauka wspierana przez AI",
     },
+    startLearning: "Rozpocznij naukę",
+    viewCourse: "Zobacz kurs",
     categories: {
       aiMl: "AI i ML",
       all: "Wszystkie kursy",
@@ -251,6 +256,10 @@ export const pl = {
       courseContentSummary:
         "{modules} modułów, {lessons} lekcji i {xp} XP do zdobycia.",
       finalProject: "Projekt końcowy",
+      lessonsCompletedShort: "lekcji ukończonych",
+      module: "Moduł",
+      modules: "Moduły",
+      nextStep: "Następny krok",
       overview: "Opis kursu",
       objectives: "Cele",
       moduleLessonsCompleted: "{completed}/{total} lekcji ukończonych",
@@ -275,6 +284,9 @@ export const pl = {
       lessonProgress: "Postęp lekcji",
       lesson: "Lekcja",
       lessonCounter: "Lekcja {current} z {total}",
+      blocks: "Bloki",
+      code: "Kod",
+      tasks: "Zadania",
       status: "Status",
       type: "Typ",
       reward: "Nagroda",
@@ -285,6 +297,7 @@ export const pl = {
       quizRequirement:
         "Zdobądź co najmniej {score}/{total}, aby ukończyć tę lekcję.",
       nextLesson: "Następna lekcja",
+      previousLesson: "Poprzednia lekcja",
       backToCourse: "Wróć do kursu",
       claimXp: "Odbierz XP",
       completeCourse: "Ukończ kurs",
@@ -299,6 +312,10 @@ export const pl = {
       completePracticeFirst: "Najpierw ukończ zadanie praktyczne.",
       miniTask: "Mini zadanie",
       codeExample: "Przykład kodu",
+      studyFlow: "Przebieg nauki",
+      readStep: "Czytanie",
+      practiceStep: "Praktyka",
+      quizStep: "Quiz",
       howToFinishTitle: "Jak zakończyć",
       howToFinish:
         "Przeczytaj lekcję, wykonaj checklistę i zdaj quiz na końcu strony.",

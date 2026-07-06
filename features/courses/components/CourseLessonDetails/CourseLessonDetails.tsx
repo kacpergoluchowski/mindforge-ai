@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import {
   ArrowLeft,
   ArrowRight,
+  BookOpen,
   CheckCircle2,
   ClipboardCheck,
   Code2,
@@ -35,12 +36,17 @@ export default function CourseLessonDetails({
 }: CourseLessonDetailsProps) {
   const lessons = course.modules.flatMap((module) => module.lessons);
   const lessonIndex = lessons.findIndex((item) => item.id === lesson.id);
+  const previousLesson = lessons[lessonIndex - 1];
   const nextLesson = lessons[lessonIndex + 1];
   const availableNextLesson = nextLesson?.locked ? null : nextLesson;
   const lessonNumber = lessonIndex + 1;
   const lessonProgress = Math.round((lessonNumber / lessons.length) * 100);
   const contentBlocks = formatContent(lesson.content);
-  const practiceTasks = getPracticeTasks(lesson);
+  const practiceTasks = getPracticeTasks(lesson, contentBlocks);
+  const currentModule = course.modules.find((module) =>
+    module.lessons.some((item) => item.id === lesson.id)
+  );
+  const contentStats = getContentStats(contentBlocks);
 
   return (
     <div className="min-w-0 space-y-6 sm:space-y-8">
@@ -55,7 +61,7 @@ export default function CourseLessonDetails({
         />
       </Link>
 
-      <section className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#111a2d]/80 p-4 sm:p-6 md:p-8">
+      <section className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,0.18),transparent_34%),#111a2d] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:p-6 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 max-w-3xl">
             <div className="flex flex-wrap gap-3">
@@ -74,6 +80,19 @@ export default function CourseLessonDetails({
             <p className="mt-4 max-w-2xl break-words text-sm leading-7 text-slate-400 sm:text-base">
               {lesson.summary}
             </p>
+
+            {currentModule ? (
+              <p className="mt-4 text-sm font-medium text-slate-300">
+                <span className="text-slate-500">
+                  <TranslatedText
+                    fallback="Module"
+                    translationKey="courses.details.module"
+                  />
+                  :
+                </span>{" "}
+                {currentModule.title}
+              </p>
+            ) : null}
           </div>
 
           <div className="grid w-full min-w-0 gap-3 text-sm text-slate-300 sm:grid-cols-3 lg:min-w-52 lg:grid-cols-1">
@@ -111,28 +130,37 @@ export default function CourseLessonDetails({
         </div>
       </section>
 
-      <div className="grid min-w-0 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="grid min-w-0 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
         <main className="min-w-0 space-y-6">
-          <LessonCard
-            icon={Target}
-            title={
-              <TranslatedText
-                fallback="Objective"
-                translationKey="courses.lesson.objective"
-              />
-            }
-          >
-            <p className="text-base leading-8 text-slate-300">
-              {lesson.objective ?? (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <LessonCard
+              className="h-full"
+              icon={Target}
+              title={
                 <TranslatedText
-                  fallback="Understand the main concept and apply it in practice."
-                  translationKey="courses.lesson.defaultObjective"
+                  fallback="Objective"
+                  translationKey="courses.lesson.objective"
                 />
-              )}
-            </p>
-          </LessonCard>
+              }
+            >
+              <p className="text-base leading-8 text-slate-300">
+                {lesson.objective ?? (
+                  <TranslatedText
+                    fallback="Understand the main concept and apply it in practice."
+                    translationKey="courses.lesson.defaultObjective"
+                  />
+                )}
+              </p>
+            </LessonCard>
+
+            <LessonStudySteps
+              completed={lesson.completed}
+              practiceCompleted={lesson.practiceCompleted}
+            />
+          </div>
 
           <LessonCard
+            className="md:p-9"
             icon={FileText}
             title={
               <TranslatedText
@@ -141,7 +169,7 @@ export default function CourseLessonDetails({
               />
             }
           >
-            <div className="space-y-5 text-base leading-8 text-slate-300">
+            <div className="space-y-6 text-base leading-8 text-slate-300 md:text-[17px] md:leading-9">
               {contentBlocks.map((block, index) => (
                 <LessonContentBlock
                   key={`${block.type}-${index}`}
@@ -238,11 +266,14 @@ export default function CourseLessonDetails({
 
         <LessonProgressPanel
           availableNextLesson={availableNextLesson}
+          contentStats={contentStats}
           courseId={course.id}
           courseSlug={course.slug}
+          currentModuleTitle={currentModule?.title ?? null}
           lesson={lesson}
           lessonNumber={lessonNumber}
           lessonProgress={lessonProgress}
+          previousLesson={previousLesson}
           totalLessons={lessons.length}
         />
       </div>
@@ -252,25 +283,31 @@ export default function CourseLessonDetails({
 
 type LessonProgressPanelProps = {
   availableNextLesson?: CourseLesson | null;
+  contentStats: LessonContentStats;
   courseId: string;
   courseSlug: string;
+  currentModuleTitle: string | null;
   lesson: CourseLesson;
   lessonNumber: number;
   lessonProgress: number;
+  previousLesson?: CourseLesson;
   totalLessons: number;
 };
 
 function LessonProgressPanel({
   availableNextLesson,
+  contentStats,
   courseId,
   courseSlug,
+  currentModuleTitle,
   lesson,
   lessonNumber,
   lessonProgress,
+  previousLesson,
   totalLessons,
 }: LessonProgressPanelProps) {
   return (
-    <aside className="min-w-0 rounded-2xl border border-white/10 bg-[#111a2d]/80 p-4 sm:p-5 xl:sticky xl:top-24">
+    <aside className="min-w-0 rounded-2xl border border-white/10 bg-[#111a2d]/90 p-4 shadow-[0_18px_70px_rgba(0,0,0,0.2)] sm:p-5 xl:sticky xl:top-24">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold text-white">
@@ -295,10 +332,37 @@ function LessonProgressPanel({
         )}
       </div>
 
+      {currentModuleTitle ? (
+        <p className="mt-4 rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2 text-sm leading-6 text-slate-300">
+          {currentModuleTitle}
+        </p>
+      ) : null}
+
       <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-800">
         <div
           className="h-full rounded-full bg-violet-500"
           style={{ width: `${lessonProgress}%` }}
+        />
+      </div>
+
+      <div className="mt-5 grid grid-cols-3 gap-2">
+        <MiniStat
+          label={
+            <TranslatedText fallback="Blocks" translationKey="courses.lesson.blocks" />
+          }
+          value={contentStats.blocks}
+        />
+        <MiniStat
+          label={
+            <TranslatedText fallback="Code" translationKey="courses.lesson.code" />
+          }
+          value={contentStats.codeBlocks}
+        />
+        <MiniStat
+          label={
+            <TranslatedText fallback="Tasks" translationKey="courses.lesson.tasks" />
+          }
+          value={contentStats.tasks}
         />
       </div>
 
@@ -369,10 +433,23 @@ function LessonProgressPanel({
         <AskAiMentorButton />
       </form>
 
+      {previousLesson && !previousLesson.locked ? (
+        <Link
+          href={`/learn/courses/${courseSlug}/lessons/${previousLesson.slug}`}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white"
+        >
+          <ArrowLeft className="size-4" />
+          <TranslatedText
+            fallback="Previous lesson"
+            translationKey="courses.lesson.previousLesson"
+          />
+        </Link>
+      ) : null}
+
       {availableNextLesson ? (
         <Link
           href={`/learn/courses/${courseSlug}/lessons/${availableNextLesson.slug}`}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 font-semibold text-slate-300 transition hover:border-white/20 hover:text-white"
         >
           <TranslatedText
             fallback="Next Lesson"
@@ -391,9 +468,33 @@ type LessonContentBlockProps = {
 };
 
 function LessonContentBlock({ block, highlighted }: LessonContentBlockProps) {
+  if (block.type === "heading") {
+    return (
+      <h3 className="break-words pt-2 text-xl font-semibold leading-8 text-white">
+        {block.content}
+      </h3>
+    );
+  }
+
+  if (block.type === "list") {
+    return (
+      <ul className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+        {block.items.map((item) => (
+          <li
+            key={item}
+            className="flex min-w-0 gap-3 text-sm leading-6 text-slate-300 sm:text-base"
+          >
+            <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-400" />
+            <span className="min-w-0 break-words">{item}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   if (block.type === "mini-task") {
     return (
-      <div className="min-w-0 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 sm:p-5">
+      <div className="min-w-0 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-5">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300">
             <ListChecks className="size-4" />
@@ -416,12 +517,19 @@ function LessonContentBlock({ block, highlighted }: LessonContentBlockProps) {
   if (block.type === "code") {
     return (
       <div className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/70">
-        <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3 text-sm font-medium text-slate-300">
-          <Code2 className="size-4 text-violet-300" />
-          <TranslatedText
-            fallback="Code example"
-            translationKey="courses.lesson.codeExample"
-          />
+        <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3 text-sm font-medium text-slate-300">
+          <div className="flex items-center gap-2">
+            <Code2 className="size-4 text-violet-300" />
+            <TranslatedText
+              fallback="Code example"
+              translationKey="courses.lesson.codeExample"
+            />
+          </div>
+          {block.language ? (
+            <span className="rounded-full bg-white/[0.04] px-2.5 py-1 text-xs uppercase tracking-wide text-slate-400">
+              {block.language}
+            </span>
+          ) : null}
         </div>
         <pre className="max-w-full overflow-x-auto p-4 text-xs leading-6 text-slate-200 sm:text-sm">
           <code>{block.content}</code>
@@ -433,13 +541,100 @@ function LessonContentBlock({ block, highlighted }: LessonContentBlockProps) {
   return (
     <p
       className={clsx(
-        "break-words",
+        "break-words text-slate-300",
         highlighted &&
-          "rounded-2xl border border-violet-400/20 bg-violet-500/10 p-4 text-slate-200 sm:p-5"
+          "rounded-2xl border border-violet-400/20 bg-violet-500/10 p-4 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-5"
       )}
     >
       {block.content}
     </p>
+  );
+}
+
+type LessonStudyStepsProps = {
+  completed: boolean;
+  practiceCompleted: boolean;
+};
+
+function LessonStudySteps({
+  completed,
+  practiceCompleted,
+}: LessonStudyStepsProps) {
+  const steps = [
+    {
+      done: true,
+      label: (
+        <TranslatedText fallback="Read" translationKey="courses.lesson.readStep" />
+      ),
+    },
+    {
+      done: practiceCompleted || completed,
+      label: (
+        <TranslatedText
+          fallback="Practice"
+          translationKey="courses.lesson.practiceStep"
+        />
+      ),
+    },
+    {
+      done: completed,
+      label: (
+        <TranslatedText fallback="Quiz" translationKey="courses.lesson.quizStep" />
+      ),
+    },
+  ];
+
+  return (
+    <LessonCard
+      className="h-full"
+      icon={BookOpen}
+      title={
+        <TranslatedText
+          fallback="Study flow"
+          translationKey="courses.lesson.studyFlow"
+        />
+      }
+    >
+      <div className="space-y-3">
+        {steps.map((step, index) => (
+          <div
+            key={index}
+            className={clsx(
+              "flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium",
+              step.done
+                ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-300"
+                : "border-white/10 bg-white/[0.02] text-slate-400"
+            )}
+          >
+            <span
+              className={clsx(
+                "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+                step.done ? "bg-emerald-500/20" : "bg-slate-800"
+              )}
+            >
+              {step.done ? <CheckCircle2 className="size-4" /> : index + 1}
+            </span>
+            {step.label}
+          </div>
+        ))}
+      </div>
+    </LessonCard>
+  );
+}
+
+type MiniStatProps = {
+  label: ReactNode;
+  value: number;
+};
+
+function MiniStat({ label, value }: MiniStatProps) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 text-center">
+      <p className="text-lg font-semibold text-white">{value}</p>
+      <p className="mt-1 text-[11px] font-medium uppercase tracking-wide text-slate-500">
+        {label}
+      </p>
+    </div>
   );
 }
 
@@ -658,7 +853,17 @@ function LessonTypeLabel({ type }: { type: string }) {
 type LessonContentBlock =
   | {
       content: string;
-      type: "code" | "mini-task" | "paragraph";
+      type: "heading" | "mini-task" | "paragraph";
+    }
+  | {
+      content: string;
+      language?: string;
+      type: "code";
+    }
+  | {
+      content: string;
+      items: string[];
+      type: "list";
     };
 
 function formatContent(content: string): LessonContentBlock[] {
@@ -693,9 +898,17 @@ function formatContent(content: string): LessonContentBlock[] {
         break;
       }
 
-      const rawCode = remainingContent.slice(3, closingIndex);
+      const rawCode = remainingContent.slice(3, closingIndex).trim();
+      const firstLineBreak = rawCode.indexOf("\n");
+      const possibleLanguage =
+        firstLineBreak > -1 ? rawCode.slice(0, firstLineBreak).trim() : "";
+      const language = /^[a-z0-9+#-]+$/i.test(possibleLanguage)
+        ? possibleLanguage
+        : "";
+
       blocks.push({
-        content: rawCode.replace(/^[a-z]+\n/, "").trim(),
+        content: language ? rawCode.slice(firstLineBreak + 1).trim() : rawCode,
+        language,
         type: "code",
       });
       remainingContent = remainingContent.slice(closingIndex + 3).trim();
@@ -742,14 +955,64 @@ function pushParagraphBlocks(
     .map((paragraph) => paragraph.trim())
     .filter(Boolean)
     .forEach((paragraph) => {
+      if (paragraph.startsWith("#")) {
+        blocks.push({
+          content: paragraph.replace(/^#+\s*/, "").trim(),
+          type: "heading",
+        });
+        return;
+      }
+
+      const lines = paragraph
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
+      const listItems = lines
+        .filter((line) => /^[-*]\s+/.test(line) || /^\d+\.\s+/.test(line))
+        .map((line) => line.replace(/^[-*]\s+/, "").replace(/^\d+\.\s+/, ""));
+
+      if (listItems.length && listItems.length === lines.length) {
+        blocks.push({
+          content: listItems.join("\n"),
+          items: listItems,
+          type: "list",
+        });
+        return;
+      }
+
       blocks.push({
-        content: paragraph,
+        content: paragraph.replace(/\n/g, " "),
         type: "paragraph",
       });
     });
 }
 
-function getPracticeTasks(lesson: CourseLesson): string[] {
+type LessonContentStats = {
+  blocks: number;
+  codeBlocks: number;
+  tasks: number;
+};
+
+function getContentStats(blocks: LessonContentBlock[]): LessonContentStats {
+  return {
+    blocks: blocks.length,
+    codeBlocks: blocks.filter((block) => block.type === "code").length,
+    tasks: blocks.filter((block) => block.type === "mini-task").length,
+  };
+}
+
+function getPracticeTasks(
+  lesson: CourseLesson,
+  contentBlocks: LessonContentBlock[]
+): string[] {
+  const miniTasks = contentBlocks
+    .filter((block) => block.type === "mini-task")
+    .map((block) => block.content);
+
+  if (miniTasks.length) {
+    return miniTasks;
+  }
+
   if (lesson.checklist.length) {
     return lesson.checklist.map((item) => `Practice: ${item}`);
   }
