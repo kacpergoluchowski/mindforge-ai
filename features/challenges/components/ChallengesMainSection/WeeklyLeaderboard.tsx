@@ -150,14 +150,14 @@ type LeaderboardRowProps = {
 
 function LeaderboardRow({ user }: LeaderboardRowProps) {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-3">
+    <div className="flex min-w-0 items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         <span className="w-5 text-sm text-slate-400">{user.rank}</span>
         <LeaderboardAvatar user={user} size="xs" />
-        <span className="text-sm font-medium text-white">{user.name}</span>
+        <span className="truncate text-sm font-medium text-white">{user.name}</span>
       </div>
 
-      <span className="text-sm text-slate-400">
+      <span className="shrink-0 text-sm text-slate-400">
         <LeaderboardPoints points={user.points} />
       </span>
     </div>

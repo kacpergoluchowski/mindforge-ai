@@ -8,21 +8,30 @@ export default async function FeaturedChallenges() {
   const challenges = await getFeaturedChallenges();
 
   return (
-    <section className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">
-          <TranslatedText
-            fallback="Featured Challenges"
-            translationKey="challenges.featuredChallenges"
-          />
-        </h2>
+    <section id="featured-challenges" className="scroll-mt-24 space-y-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-white">
+            <TranslatedText
+              fallback="Featured Challenges"
+              translationKey="challenges.featuredChallenges"
+            />
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-slate-400">
+            <TranslatedText
+              fallback="Solve practical tasks, verify your solution with AI and earn XP."
+              translationKey="challenges.featuredChallengesSubtitle"
+            />
+          </p>
+        </div>
 
-        <button
-          type="button"
-          className="text-sm text-slate-300 transition hover:text-white"
-        >
-          <TranslatedText fallback="View all" translationKey="common.viewAll" />
-        </button>
+        <span className="w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-sm font-medium text-slate-300">
+          <TranslatedText
+            fallback="{count} available"
+            translationKey="challenges.availableChallengesCount"
+            values={{ count: challenges.length }}
+          />
+        </span>
       </div>
 
       <div className="space-y-5">

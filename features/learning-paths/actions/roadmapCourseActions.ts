@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { saveAiGeneratedCourse } from "@/features/courses/api/saveAiGeneratedCourse";
 import { createClient } from "@/lib/supabase/server";
 import { generateRoadmapCourse } from "../api/generateRoadmapCourse";
 
@@ -32,11 +33,6 @@ type CourseSearchRow = {
   description: string;
   category: string;
   level: string;
-};
-
-type SavedGeneratedCourseResult = {
-  course_id?: string;
-  course_slug?: string;
 };
 
 export async function generateCourseForRoadmapStep(formData: FormData) {
@@ -94,39 +90,36 @@ export async function generateCourseForRoadmapStep(formData: FormData) {
     redirect(`/learn/courses/${existingStepCourse.slug}`);
   }
 
-  const matchedCourse = await findSimilarCourse({
+  const matchedCourse = await findSimilarCourse(supabase, {
     description: step.description,
     title: step.title,
   });
-  const generatedCourse = matchedCourse
-    ? null
-    : await generateRoadmapCourse({
-        pathTitle: path.title,
-        stepTitle: step.title,
-        stepDescription: step.description,
-      });
 
-  const { data, error } = await supabase.rpc(
-    "attach_or_create_roadmap_step_course",
-    {
-      p_course: generatedCourse,
-      p_existing_course_id: matchedCourse?.id ?? null,
-      p_step_id: step.id,
-    }
-  );
-  const savedCourse = (Array.isArray(data) ? data[0] : data) as
-    | SavedGeneratedCourseResult
-    | null;
-  const courseSlug = savedCourse?.course_slug;
+  let courseSlug = matchedCourse?.slug;
+  let courseId = matchedCourse?.id;
+  let shouldLogAttach = Boolean(matchedCourse);
 
-  if (error || !courseSlug) {
-    console.error("Generate roadmap course failed:", error);
-    throw new Error(
-      error?.message
-        ? `Could not generate course: ${error.message}`
-        : "Could not generate course."
-    );
+  if (!matchedCourse) {
+    const generatedCourse = await generateRoadmapCourse({
+      pathTitle: path.title,
+      stepTitle: step.title,
+      stepDescription: step.description,
+    });
+    const savedCourse = await saveAiGeneratedCourse(supabase, generatedCourse);
+    courseId = savedCourse.courseId;
+    courseSlug = savedCourse.courseSlug;
+    shouldLogAttach = false;
   }
+
+  if (!courseId || !courseSlug) {
+    throw new Error("Could not generate course.");
+  }
+
+  await attachCourseToRoadmapStep(supabase, {
+    courseId,
+    logActivity: shouldLogAttach,
+    stepId: step.id,
+  });
 
   revalidatePath("/dashboard");
   revalidatePath("/learn/courses");
@@ -136,14 +129,16 @@ export async function generateCourseForRoadmapStep(formData: FormData) {
   redirect(`/learn/courses/${courseSlug}`);
 }
 
-async function findSimilarCourse({
-  description,
-  title,
-}: {
-  description: string;
-  title: string;
-}): Promise<CourseSearchRow | null> {
-  const supabase = await createClient();
+async function findSimilarCourse(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  {
+    description,
+    title,
+  }: {
+    description: string;
+    title: string;
+  }
+): Promise<CourseSearchRow | null> {
   const { data, error } = await supabase
     .from("courses")
     .select("id, slug, title, description, category, level")
@@ -169,6 +164,34 @@ async function findSimilarCourse({
   const bestMatch = scoredCourses[0];
 
   return bestMatch && bestMatch.score >= 2 ? bestMatch.course : null;
+}
+
+async function attachCourseToRoadmapStep(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  {
+    courseId,
+    logActivity,
+    stepId,
+  }: {
+    courseId: string;
+    logActivity: boolean;
+    stepId: string;
+  }
+) {
+  const { error } = await supabase.rpc("attach_existing_course_to_roadmap_step", {
+    p_course_id: courseId,
+    p_log_activity: logActivity,
+    p_step_id: stepId,
+  });
+
+  if (error) {
+    console.error("Attach roadmap course failed:", error);
+    throw new Error(
+      error.message
+        ? `Could not attach generated course: ${error.message}`
+        : "Could not attach generated course."
+    );
+  }
 }
 
 function getMatchScore(sourceWords: Set<string>, target: string): number {

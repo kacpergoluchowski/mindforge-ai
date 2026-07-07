@@ -89,15 +89,15 @@ export const getPublishedCourses = cache(
     category = "All Courses",
     options: { excludeStarted?: boolean; limit?: number } = {}
   ): Promise<CourseListItem[]> => {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  let query = supabase
-    .from("courses")
-    .select(
-      `
+    let query = supabase
+      .from("courses")
+      .select(
+        `
       id,
       slug,
       title,
@@ -120,66 +120,68 @@ export const getPublishedCourses = cache(
         )
       )
     `
-    )
-    .eq("is_published", true)
-    .order("created_at", { ascending: true });
+      )
+      .eq("is_published", true)
+      .order("created_at", { ascending: true });
 
-  if (category !== "All Courses") {
-    query = query.eq("category", category);
-  }
+    const categoryAliases = getCategoryAliases(category);
 
-  if (options.limit) {
-    query = query.limit(options.limit);
-  }
+    if (categoryAliases.length) {
+      query = query.in("category", categoryAliases);
+    }
 
-  const { data, error } = await query;
+    if (options.limit) {
+      query = query.limit(options.limit);
+    }
 
-  if (error || !data) {
-    return [];
-  }
+    const { data, error } = await query;
 
-  const courseRows = data as CourseListRow[];
-  const courseIds = courseRows.map((course) => course.id);
+    if (error || !data) {
+      return [];
+    }
 
-  if (!courseRows.length) {
-    return [];
-  }
+    const courseRows = data as CourseListRow[];
+    const courseIds = courseRows.map((course) => course.id);
 
-  const [userCoursesResult, lessonProgressResult] = user
-    ? await Promise.all([
-        supabase
-          .from("user_courses")
-          .select("course_id, status, progress_percent")
-          .eq("profile_id", user.id)
-          .in("course_id", courseIds),
-        supabase
-          .from("user_lesson_progress")
-          .select("lesson_id, course_id")
-          .eq("profile_id", user.id)
-          .in("course_id", courseIds),
+    if (!courseRows.length) {
+      return [];
+    }
+
+    const [userCoursesResult, lessonProgressResult] = user
+      ? await Promise.all([
+          supabase
+            .from("user_courses")
+            .select("course_id, status, progress_percent")
+            .eq("profile_id", user.id)
+            .in("course_id", courseIds),
+          supabase
+            .from("user_lesson_progress")
+            .select("lesson_id, course_id")
+            .eq("profile_id", user.id)
+            .in("course_id", courseIds),
+        ])
+      : [null, null];
+
+    const progressByCourse = new Map(
+      (userCoursesResult?.data ?? []).map((item) => [
+        item.course_id,
+        {
+          status: item.status as string,
+          progress: item.progress_percent as number,
+        },
       ])
-    : [null, null];
-
-  const progressByCourse = new Map(
-    (userCoursesResult?.data ?? []).map((item) => [
-      item.course_id,
-      {
-        status: item.status as string,
-        progress: item.progress_percent as number,
-      },
-    ])
-  );
-  const completedLessons = new Set(
-    (lessonProgressResult?.data ?? []).map((item) => item.lesson_id as string)
-  );
-
-  return courseRows
-    .filter((course) => {
-      return !options.excludeStarted || !progressByCourse.has(course.id);
-    })
-    .map((course) =>
-      mapCourseListItem(course, progressByCourse.get(course.id), completedLessons)
     );
+    const completedLessons = new Set(
+      (lessonProgressResult?.data ?? []).map((item) => item.lesson_id as string)
+    );
+
+    return courseRows
+      .filter((course) => {
+        return !options.excludeStarted || !progressByCourse.has(course.id);
+      })
+      .map((course) =>
+        mapCourseListItem(course, progressByCourse.get(course.id), completedLessons)
+      );
   }
 );
 
@@ -543,6 +545,53 @@ function mapCourseProgress(
 
 function getRelation<T>(relation: T | T[] | null) {
   return Array.isArray(relation) ? relation[0] ?? null : relation;
+}
+
+function getCategoryAliases(category: string): string[] {
+  const aliases: Record<string, string[]> = {
+    "AI & ML": [
+      "AI & ML",
+      "AI",
+      "AI Engineering",
+      "Artificial Intelligence",
+      "Machine Learning",
+    ],
+    Backend: [
+      "Backend",
+      "Backend Development",
+      "API",
+      "Node.js",
+      "Server",
+      "Server-side",
+    ],
+    Database: ["Database", "Databases", "PostgreSQL", "SQL", "Supabase"],
+    Design: ["Design", "UI", "UX", "UI/UX"],
+    DevOps: ["DevOps", "Deployment", "Cloud", "Infrastructure"],
+    Frontend: [
+      "Frontend",
+      "Frontend Development",
+      "Web",
+      "Web Development",
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "React",
+      "TypeScript",
+    ],
+    Fullstack: [
+      "Fullstack",
+      "Full Stack",
+      "Full-stack",
+      "Fullstack Development",
+    ],
+    Mobile: ["Mobile", "Mobile Development", "React Native"],
+  };
+
+  if (category === "All Courses") {
+    return [];
+  }
+
+  return aliases[category] ?? [category];
 }
 
 function formatCourseStatus(status: string): string {

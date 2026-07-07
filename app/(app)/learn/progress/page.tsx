@@ -1,7 +1,6 @@
-import PageHeader from "@/components/shared/PageHeader";
-import TranslatedText from "@/components/shared/TranslatedText";
 import ProgressActivitySection from "@/features/progress/components/ProgressActivitySection/ProgressActivitySection";
 import ProgressGoalSection from "@/features/progress/components/ProgressGoalSection/ProgressGoalSection";
+import ProgressHero from "@/features/progress/components/ProgressHero/ProgressHero";
 import ProgressOverviewSection from "@/features/progress/components/ProgressOverviewSection/ProgressOverviewSection";
 import ProgressStats from "@/features/progress/components/ProgressStats/ProgressStats";
 import ProgressTopicsSection from "@/features/progress/components/ProgressTopicsSection/ProgressTopicsSection";
@@ -22,19 +21,11 @@ export default async function ProgressPage() {
   if (!profile) redirect("/login");
 
   return (
-    <div className="space-y-5 pb-24 xl:pb-8">
-      <PageHeader
-        title={<TranslatedText translationKey="progress.title" fallback="Progress" />}
-        subtitle={
-          <TranslatedText
-            translationKey="progress.subtitle"
-            fallback="Track your learning journey and achievements."
-          />
-        }
-      />
+    <div className="min-w-0 space-y-6 pb-24 xl:pb-8">
+      <ProgressHero profile={profile} summary={progressSummary} />
       <ProgressStats profile={profile} summary={progressSummary} />
 
-      <div className="grid gap-5 2xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.55fr)]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
         <div className="min-w-0 space-y-5">
           <ProgressOverviewSection profile={profile} summary={progressSummary} />
           <ProgressTopicsSection summary={progressSummary} />

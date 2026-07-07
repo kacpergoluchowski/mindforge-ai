@@ -1,5 +1,15 @@
 import clsx from "clsx";
-import { Atom, Brain, Check, Code2, Database, Hexagon, Star } from "lucide-react";
+import {
+  ArrowRight,
+  Atom,
+  Brain,
+  Check,
+  Code2,
+  Database,
+  GraduationCap,
+  Hexagon,
+  Star,
+} from "lucide-react";
 
 import TranslatedText from "@/components/shared/TranslatedText";
 import { startLearningPath } from "../../actions/learningPathActions";
@@ -62,32 +72,16 @@ export default function PopularLearningPathCard({
   const icon = iconMap[iconName as keyof typeof iconMap] ?? Code2;
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-white/20 hover:bg-[#131f35]">
-      <PopularPathIcon icon={icon} styles={styles} />
-
-      <h3 className="text-md line-clamp-2 font-semibold leading-tight text-white">
-        {title}
-      </h3>
-
-      <ul className="mt-5 space-y-2">
-        {technologies.map((technology) => (
-          <TechnologyItem
-            key={technology}
-            label={technology}
-            styles={styles}
-          />
-        ))}
-      </ul>
-
-      <div className="mt-8 flex items-center justify-between gap-4">
-        <Rating rating={rating} students={students} />
-
+    <article className="group flex min-h-full flex-col rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-violet-400/30 hover:bg-[#131f35]">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <PopularPathIcon icon={icon} styles={styles} />
         <span
           className={clsx(
-            "rounded-full px-3 py-1 text-xs font-semibold",
+            "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold",
             styles.badge
           )}
         >
+          <GraduationCap className="size-3.5" />
           <TranslatedText
             fallback="{count} Courses"
             translationKey="learningPaths.coursesCount"
@@ -96,18 +90,33 @@ export default function PopularLearningPathCard({
         </span>
       </div>
 
+      <h3 className="line-clamp-2 min-h-[44px] text-base font-semibold leading-snug text-white">
+        {title}
+      </h3>
+
+      <ul className="mt-5 flex-1 space-y-2">
+        {technologies.slice(0, 3).map((technology) => (
+          <TechnologyItem key={technology} label={technology} styles={styles} />
+        ))}
+      </ul>
+
+      <div className="mt-6 border-t border-white/10 pt-4">
+        <Rating rating={rating} students={students} />
+      </div>
+
       {slug ? (
         <form action={startLearningPath} className="mt-5">
           <input type="hidden" name="pathId" value={String(id)} />
           <input type="hidden" name="pathSlug" value={slug} />
           <button
             type="submit"
-            className="flex w-full items-center justify-center rounded-xl bg-violet-500 py-3 text-sm font-semibold text-white transition hover:bg-violet-600"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-500 py-3 text-sm font-semibold text-white transition hover:bg-violet-600"
           >
             <TranslatedText
               fallback="Start Path"
               translationKey="learningPaths.startPath"
             />
+            <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
           </button>
         </form>
       ) : null}
@@ -124,11 +133,11 @@ function PopularPathIcon({ icon: Icon, styles }: PopularPathIconProps) {
   return (
     <div
       className={clsx(
-        "mb-8 flex size-14 items-center justify-center rounded-full shadow-2xl",
+        "flex size-12 shrink-0 items-center justify-center rounded-2xl shadow-2xl",
         styles.icon
       )}
     >
-      <Icon className="size-8" />
+      <Icon className="size-6" />
     </div>
   );
 }
@@ -140,9 +149,9 @@ type TechnologyItemProps = {
 
 function TechnologyItem({ label, styles }: TechnologyItemProps) {
   return (
-    <li className="flex items-center gap-2 text-sm text-slate-400">
-      <Check className={clsx("size-4", styles.check)} />
-      {label}
+    <li className="flex min-w-0 items-center gap-2 text-sm text-slate-400">
+      <Check className={clsx("size-4 shrink-0", styles.check)} />
+      <span className="truncate">{label}</span>
     </li>
   );
 }
@@ -154,9 +163,9 @@ type RatingProps = {
 
 function Rating({ rating, students }: RatingProps) {
   return (
-    <div className="flex items-center gap-1 text-sm text-white">
+    <div className="flex items-center gap-1 text-sm text-slate-300">
       <Star className="size-4 fill-yellow-400 text-yellow-400" />
-      <span>{rating}</span>
+      <span className="font-semibold text-white">{rating}</span>
       <span className="text-slate-500">({students})</span>
     </div>
   );

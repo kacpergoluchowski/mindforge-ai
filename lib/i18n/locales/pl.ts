@@ -61,7 +61,6 @@ export const pl = {
     codeReview: "Code Review",
     account: "Konto",
     profile: "Profil",
-    settings: "Ustawienia",
     billing: "Płatności",
     logout: "Wyloguj",
   },
@@ -204,6 +203,10 @@ export const pl = {
     title: "Kursy",
     subtitle: "Odkrywaj kursy zaprojektowane, aby rozwijać Twoje umiejętności.",
     createCourse: "Utwórz kurs",
+    heroBadge: "Biblioteka kursów AI",
+    heroPointAi: "Pełne kursy generowane przez AI",
+    heroPointProgress: "Quizy i postęp lekcji",
+    heroPointXp: "XP, poziomy i osiągnięcia",
     continueLearning: "Kontynuuj naukę",
     popularCourses: "Popularne kursy",
     browseByTopic: "Przeglądaj po temacie",
@@ -245,8 +248,13 @@ export const pl = {
       aiMl: "AI i ML",
       all: "Wszystkie kursy",
       backend: "Backend",
+      database: "Bazy danych",
+      design: "Design",
+      devOps: "DevOps",
       frontend: "Frontend",
+      fullstack: "Fullstack",
       javascript: "JavaScript",
+      mobile: "Mobile",
       react: "React",
       typescript: "TypeScript",
     },
@@ -361,7 +369,11 @@ export const pl = {
     subtitle: "Roadmapy AI pomagające opanować konkretną umiejętność.",
     createPath: "Utwórz ścieżkę AI",
     myLearningPaths: "Moje ścieżki nauki",
+    myLearningPathsSubtitle:
+      "Kontynuuj aktywne roadmapy i odblokowuj kolejne kursy krok po kroku.",
     popularLearningPaths: "Popularne ścieżki nauki",
+    popularLearningPathsSubtitle:
+      "Rozpocznij gotową roadmapę albo wygeneruj własną ścieżkę AI.",
     currentRoadmap: "Aktualna roadmapa",
     startPath: "Rozpocznij ścieżkę",
     continuePath: "Kontynuuj ścieżkę",
@@ -370,17 +382,28 @@ export const pl = {
     courses: "Kursy",
     estimatedTime: "Szacowany czas",
     learningPath: "Ścieżka nauki",
+    activePathsCount: "{count} aktywne",
+    availablePathsCount: "{count} dostępne",
     coursesCompleted: "{completed} / {total} kursów",
+    coursesCompletedShort: "{completed}/{total}",
     coursesCount: "{count} kursów",
     courseProgress: "Postęp kursu",
     estimate: "Szacunek",
+    heroBadge: "Generator roadmap AI",
+    heroPointCourses: "Kursy generowane przez AI",
+    heroPointProgress: "Postęp krok po kroku",
+    heroPointRoadmap: "Personalizowana roadmapa",
     progress: "Postęp",
     percentComplete: "{progress}% ukończone",
-    noActivePaths: "Brak aktywnych ścieżek nauki.",
-    noPathsAvailable: "Brak dostępnych ścieżek nauki.",
+    noActivePaths:
+      "Utwórz ścieżkę AI albo rozpocznij jedną z popularnych roadmap poniżej.",
+    noActivePathsTitle: "Nie masz jeszcze aktywnych ścieżek",
+    noPathsAvailable: "Utwórz pierwszą ścieżkę nauki generowaną przez AI.",
+    noPathsAvailableTitle: "Brak dostępnych ścieżek",
     noRoadmapSelected: "Nie wybrano roadmapy.",
     pathTree: "Drzewko ścieżki",
     pathTreeSubtitle: "Kończ kroki po kolei, aby odblokować następny etap.",
+    roadmapProgress: "Postęp roadmapy",
     activePath: "Aktywna ścieżka",
     notStarted: "Nierozpoczęta",
     noSteps: "Ta ścieżka nie ma jeszcze kroków.",
@@ -389,6 +412,17 @@ export const pl = {
     generatingCourse: "Generowanie kursu...",
     stepNumber: "Krok {number}",
     current: "Aktualny",
+    completedSteps: "Ukończone kroki",
+    courseReady: "Kurs jest gotowy.",
+    currentStep: "Aktualny krok",
+    done: "Gotowe",
+    generatedCourses: "Wygenerowane",
+    generateStepHint: "Wygeneruj kurs dla tego kroku.",
+    lockedStepHint: "Ukończ poprzedni krok, aby odblokować ten etap.",
+    lockedSteps: "Zablokowane",
+    overallProgress: "Całkowity postęp",
+    pathCompleted: "Ścieżka ukończona",
+    pathStatus: "Status",
     generate: {
       badge: "Generator roadmap AI",
       findSuggestions: "Znajdź sugestie",
@@ -413,6 +447,8 @@ export const pl = {
     subtitle: "Sprawdzaj umiejętności, rozwiązuj problemy i zdobywaj XP.",
     createChallenge: "Utwórz wyzwanie",
     featuredChallenges: "Wyróżnione wyzwania",
+    featuredChallengesSubtitle:
+      "Rozwiązuj praktyczne zadania, weryfikuj rozwiązania z AI i zdobywaj XP.",
     challengeStats: "Statystyki wyzwań",
     leaderboard: "Ranking",
     weeklyLeaderboard: "Ranking tygodnia",
@@ -444,6 +480,7 @@ export const pl = {
       "Dołącz do developerów, którzy rozwijają umiejętności przez realne wyzwania kodowe.",
     bannerTitle: "Rozwiązuj. Ucz się. Rośnij.",
     browseChallenges: "Przeglądaj wyzwania",
+    availableChallengesCount: "{count} dostępne",
     canCompleteChallenge: "Możesz zaliczyć to wyzwanie.",
     challengeCompleted: "Wyzwanie ukończone",
     challengeCompletedDescription: "Dobra robota. Postęp i XP zostały zapisane.",
@@ -461,6 +498,9 @@ export const pl = {
     daysCount: "{count} dni",
     editor: "edytor",
     goToDashboard: "Przejdź do dashboardu",
+    heroPointAiReview: "Review rozwiązania przez AI",
+    heroPointProgress: "XP i rozwiązane wyzwania",
+    heroPointTasks: "Realne zadania kodowe",
     howItWorks: "Jak to działa",
     improveAndVerifyAgain:
       "Wróć, popraw rozwiązanie i zweryfikuj je ponownie.",
@@ -535,6 +575,8 @@ export const pl = {
   progress: {
     title: "Postępy",
     subtitle: "Śledź swoją naukę, XP, serie i aktywność.",
+    heroBadge: "Analityka nauki",
+    levelProgress: "Postęp poziomu",
     xpOverview: "Podsumowanie XP",
     timeSpent: "Czas nauki",
     activityTracking: "Aktywność",
@@ -681,11 +723,12 @@ export const pl = {
     },
     stats: {
       coursesCompleted: "Ukończone kursy",
-      dayStreak: "Dni serii",
-      level: "Poziom {level}",
-      totalLearningTime: "Łączny czas nauki",
-      xpEarned: "{xp} XP zdobyte",
-    },
+        dayStreak: "Dni serii",
+        level: "Poziom {level}",
+        totalLearningTime: "Łączny czas nauki",
+        totalXp: "Łącznie XP",
+        xpEarned: "{xp} XP zdobyte",
+      },
     activity: {
       askedAiMentor: "Zapytano AI Mentora o generyki TypeScript",
       completedCourse: 'Ukończono kurs "{title}"',
@@ -695,21 +738,6 @@ export const pl = {
       javascriptPath: "Ścieżka JavaScript",
       reactCourse: "Kurs React",
     },
-  },
-
-  settings: {
-    title: "Ustawienia",
-    language: "Język",
-    interfaceLanguage: "Język interfejsu",
-    interfaceLanguageDescription: "Wybierz język używany w aplikacji.",
-    aiResponseLanguage: "Język odpowiedzi AI",
-    aiResponseLanguageDescription:
-      "Wybierz preferowany język odpowiedzi AI Mentora.",
-    polish: "Polski",
-    english: "Angielski",
-    comingSoon: "Wkrótce",
-    active: "Aktywny",
-    available: "Dostępny",
   },
 
   aiMentor: {
@@ -733,6 +761,66 @@ export const pl = {
     },
   },
 
+  studyAssistant: {
+    actions: {
+      generatePlan: "Wygeneruj plan",
+      generateReview: "Zrób powtórkę",
+      generating: "Generuję...",
+      solveProblem: "Pomóż mi",
+    },
+    badge: "AI Study Assistant",
+    characters: "Znaki",
+    empty: {
+      description:
+        "Zacznij od planu na dziś, powtórz ostatnie lekcje albo opisz jedną rzecz, która blokuje naukę.",
+      title: "Wybierz, czego potrzebujesz",
+    },
+    errors: {
+      failed: "Asystent nie zadziałał",
+    },
+    hero: {
+      plan: "Plan nauki na dziś",
+      review: "Inteligentna powtórka",
+      unblock: "Pomoc z problemem",
+    },
+    hints: {
+      context: "Asystent używa Twojego kontekstu nauki i ostatnich postępów.",
+      problem:
+        "Opisz jeden konkretny problem. Krótko i konkretnie działa najlepiej.",
+    },
+    modes: {
+      plan: "Plan nauki",
+      planDescription:
+        "Dostaniesz konkretny plan z zadaniami, priorytetem i blokami czasu.",
+      review: "Powtórka",
+      reviewDescription:
+        "Powtórz ostatnie lekcje przez pytania, odpowiedzi i małe zadania.",
+      stuck: "Utknąłem",
+      stuckDescription:
+        "Opisz blokadę i dostań proste wyjaśnienie krok po kroku.",
+    },
+    points: {
+      action: "Akcja",
+      actionText: "Konkretne zadania zamiast ogólnych porad",
+      goal: "Cel",
+      goalText: "Dopasowany do aktualnego progresu",
+      time: "Czas",
+      timeText: "Plan możliwy do zrobienia dziś",
+    },
+    problemPlaceholder:
+      "Np. Nie rozumiem różnicy między Flexboxem a Gridem...",
+    results: {
+      default: "Wynik asystenta",
+      description: "Odpowiedź dopasowana do Twojego kontekstu nauki.",
+      plan: "Plan nauki",
+      review: "Powtórka",
+      stuck: "Pomoc w problemie",
+    },
+    subtitle:
+      "Zaplanuj kolejną sesję, powtórz ostatnie lekcje albo odblokuj trudny temat z AI.",
+    title: "Asystent nauki",
+  },
+
   codeReview: {
     badge: "AI Code Review",
     title: "Review kodu",
@@ -745,6 +833,12 @@ export const pl = {
       report: "Raport",
       clean: "Czysty kod",
     },
+    hero: {
+      cleanReview: "Praktyczne review",
+      improvedCode: "Poprawiony kod",
+      nextSteps: "Jasne kolejne kroki",
+      structure: "Feedback struktury",
+    },
     modes: {
       singleFile: "Pojedynczy plik",
       projectReview: "Review projektu",
@@ -752,6 +846,8 @@ export const pl = {
     input: {
       code: "Kod",
       project: "Projekt",
+      characters: "Znaki",
+      language: "Język",
       codeDescription: "Wklej jeden plik albo komponent",
       projectDescription: "Wklej strukturę, pliki albo ważne fragmenty",
       codePlaceholder: "Wklej kod tutaj...",
@@ -812,7 +908,8 @@ export const pl = {
 
   billing: {
     title: "Płatności",
-    subtitle: "Zarządzaj planem, limitami AI i ustawieniami subskrypcji.",
+    subtitle: "Zarządzaj planem, limitami AI i opcjami rozliczeń.",
+    heroTitle: "Zarządzaj planem i limitami AI.",
     plan: "Plan",
     currentPlan: "Aktualny plan",
     choosePlan: "Wybierz plan",
@@ -877,7 +974,7 @@ export const pl = {
     },
     info: {
       aiDescription:
-        "Twoja subskrypcja i ustawienia płatności pozostają chronione.",
+        "Twoja subskrypcja i dane płatności pozostają chronione.",
       aiTitle: "Bezpieczne płatności",
       limitsDescription:
         "Śledź wiadomości AI, code review i limity użycia w jednym miejscu.",

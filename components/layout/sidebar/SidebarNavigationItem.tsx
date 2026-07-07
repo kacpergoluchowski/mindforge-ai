@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { SidebarNavigationItemProps } from "../types/layoutTypes.types";
-import LanguageSettingsModal from "@/features/settings/components/LanguageSettingsModal/LanguageSettingsModal";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import { getNavigationLabelKey } from "@/lib/i18n/navigation";
 
@@ -14,7 +13,6 @@ export default function SidebarNavigationItem({
   const pathname = usePathname();
   const { t } = useI18n();
   const Icon = item.icon;
-  const isSettingsItem = item.href === "/account/settings";
   const label = t(getNavigationLabelKey(item.href) ?? "", item.label);
 
   const isActive = isNavigationItemActive(pathname, item.href);
@@ -28,17 +26,6 @@ export default function SidebarNavigationItem({
     "size-5 text-slate-500 transition",
     isActive && "text-violet-400",
   );
-
-  if (isSettingsItem) {
-    return (
-      <li>
-        <LanguageSettingsModal buttonClassName={className}>
-          <Icon aria-hidden="true" className={iconClassName} />
-          <span className="truncate">{label}</span>
-        </LanguageSettingsModal>
-      </li>
-    );
-  }
 
   return (
     <li>

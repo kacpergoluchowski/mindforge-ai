@@ -3,8 +3,8 @@ import { recentActivities } from "../../data/profileData";
 
 export default function RecentActivityCard() {
   return (
-    <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 sm:p-6">
+      <div className="mb-6 flex items-center justify-between gap-4">
         <h2 className="text-xl font-semibold text-white">
           <TranslatedText
             fallback="Recent Activity"
@@ -14,13 +14,13 @@ export default function RecentActivityCard() {
 
         <button
           type="button"
-          className="text-sm text-violet-400 transition hover:text-violet-300"
+          className="shrink-0 text-sm font-medium text-violet-300 transition hover:text-violet-200"
         >
           <TranslatedText fallback="View all" translationKey="common.viewAll" />
         </button>
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-3">
         {recentActivities.map((activity) => {
           const Icon = activity.icon;
 
@@ -30,18 +30,20 @@ export default function RecentActivityCard() {
               className="
                 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between
                 rounded-2xl
-                px-2 py-3
+                border border-white/10
+                bg-[#0b1220]/60
+                p-4
                 transition
-                hover:bg-white/5
+                hover:border-violet-400/20 hover:bg-white/5
               "
             >
               <div className="flex min-w-0 items-center gap-4">
-                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white/5">
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-violet-500/10">
                   <Icon className="size-5 text-violet-400" />
                 </div>
 
                 <div className="min-w-0">
-                  <h3 className="font-medium text-white">
+                  <h3 className="line-clamp-2 font-medium text-white">
                     {getActivityTitle(activity.title)}
                   </h3>
 

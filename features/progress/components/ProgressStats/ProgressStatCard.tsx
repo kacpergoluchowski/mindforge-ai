@@ -52,7 +52,7 @@ export default function ProgressStatCard({
     progress === undefined ? undefined : Math.min(Math.max(progress, 0), 100);
 
   return (
-    <article className="min-w-0 rounded-3xl border border-white/10 bg-white/[0.035] p-4 transition-colors hover:border-white/15 sm:p-5">
+    <article className="min-w-0 rounded-3xl border border-white/10 bg-[#111a2d]/80 p-4 transition-colors hover:border-violet-400/25 sm:p-5">
       <div className="flex min-w-0 items-center gap-3">
         <div
           className={clsx(

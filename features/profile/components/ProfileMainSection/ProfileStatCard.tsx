@@ -24,13 +24,17 @@ export default function ProfileStatCard({
   const normalizedProgress = Math.min(Math.max(progress, 0), 100);
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-slate-900/40 p-5">
+    <article className="min-w-0 rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 transition-colors hover:border-violet-400/25">
       <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-white/5">
         <Icon className="size-6 text-white" />
       </div>
 
-      <h3 className="text-4xl font-bold text-white">{title}</h3>
-      <p className="mt-2 text-sm text-slate-400">{subtitle}</p>
+      <h3 className="truncate text-3xl font-bold text-white sm:text-4xl">
+        {title}
+      </h3>
+      <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-400">
+        {subtitle}
+      </p>
 
       <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-800">
         <div

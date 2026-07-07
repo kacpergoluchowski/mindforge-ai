@@ -9,10 +9,6 @@ import type {
 
 const CODE_REVIEW_MODEL = process.env.OPENAI_MODEL ?? "gpt-4.1-mini";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function reviewCode({
   code,
   language,
@@ -25,6 +21,8 @@ export async function reviewCode({
   if (!process.env.OPENAI_API_KEY) {
     throw new Error("OpenAI API key is not configured.");
   }
+
+  const openai = createOpenAiClient();
 
   const response = await openai.responses.create({
     model: CODE_REVIEW_MODEL,
@@ -65,6 +63,8 @@ export async function reviewProject({
     throw new Error("OpenAI API key is not configured.");
   }
 
+  const openai = createOpenAiClient();
+
   const response = await openai.responses.create({
     model: CODE_REVIEW_MODEL,
     instructions: [
@@ -90,6 +90,12 @@ export async function reviewProject({
   });
 
   return parseProjectReviewResult(response.output_text);
+}
+
+function createOpenAiClient() {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 }
 
 function getResponseLanguageInstruction(locale: CodeReviewLocale): string {

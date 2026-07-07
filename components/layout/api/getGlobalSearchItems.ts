@@ -95,14 +95,6 @@ const staticSearchItems: GlobalSearchItem[] = [
     keywords: ["account", "skills", "achievements"],
   },
   {
-    id: "setting-language",
-    title: "Language settings",
-    description: "Change interface and AI response language.",
-    href: "/account/settings",
-    type: "setting",
-    keywords: ["settings", "preferences", "polski", "english", "language"],
-  },
-  {
     id: "setting-billing",
     title: "Billing",
     description: "Plan, subscription and AI usage limits.",

@@ -7,6 +7,7 @@ import { getAiMentorLearningContext } from "@/features/ai-mentor/api/getAiMentor
 import { createClient } from "@/lib/supabase/server";
 
 export type StudyAssistantMode = "plan" | "review" | "stuck";
+type StudyAssistantLocale = "en" | "pl";
 
 export type StudyAssistantState = {
   error?: string;
@@ -25,82 +26,134 @@ export async function generateStudyAssistantResponse(
   _previousState: StudyAssistantState,
   formData: FormData
 ): Promise<StudyAssistantState> {
-  const mode = String(formData.get("mode") ?? "") as StudyAssistantMode;
+  const mode = getStudyAssistantMode(String(formData.get("mode") ?? ""));
+  const locale = getStudyAssistantLocale(String(formData.get("locale") ?? ""));
   const problem = String(formData.get("problem") ?? "")
     .trim()
     .slice(0, MAX_PROBLEM_LENGTH);
 
-  if (!isStudyAssistantMode(mode)) {
-    return { error: "Nieznany typ asystenta." };
+  if (!mode) {
+    return { error: getStudyAssistantError(locale, "unknownMode") };
   }
 
   if (mode === "stuck" && problem.length < 10) {
     return {
-      error: "Opisz krótko, z czym masz problem.",
+      error: getStudyAssistantError(locale, "shortProblem"),
       mode,
     };
   }
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let userId: string | null = null;
 
-  if (!user) {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    userId = user?.id ?? null;
+  } catch {
+    return {
+      error: getStudyAssistantError(locale, "unavailable"),
+      mode,
+    };
+  }
+
+  if (!userId) {
     redirect("/login");
   }
 
-  const { data: profileData } = await supabase
-    .from("profiles")
-    .select("full_name, username")
-    .eq("id", user.id)
-    .maybeSingle();
+  try {
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("full_name, username")
+      .eq("id", userId)
+      .maybeSingle();
 
-  const profile = profileData as ProfileRow | null;
-  const learningContext = await getAiMentorLearningContext(user.id);
-  const response = await generateAiMentorResponse({
-    history: [],
-    learningContext,
-    message: getStudyAssistantPrompt(mode, problem),
-    userName: profile?.full_name ?? profile?.username,
-  });
+    const profile = profileData as ProfileRow | null;
+    const learningContext = await getAiMentorLearningContext(userId);
+    const response = await generateAiMentorResponse({
+      history: [],
+      learningContext,
+      message: getStudyAssistantPrompt(mode, problem, locale),
+      userName: profile?.full_name ?? profile?.username,
+    });
 
-  return {
-    mode,
-    response,
-  };
+    return {
+      mode,
+      response,
+    };
+  } catch {
+    return {
+      error: getStudyAssistantError(locale, "unavailable"),
+      mode,
+    };
+  }
 }
 
-function isStudyAssistantMode(value: string): value is StudyAssistantMode {
-  return value === "plan" || value === "review" || value === "stuck";
+function getStudyAssistantMode(value: string): StudyAssistantMode | null {
+  if (value === "plan" || value === "review" || value === "stuck") {
+    return value;
+  }
+
+  return null;
+}
+
+function getStudyAssistantLocale(value: string): StudyAssistantLocale {
+  return value === "pl" ? "pl" : "en";
 }
 
 function getStudyAssistantPrompt(
   mode: StudyAssistantMode,
-  problem: string
+  problem: string,
+  locale: StudyAssistantLocale
 ): string {
+  const languageInstruction =
+    locale === "pl" ? "Odpowiedz po polsku." : "Answer in English.";
+
   if (mode === "plan") {
     return [
-      "Odpowiedz po polsku.",
-      "Na podstawie mojego aktualnego kontekstu nauki przygotuj konkretny plan nauki na dziś.",
-      "Plan ma być praktyczny, krótki i możliwy do wykonania.",
-      "Uwzględnij: główny cel, 3-5 zadań, sugerowany czas, priorytet i krótką wskazówkę jak utrzymać streak.",
+      languageInstruction,
+      "Prepare a concrete study plan for today based on my current learning context.",
+      "The plan must be practical, short and possible to complete today.",
+      "Include: main goal, 3-5 tasks, suggested time, priority and one short tip for keeping my streak.",
     ].join(" ");
   }
 
   if (mode === "review") {
     return [
-      "Odpowiedz po polsku.",
-      "Na podstawie moich ostatnich lekcji przygotuj sesję powtórkową.",
-      "Wygeneruj 5 pytań kontrolnych, krótkie odpowiedzi oraz 2 mini zadania praktyczne.",
-      "Skup się na rzeczach, które warto utrwalić przed przejściem dalej.",
+      languageInstruction,
+      "Prepare a review session based on my recent lessons.",
+      "Generate 5 check questions, short answers and 2 small practical tasks.",
+      "Focus on concepts worth reinforcing before I move forward.",
     ].join(" ");
   }
 
   return [
-    "Odpowiedz po polsku.",
-    "Pomóż mi odblokować problem w nauce programowania.",
-    `Mój problem: ${problem}`,
-    "Najpierw nazwij możliwą przyczynę problemu, potem wyjaśnij temat prosto, daj plan naprawy krok po kroku i jedno małe ćwiczenie.",
+    languageInstruction,
+    "Help me unblock a programming learning problem.",
+    `My problem: ${problem}`,
+    "First name the likely cause, then explain the topic simply, give a step-by-step fix plan and one small exercise.",
   ].join(" ");
+}
+
+function getStudyAssistantError(
+  locale: StudyAssistantLocale,
+  key: "shortProblem" | "unavailable" | "unknownMode"
+): string {
+  const messages: Record<StudyAssistantLocale, Record<typeof key, string>> = {
+    en: {
+      shortProblem: "Briefly describe what you are stuck on.",
+      unavailable: "Study Assistant is not available right now. Try again soon.",
+      unknownMode: "Unknown assistant mode.",
+    },
+    pl: {
+      shortProblem: "Opisz krótko, z czym masz problem.",
+      unavailable:
+        "Asystent nauki jest teraz niedostępny. Spróbuj ponownie za chwilę.",
+      unknownMode: "Nieznany tryb asystenta.",
+    },
+  };
+
+  return messages[locale][key];
 }

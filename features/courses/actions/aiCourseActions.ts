@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { generateRoadmapCourse } from "@/features/learning-paths/api/generateRoadmapCourse";
+import { saveAiGeneratedCourse } from "@/features/courses/api/saveAiGeneratedCourse";
 import { createClient } from "@/lib/supabase/server";
 
 const MIN_GOAL_LENGTH = 2;
@@ -11,11 +12,6 @@ const MAX_GOAL_LENGTH = 160;
 
 type CreateAiCourseState = {
   error?: string;
-};
-
-type SavedAiCourseResult = {
-  course_id?: string;
-  course_slug?: string;
 };
 
 export async function createAiCourse(
@@ -53,26 +49,8 @@ export async function createAiCourse(
       stepTitle: goal,
       stepDescription: `Create a complete practical programming course about: ${goal}.`,
     });
-    const { data, error } = await supabase.rpc("save_ai_generated_course", {
-      p_course: {
-        ...course,
-        slug: `${course.slug}-${Date.now().toString(36)}`,
-      },
-    });
-    const savedCourse = (Array.isArray(data) ? data[0] : data) as
-      | SavedAiCourseResult
-      | null;
-    courseSlug = savedCourse?.course_slug;
-
-    if (error || !courseSlug) {
-      console.error("Create AI course failed:", error);
-
-      return {
-        error: error?.message
-          ? `Could not create course: ${error.message}`
-          : "Could not create course.",
-      };
-    }
+    const savedCourse = await saveAiGeneratedCourse(supabase, course);
+    courseSlug = savedCourse.courseSlug;
 
     revalidatePath("/dashboard");
     revalidatePath("/learn/courses");

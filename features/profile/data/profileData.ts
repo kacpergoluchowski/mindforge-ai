@@ -1,48 +1,11 @@
 import {
   BookOpen,
   Flame,
-  TrendingUp,
-  Clock3,
   Brain,
   Trophy,
 } from "lucide-react";
 
-import type {
-  ProfileActivity,
-  ProfileStat,
-} from "../types/profile.types";
-
-export const profileStats = [
-  {
-    title: "Level 24",
-    subtitle: "Advanced Learner",
-    icon: TrendingUp,
-    progress: 75,
-    color: "violet",
-  },
-  {
-    title: "142h",
-    subtitle: "Total Learning Time",
-    icon: Clock3,
-    progress: 82,
-    color: "emerald",
-  },
-  {
-    title: "18",
-    subtitle: "Courses Completed",
-    icon: BookOpen,
-    progress: 64,
-    color: "blue",
-  },
-  {
-    title: "7",
-    subtitle: "Day Streak",
-    icon: Flame,
-    progress: 72,
-    color: "orange",
-  },
-] satisfies ProfileStat[];
-
+import type { ProfileActivity } from "../types/profile.types";
 
 export const recentActivities = [
   {

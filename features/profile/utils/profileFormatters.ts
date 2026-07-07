@@ -14,10 +14,3 @@ export function getFirstName(fullName: string) {
 export function formatPlan(plan: string) {
   return `${plan.charAt(0).toUpperCase()}${plan.slice(1)} Plan`;
 }
-
-export function formatJoinedDate(value: string) {
-  return new Intl.DateTimeFormat("en", {
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
-}

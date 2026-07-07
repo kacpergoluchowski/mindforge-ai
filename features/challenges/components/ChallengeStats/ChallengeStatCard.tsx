@@ -28,9 +28,9 @@ export default function ChallengeStatCard({
   color,
 }: ChallengeStatCardProps) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-white/20 hover:bg-[#131f35]">
+    <article className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 transition hover:border-violet-400/30 hover:bg-[#131f35]">
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm text-slate-400">
             <ChallengeStatTitle title={title} />
           </p>
@@ -58,7 +58,7 @@ function StatTrend({ trend, value }: StatTrendProps) {
   const suffix = value === "Live" ? "data" : "this month";
 
   return (
-    <div className="mt-3 flex items-center gap-1 text-sm">
+    <div className="mt-3 flex min-w-0 items-center gap-1 text-sm">
       <TrendIcon className={clsx("size-4", trendStyles[trend])} />
       <span className={clsx("font-medium", trendStyles[trend])}>
         {value === "Live" ? (
@@ -145,7 +145,7 @@ function StatIcon({ color, icon: Icon }: StatIconProps) {
   return (
     <div
       className={clsx(
-        "flex size-12 shrink-0 items-center justify-center rounded-xl",
+        "flex size-12 shrink-0 items-center justify-center rounded-2xl",
         colorStyles[color]
       )}
     >

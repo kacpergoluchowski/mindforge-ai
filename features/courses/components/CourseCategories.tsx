@@ -12,8 +12,13 @@ const categoryTranslationKeys: Record<string, string> = {
   "AI & ML": "courses.categories.aiMl",
   "All Courses": "courses.categories.all",
   Backend: "courses.categories.backend",
+  Database: "courses.categories.database",
+  Design: "courses.categories.design",
+  DevOps: "courses.categories.devOps",
   Frontend: "courses.categories.frontend",
+  Fullstack: "courses.categories.fullstack",
   JavaScript: "courses.categories.javascript",
+  Mobile: "courses.categories.mobile",
   React: "courses.categories.react",
   TypeScript: "courses.categories.typescript",
 };
@@ -21,13 +26,19 @@ const categoryTranslationKeys: Record<string, string> = {
 export default function CourseCategories({
   activeCategory,
 }: CourseCategoriesProps) {
+  const normalizedActiveCategory = courseCategories.includes(
+    activeCategory as (typeof courseCategories)[number]
+  )
+    ? activeCategory
+    : "All Courses";
+
   return (
     <nav
       aria-label="Course categories"
       className="flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {courseCategories.map((category) => {
-        const isActive = activeCategory === category;
+        const isActive = normalizedActiveCategory === category;
         const href =
           category === "All Courses"
             ? "/learn/courses"

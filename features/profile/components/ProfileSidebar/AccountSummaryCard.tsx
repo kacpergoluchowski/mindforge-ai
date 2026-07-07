@@ -29,7 +29,7 @@ export default function AccountSummaryCard({
   const leveling = getLevelingProgress(profile.xp);
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-6">
+    <section className="rounded-3xl border border-white/10 bg-[#111a2d]/80 p-5 sm:p-6">
       <h2 className="mb-6 text-xl font-semibold text-white">
         <TranslatedText
           fallback="Account Summary"
@@ -37,9 +37,9 @@ export default function AccountSummaryCard({
         />
       </h2>
 
-      <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-5">
-        <div className="flex items-start justify-between">
-          <div>
+      <div className="rounded-2xl border border-white/10 bg-[#0b1220]/70 p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
             <p className="text-sm text-slate-400">
               <TranslatedText
                 fallback="Current Plan"
@@ -47,7 +47,7 @@ export default function AccountSummaryCard({
               />
             </p>
 
-            <h3 className="mt-2 text-3xl font-bold text-white">
+            <h3 className="mt-2 break-words text-3xl font-bold text-white">
               <TranslatedText
                 fallback={formatPlanFallback(profile.plan)}
                 translationKey={getPlanTranslationKey(profile.plan)}
@@ -62,7 +62,7 @@ export default function AccountSummaryCard({
             </p>
           </div>
 
-          <div className="flex size-14 items-center justify-center rounded-2xl bg-violet-500/15">
+          <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-violet-500/15">
             <Crown className="size-7 text-violet-400" />
           </div>
         </div>
@@ -83,15 +83,15 @@ export default function AccountSummaryCard({
             </span>
           </div>
 
-          <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+          <div className="h-2 overflow-hidden rounded-full bg-slate-800/80">
             <div
-              className="h-full rounded-full bg-violet-500"
+              className="h-full rounded-full bg-violet-500 transition-all"
               style={{ width: `${leveling.progressPercent}%` }}
             />
           </div>
         </div>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 space-y-3">
           {planFeatures.map((feature) => (
             <div key={feature.translationKey} className="flex items-center gap-3">
               <CheckCircle2 className="size-5 shrink-0 text-emerald-500" />

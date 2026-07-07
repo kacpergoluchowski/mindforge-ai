@@ -12,7 +12,7 @@ export default function GenerateStepCourseButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-70"
+      className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-violet-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
     >
       {pending ? (
         <Loader2 className="size-4 animate-spin" />

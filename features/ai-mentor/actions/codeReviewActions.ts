@@ -30,38 +30,48 @@ export async function reviewCodeAction(
   _previousState: CodeReviewState,
   formData: FormData
 ): Promise<CodeReviewState> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
   const mode = getCodeReviewMode(String(formData.get("mode") ?? ""));
   const code = String(formData.get("code") ?? "").trim();
   const language = getCodeReviewLanguage(String(formData.get("language") ?? ""));
   const locale = getCodeReviewLocale(String(formData.get("locale") ?? ""));
 
+  let isAuthenticated = false;
+
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    isAuthenticated = Boolean(user);
+  } catch {
+    return {
+      error: getReviewErrorMessage(locale, "unavailable"),
+    };
+  }
+
+  if (!isAuthenticated) {
+    redirect("/login");
+  }
+
   if (!code) {
     return {
-      error:
-        mode === "project"
-          ? "Paste project structure or files before running review."
-          : "Paste code before running review.",
+      error: getReviewErrorMessage(
+        locale,
+        mode === "project" ? "emptyProject" : "emptyCode"
+      ),
     };
   }
 
   if (mode === "project" && code.length > MAX_PROJECT_LENGTH) {
     return {
-      error: `Project review input is too long. Limit is ${MAX_PROJECT_LENGTH} characters for this MVP.`,
+      error: getReviewErrorMessage(locale, "projectTooLong"),
     };
   }
 
   if (mode === "single-file" && code.length > MAX_CODE_LENGTH) {
     return {
-      error: `Code is too long. Limit is ${MAX_CODE_LENGTH} characters for this MVP.`,
+      error: getReviewErrorMessage(locale, "codeTooLong"),
     };
   }
 
@@ -80,7 +90,7 @@ export async function reviewCodeAction(
     };
   } catch {
     return {
-      error: "Code review is not available right now. Try again in a moment.",
+      error: getReviewErrorMessage(locale, "unavailable"),
     };
   }
 }
@@ -97,4 +107,34 @@ function getCodeReviewLanguage(value: string): CodeReviewLanguage {
 
 function getCodeReviewLocale(value: string): CodeReviewLocale {
   return value === "pl" ? "pl" : "en";
+}
+
+function getReviewErrorMessage(
+  locale: CodeReviewLocale,
+  key:
+    | "codeTooLong"
+    | "emptyCode"
+    | "emptyProject"
+    | "projectTooLong"
+    | "unavailable"
+): string {
+  const messages: Record<CodeReviewLocale, Record<typeof key, string>> = {
+    en: {
+      codeTooLong: `Code is too long. Limit is ${MAX_CODE_LENGTH} characters.`,
+      emptyCode: "Paste code before running review.",
+      emptyProject: "Paste project structure or files before running review.",
+      projectTooLong: `Project input is too long. Limit is ${MAX_PROJECT_LENGTH} characters.`,
+      unavailable: "Code review is not available right now. Try again in a moment.",
+    },
+    pl: {
+      codeTooLong: `Kod jest za długi. Limit to ${MAX_CODE_LENGTH} znaków.`,
+      emptyCode: "Wklej kod przed uruchomieniem review.",
+      emptyProject: "Wklej strukturę projektu albo pliki przed review.",
+      projectTooLong: `Opis projektu jest za długi. Limit to ${MAX_PROJECT_LENGTH} znaków.`,
+      unavailable:
+        "Code review jest teraz niedostępne. Spróbuj ponownie za chwilę.",
+    },
+  };
+
+  return messages[locale][key];
 }

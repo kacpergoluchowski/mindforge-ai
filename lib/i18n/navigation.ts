@@ -8,7 +8,6 @@ const navigationLabelKeys: Record<string, string> = {
   "/ai-mentor/study-assistant": "navigation.studyAssistant",
   "/ai-mentor/code-review": "navigation.codeReview",
   "/account/profile": "navigation.profile",
-  "/account/settings": "navigation.settings",
   "/account/billing": "navigation.billing",
 };
 

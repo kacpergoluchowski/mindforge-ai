@@ -1,4 +1,5 @@
 import ProfileMainSection from "@/features/profile/components/ProfileMainSection/ProfileMainSection";
+import ProfileHero from "@/features/profile/components/ProfileMainSection/ProfileHero";
 import ProfileSidebar from "@/features/profile/components/ProfileSidebar/ProfileSidebar";
 import { getCurrentProfile } from "@/features/profile/api/getCurrentProfile";
 import { redirect } from "next/navigation";
@@ -13,8 +14,10 @@ export default async function ProfilePage() {
   if (!profile) redirect("/login");
 
   return (
-    <main className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[1fr_340px]">
+    <main className="min-w-0 space-y-6 pb-24 xl:pb-8">
+      <ProfileHero profile={profile} />
+
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <ProfileMainSection profile={profile} />
         <ProfileSidebar profile={profile} />
       </div>

@@ -12,7 +12,6 @@ import {
 } from "@/features/profile/utils/profileFormatters";
 import type { MobileSidebarProps } from "./types/layoutTypes.types";
 import { mobileSidebarSections } from "./data/layoutData";
-import LanguageSettingsModal from "@/features/settings/components/LanguageSettingsModal/LanguageSettingsModal";
 import { useI18n } from "@/lib/i18n/I18nProvider";
 import {
   getNavigationLabelKey,
@@ -89,7 +88,6 @@ export default function MobileSidebar({
               <div className="space-y-1">
                 {section.items.map(({ label, href, icon: Icon }) => {
                   const isActive = isNavigationItemActive(pathname, href);
-                  const isSettingsItem = href === "/account/settings";
                   const translatedLabel = t(
                     getNavigationLabelKey(href) ?? "",
                     label
@@ -100,19 +98,6 @@ export default function MobileSidebar({
                       ? "bg-violet-500/20 text-white shadow-[inset_0_0_0_1px_rgba(139,92,246,0.24)]"
                       : "text-slate-300 hover:bg-white/[0.05] hover:text-white"
                   );
-
-                  if (isSettingsItem) {
-                    return (
-                      <LanguageSettingsModal
-                        key={href}
-                        buttonClassName={className}
-                        onOpen={onClose}
-                      >
-                        <Icon aria-hidden="true" className="size-5 shrink-0" />
-                        <span className="truncate">{translatedLabel}</span>
-                      </LanguageSettingsModal>
-                    );
-                  }
 
                   return (
                     <Link

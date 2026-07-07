@@ -6,7 +6,6 @@ import {
   CreditCard,
   GraduationCap,
   LayoutDashboard,
-  Settings,
   ShieldCheck,
   SlidersHorizontal,
   User,
@@ -76,11 +75,6 @@ export const navigationSections: NavigationSection[] = [
         label: "Profile",
         href: "/account/profile",
         icon: User,
-      },
-      {
-        label: "Settings",
-        href: "/account/settings",
-        icon: Settings,
       },
       {
         label: "Billing",

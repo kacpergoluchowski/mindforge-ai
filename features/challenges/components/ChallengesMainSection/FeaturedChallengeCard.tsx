@@ -1,7 +1,7 @@
 import Link from "next/link";
 import clsx from "clsx";
 import type { ReactNode } from "react";
-import { Clock3, Star, TrendingUp, Users } from "lucide-react";
+import { ArrowRight, Clock3, Star, TrendingUp, Users } from "lucide-react";
 
 import TranslatedText from "@/components/shared/TranslatedText";
 import type {
@@ -60,39 +60,45 @@ export default function FeaturedChallengeCard({
   status,
 }: FeaturedChallengeCardProps) {
   const content = (
-    <article className="rounded-2xl border border-white/10 bg-[#111a2d]/80 p-3 transition hover:border-violet-500/30">
-      <div className="flex items-center gap-4">
-        <ChallengeIcon color={color} icon={icon} />
+    <article className="group rounded-3xl border border-white/10 bg-[#111a2d]/80 p-4 transition hover:border-violet-500/30 hover:bg-[#131f35] sm:p-5">
+      <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-center">
+        <div className="flex min-w-0 items-start gap-4">
+          <ChallengeIcon color={color} icon={icon} />
 
-        <div className="flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-semibold text-white">{title}</h3>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="line-clamp-2 font-semibold leading-snug text-white">
+                {title}
+              </h3>
 
-            <span className="rounded-full bg-white/5 px-2 py-1 text-xs text-slate-300">
-              {category}
-            </span>
-          </div>
+              <span className="rounded-full bg-white/5 px-2 py-1 text-xs text-slate-300">
+                {category}
+              </span>
+            </div>
 
-          <p className="mt-2 text-sm text-slate-400">{description}</p>
+            <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-400">
+              {description}
+            </p>
 
-          <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-400">
-            <ChallengeMetric
-              icon={Star}
-              iconClassName="fill-yellow-400 text-yellow-400"
-              value={rating}
-            />
-            <ChallengeMetric icon={Users} value={participants} />
-            {duration && <ChallengeMetric icon={Clock3} value={duration} />}
-            <ChallengeMetric
-              icon={TrendingUp}
-              value={
-                <TranslatedText
-                  fallback="{rate} Success"
-                  translationKey="challenges.successRate"
-                  values={{ rate: successRate }}
-                />
-              }
-            />
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+              <ChallengeMetric
+                icon={Star}
+                iconClassName="fill-yellow-400 text-yellow-400"
+                value={rating}
+              />
+              <ChallengeMetric icon={Users} value={participants} />
+              {duration && <ChallengeMetric icon={Clock3} value={duration} />}
+              <ChallengeMetric
+                icon={TrendingUp}
+                value={
+                  <TranslatedText
+                    fallback="{rate} Success"
+                    translationKey="challenges.successRate"
+                    values={{ rate: successRate }}
+                  />
+                }
+              />
+            </div>
           </div>
         </div>
 
@@ -146,9 +152,9 @@ function ChallengeMetric({
   value,
 }: ChallengeMetricProps) {
   return (
-    <div className="flex items-center gap-1">
-      <Icon className={clsx("size-3", iconClassName)} />
-      {value}
+    <div className="flex items-center gap-1.5">
+      <Icon className={clsx("size-3.5 shrink-0", iconClassName)} />
+      <span>{value}</span>
     </div>
   );
 }
@@ -167,18 +173,21 @@ function ChallengeAction({
   const buttonLabel = status ? statusLabels[status] : statusLabels.not_started;
 
   return (
-    <div className="text-right">
-      <p className={clsx("font-semibold", difficultyStyles[difficulty])}>
-        <DifficultyLabel difficulty={difficulty} />
-      </p>
+    <div className="flex shrink-0 items-center justify-between gap-4 border-t border-white/10 pt-4 lg:min-w-[170px] lg:flex-col lg:items-end lg:border-t-0 lg:pt-0 lg:text-right">
+      <div>
+        <p className={clsx("font-semibold", difficultyStyles[difficulty])}>
+          <DifficultyLabel difficulty={difficulty} />
+        </p>
 
-      <p className="mt-1 text-white">{points} XP</p>
+        <p className="mt-1 text-white">{points} XP</p>
+      </div>
 
-      <span className="mt-3 inline-flex rounded-xl bg-violet-500 px-5 py-2 text-sm font-medium text-white transition">
+      <span className="inline-flex items-center gap-2 rounded-xl bg-violet-500 px-4 py-2.5 text-sm font-medium text-white transition group-hover:bg-violet-600">
         <TranslatedText
           fallback={buttonLabel.fallback}
           translationKey={buttonLabel.translationKey}
         />
+        <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
       </span>
     </div>
   );
